@@ -1,0 +1,63 @@
+name: Pull request workflow
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15.5-alpine
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: gradle cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle
+            ~/.m2
+          key: scheduler-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            scheduler-gradle-
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: 'corretto'
+
+      - name: gradle build
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+        run: ./gradlew --no-daemon --console=plain build
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: ./**/build/test-results/**/*.xml
+          check_name: Test Results
+          comment_mode: off
+          compare_to_earlier_commit: false
