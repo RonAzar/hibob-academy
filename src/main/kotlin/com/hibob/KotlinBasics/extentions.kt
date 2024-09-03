@@ -11,22 +11,12 @@ fun List<Int>.sum():Int{
 fun main(args:Array<String>){
     val sum = listOf(1,2,3).sum()
     println(sum) //6
+    println(3 toPowerOf -2)
 }
 
 
 //Q2
 infix fun Number.toPowerOf(exponent: Number):Double{
-    Math.pow(this.toDouble(), exponent.toDouble())
-//  //Other solution:
-//    val pow = 2
-//    var retValue = this
-//    if (exponent == 0)
-//        return 1
-//    repeat((exponent.toInt() - 1)) {
-//        retValue *= this
-//    }
-//    if (exponent>=1)
-//        return retValue
-//    else
-//        return 1/retValue
+    //Q2 solution using Math.pow extension
+    return Math.pow(this.toDouble(), exponent.toDouble())
 }
