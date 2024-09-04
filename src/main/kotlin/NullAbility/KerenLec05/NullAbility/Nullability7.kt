@@ -31,6 +31,7 @@ fun main() {
 
 fun List<Customer?>.printAllCustomersDetails(){
     this.forEach {costumer->
+        costumer?.let {  }?:
         val costumerName = "Ron Azar"
         val accountDetails = AccountDetails("Do Something", 1000000.00)
         val costumerAccount = Account("314779448", accountDetails)
