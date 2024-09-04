@@ -5,8 +5,10 @@ import java.time.LocalDate
 
 @Component
 class StoreService {
-
+    // 7. implement pay method
     fun pay(cart: List<Cart>, payment: Payment): Map<String, Check> {
-       return mapOf()
+        return cart.associate {
+            it.clientId to checkout(it, payment)
+        }
     }
 }

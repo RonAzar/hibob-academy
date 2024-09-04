@@ -1,5 +1,4 @@
-package Types.Tamir
-
+package com.hibob.Types.Tamir
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions.*
