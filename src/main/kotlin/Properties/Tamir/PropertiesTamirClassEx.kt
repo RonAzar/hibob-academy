@@ -2,7 +2,7 @@ package Properties.Tamir
 import java.time.DayOfWeek
 
 //1. create class called Store that initlize by day and list of products
-data class Store(val day: DayOfWeek,val products: List<Product>)
+data class Store(val day:DayOfWeek,val products:List<Product>)
 {
     //2. add property to that indicate if the store is open the store is open all the day expect saturday
     val shomeretShabat:Boolean get() {
