@@ -6,10 +6,7 @@ data class Store(val day: DayOfWeek,val products: List<Product>)
 {
     //2. add property to that indicate if the store is open the store is open all the day expect saturday
     val shomeretShabat:Boolean get() {
-        when(day){
-            DayOfWeek.SATURDAY -> return false
-            else -> return true
-        }
+        return (day != DayOfWeek.SATURDAY)
     }
 
     //3. add property to that indicate number of product
