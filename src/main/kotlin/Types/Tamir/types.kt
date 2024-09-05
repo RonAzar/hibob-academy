@@ -86,3 +86,4 @@ data class Check(val employeeId: String, val statuses:Statuses,val total:Double)
 enum class Statuses {
     SUCCESS,FAILURE
 }
+
