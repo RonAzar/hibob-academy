@@ -35,7 +35,67 @@ fun main() {
     val company = initializeCompany()
 
     // Task: Print detailed information about each department, team, and team members, handling all null values appropriately.
-
+    printCompanyDetails(company)
 }
+
+fun printCompanyDetails(company: Company) {
+    company?.let {
+        val companyName = it.name ?: "Unknown Company name"
+        print("| Company Name: $companyName Company information:")
+        printDepartmentsDetails(it.departments)
+        println()
+    }?: println("| Unknown company |")
+}
+
+
+fun printDepartmentsDetails(departments: List<DepartmentDetails?>?){
+    departments?.let { it.forEach{ department->
+        department?.let {
+            val departmentName = department.name ?: "Unknown Department name"
+            println("| Department Name: $departmentName Department information: ")
+            printTeamsDetails(department.teams)
+        }?:println("| Unknown Department |")
+    }?:print("| Unknown Departments |")
+}
+}
+
+fun printTeamsDetails(teams: List<Team?>?){
+    teams?.let {
+        it.forEach{ team->
+            team?.let {
+                val teamName = team.name ?: "Unknown Team name"
+                println("§ Team name: $teamName , Info about the team:")
+                printLeaderDetails(team.leader)
+                printMembersDetails(team.members)
+            }?: println("§ Unknown Team §")
+        }?:print("| Unknown Teams |")
+    }
+}
+
+fun printLeaderDetails(leader: Leader?){
+    leader?.let {
+        val leaderName = leader.name ?: "Unknown Leader Name"
+        val leaderTitle = leader.title ?: "Unknown Leader Title"
+        println("± Leader name: $leaderName & Leader Title: $leaderTitle ±")
+    }?: println("± Unknown Leader ±")
+}
+
+fun printMembersDetails(members: List<Member?>?){
+    members?.let {
+        it.forEach{ member->
+            member?.let {
+                val memberName = member.name ?: "Unknown Member name"
+                val memberRole = member.role ?: "Unknown Member role"
+                println("# member Role: $memberName & member Role: $memberRole #")
+            }?: println("# Unknown Member #")
+        }?:print("| Unknown Members |")
+    }
+}
+
+
+
+
+
+
 
 

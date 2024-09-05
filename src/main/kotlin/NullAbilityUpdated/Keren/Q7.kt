@@ -33,10 +33,20 @@ fun main() {
 
 fun List<Customer?>.printAllCustomersDetails(){
     this.forEach {costumer->
-        val customerName = costumer?.name ?: "Unknown name"
-        val accountId = costumer?.account?.id ?: "Unknown Id"
-        val accountType = costumer?.account?.details?.type ?: "Unknown Type"
-        val accountBalance = costumer?.account?.details?.balance ?: 0.00
-        println(Customer(customerName,Account(accountId,AccountDetails(accountType,accountBalance))))
+        var costumerName = "Unknown name"
+        var accountId = "Unknown Id"
+        var accountType = "Unknown Type"
+        var accountBalance = 0.00
+        costumer?.let {
+            costumer.name?.let { costumerNm -> costumerName = costumerNm  }
+            costumer.account?.let { costumerAccount ->
+                costumerAccount.id?.let { costumerId -> accountId = costumerId }
+                costumerAccount.details?.let { costumerDetails ->
+                    costumerDetails.type?.let { costumerType -> accountType=costumerType }
+                    costumerDetails.balance?.let { costumerBalance-> accountBalance= costumerBalance }
+                }
+            }
+        }
+        println(Customer(costumerName,Account(accountId,AccountDetails(accountType,accountBalance))))
     }
 }
