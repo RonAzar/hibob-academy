@@ -11,12 +11,6 @@ val owners = mutableListOf(
     Owner(3L,"Noam","Noam", null, 103L, 12L)
 )
 
-val oldOwners = mutableListOf(
-    OldOwner(1L,"Ron Azar", 101L, 10L),
-    OldOwner(2L,"Or", 102L, 11L),
-    OldOwner(3L,"Bob", 103L, 12L)
-)
-
 
 @Controller
 @Path("/api/ron/owners")
@@ -50,17 +44,10 @@ class OwnerResource {
     @Path("/AddOwner")
     @POST
     fun addOwner(newOwner : Owner) : Response {
-
         owners.add(newOwner)
         return Response.status(Response.Status.CREATED).entity(newOwner).build()
     }
 
-    @Path("/AddOwner")
-    @POST
-    fun addOwner(oldOwner: OldOwner) : Response {
-        oldOwners.add(oldOwner)
-        return Response.status(Response.Status.CREATED).entity(oldOwner).build()
-    }
 
     //PUT: Update a owner by ownerId
     @PUT
