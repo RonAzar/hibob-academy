@@ -6,9 +6,15 @@ import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Controller
 
 val owners = mutableListOf(
-    Owner(1L,"Ron", 101L, 10L),
-    Owner(2L,"Or", 102L, 11L),
-    Owner(3L,"Noam", 103L, 12L)
+    Owner(1L,"Ron", "Ron", "Azar", 101L, 10L),
+    Owner(2L,"Or", null, null, 102L, 11L),
+    Owner(3L,"Noam","Noam", null, 103L, 12L)
+)
+
+val oldOwners = mutableListOf(
+    OldOwner(1L,"Ron Azar", 101L, 10L),
+    OldOwner(2L,"Or", 102L, 11L),
+    OldOwner(3L,"Bob", 103L, 12L)
 )
 
 
@@ -41,10 +47,19 @@ class OwnerResource {
         }
     }
 
+    @Path("/AddOwner")
     @POST
     fun addOwner(newOwner : Owner) : Response {
+
         owners.add(newOwner)
         return Response.status(Response.Status.CREATED).entity(newOwner).build()
+    }
+
+    @Path("/AddOwner")
+    @POST
+    fun addOwner(oldOwner: OldOwner) : Response {
+        oldOwners.add(oldOwner)
+        return Response.status(Response.Status.CREATED).entity(oldOwner).build()
     }
 
     //PUT: Update a owner by ownerId
