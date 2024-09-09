@@ -38,7 +38,6 @@ interface SpidermanMovieProduceActions {
 }
 
 class SpidermanNoWayHome() : SpidermanMovieProduceActions {
-
     override val title: String = "Spiderman - No Way Home"
     override val airDate: LocalDate = LocalDate.of(2021,12,16)
     override val imdbRank: Double = 9.6
@@ -58,19 +57,29 @@ class SpidermanNoWayHome() : SpidermanMovieProduceActions {
         return builder
     }
     override fun signTobeyMaguire() {
-        //  Tobey signed!
+        println("Tobey signed!")
     }
 
     override fun signAndrew() {
-        //    Andrew signed
+        println("Andrew signed!")
     }
 
     override fun signTom() {
-        //    Tom signed
+        println("Tom signed")
     }
 
-    override fun getVillains() {
-        //   Got villains
+    override fun getVillains()
+    {
+        val villains = listOf(
+            "Green Goblin",
+            "Doctor Octopus",
+            "Sandman",
+            "Venom",
+            "The Lizard",
+            "Electro",
+            "Vulture",
+            "Mysterio"
+        ).forEach(::println)
     }
 
     override fun isThereLockdown(): Boolean = false
@@ -114,7 +123,6 @@ class Runner(private val movieProducer: SpidermanMovieProduceActions?){
                 signTom()
                 getVillains()
                 publish()
-                true
             }else false
         }?:false
     }
