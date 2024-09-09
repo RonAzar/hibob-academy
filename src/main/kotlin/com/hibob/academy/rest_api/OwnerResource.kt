@@ -66,12 +66,16 @@ class OwnerResource {
     @Path("/{ownerId}")
     fun deleteOwner(@PathParam("ownerId") ownerId: Long): Response {
         val owner = owners.find { it.ownerId == ownerId }
-        return if(owner != null) {
+        return  owner?.let {
             owners.remove(owner)
             Response.ok("${owner.toString()} Has been removed").build()
-        }
-        else
-            throw NotFoundException("No owner with id $ownerId")
+        }?: throw NotFoundException("No owner with id $ownerId")
+//        return if(owner != null) {
+//            owners.remove(owner)
+//            Response.ok("${owner.toString()} Has been removed").build()
+//        }
+//        else
+//            throw NotFoundException("No owner with id $ownerId")
     }
 
 }
