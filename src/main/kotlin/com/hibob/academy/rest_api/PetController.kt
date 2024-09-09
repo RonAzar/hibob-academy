@@ -31,7 +31,7 @@ class PetResource {
                 Response.status(Response.Status.UNAUTHORIZED).build()  // Unauthorized for petId 123
             }
             else -> {
-                Response.ok("Pet Type: ${pet.type}, Name: ${pet.name}, Company ID: ${pet.companyId}, Date of Arrival: ${pet.dateOfArrival}").build()
+                Response.ok().entity(pet).build()
             }
         }
     }
