@@ -8,7 +8,7 @@ import com.hibob.academy.resource.User
 @Component
 class SessionService {
     companion object {
-        const val secretKey =
+        const val SECRET_KEY =
         "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhg21243e5wredwedywe5te4343tewqawsertyusdfghjkerftgyhujdfgxdewefcvhj"
     }
 
@@ -19,7 +19,7 @@ class SessionService {
             .claim("username", user.name)
             .claim("isAdmin", user.isAdmin)
             .setExpiration(Date(Date().time + 24 * 60 * 60 * 1000))
-            .signWith(SignatureAlgorithm.HS512, secretKey)
+            .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
             .compact()
     }
 }

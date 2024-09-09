@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
 import org.springframework.stereotype.Component
-import com.hibob.academy.service.SessionService.Companion.secretKey
+import com.hibob.academy.service.SessionService.Companion.SECRET_KEY
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.Provider
 
@@ -24,7 +24,7 @@ class AuthenticationFilter : ContainerRequestFilter {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
         }
     }
-    private val jwtParser = Jwts.parser().setSigningKey(secretKey)
+    private val jwtParser = Jwts.parser().setSigningKey(SECRET_KEY)
 
     fun verify(cookie: String?): Jws<Claims>? =
         cookie?.let {
