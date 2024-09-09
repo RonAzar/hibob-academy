@@ -8,7 +8,7 @@ import com.hibob.academy.resource.User
 @Component
 class SessionService {
     companion object {
-        val secretKey =
+        const val secretKey =
         "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhg21243e5wredwedywe5te4343tewqawsertyusdfghjkerftgyhujdfgxdewefcvhj"
     }
 
