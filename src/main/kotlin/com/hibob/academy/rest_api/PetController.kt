@@ -20,7 +20,7 @@ class PetResource {
     // GET: Retrieve pet by ID
     //Example-> "http://localhost:8080/api/ron/pets/envelopes/1"
     @GET
-    @Path("/{petId}")
+    @Path("/{petId}/type")
     fun getPetType(@PathParam("petId") petId: Long): Response {
         val pet = pets.find { it.petId == petId }
         return when {
