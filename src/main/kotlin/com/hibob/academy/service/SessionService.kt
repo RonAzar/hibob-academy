@@ -3,12 +3,13 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
 import java.util.Date
-import javax.xml.crypto.dsig.SignatureMethod.HMAC_SHA256
+import io.jsonwebtoken.security.Keys
+import java.security.Key
 import com.hibob.academy.resource.User
 
 @Component
 class SessionService {
-    private val secretKey = "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhgfcvhj"
+    private val secretKey: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512)
 
     fun createJWTToken(user: User): String {
         return Jwts.builder()
@@ -17,7 +18,7 @@ class SessionService {
             .claim("username", user.name)
             .claim("isAdmin", user.isAdmin)
             .setExpiration(Date(Date().time + 24 * 60 * 60 * 1000))
-            .signWith(SignatureAlgorithm.HS512, secretKey)
+            .signWith(secretKey)
             .compact()
     }
 }
