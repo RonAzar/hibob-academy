@@ -36,8 +36,7 @@ class OwnerResource {
                 Response.status(Response.Status.UNAUTHORIZED).build()
             }
             else ->{
-                //Sending JSON
-                Response.ok(owner).build()
+                Response.ok(owner.toString()).build()
             }
         }
     }
@@ -55,7 +54,6 @@ class OwnerResource {
         val index = owners.indexOfFirst { it.ownerId == ownerId }
         return if (index>=0){
             owners[index] = updatedOwner.copy(ownerId = ownerId)
-            //Sending JSON
             Response.ok(updatedOwner).build()
         }
         else{
