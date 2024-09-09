@@ -12,11 +12,11 @@ import org.springframework.stereotype.Controller
 data class User(val email: String,val name: String, val isAdmin: Boolean)
 
 @Controller
+@Produces(MediaType.APPLICATION_JSON)
 @Path("/users")
 class AuthenticationResourse(private val service: SessionService) {
     @Path("/Login")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     fun addNewUser(newUser: User): Response {
         val session = SessionService()

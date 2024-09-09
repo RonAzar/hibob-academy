@@ -7,7 +7,10 @@ import com.hibob.academy.resource.User
 
 @Component
 class SessionService {
-    private val secretKey = "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhg21243e5wredwedywe5te4343tewqawsertyusdfghjkerftgyhujdfgxdewefcvhj"
+    companion object {
+        val secretKey =
+        "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhg21243e5wredwedywe5te4343tewqawsertyusdfghjkerftgyhujdfgxdewefcvhj"
+    }
 
     fun createJWTToken(user: User): String {
         return Jwts.builder()
