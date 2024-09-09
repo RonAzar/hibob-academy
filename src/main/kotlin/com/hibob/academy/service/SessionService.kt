@@ -4,19 +4,20 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
 import java.util.Date
 import javax.xml.crypto.dsig.SignatureMethod.HMAC_SHA256
+import com.hibob.academy.resource.User
 
 @Component
 class SessionService {
-    private val secretKey = "secret"
+    private val secretKey = "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhgfcvhj"
 
-    fun createJWTToken(): String {
+    fun createJWTToken(user: User): String {
         return Jwts.builder()
             .setHeaderParam("typ", "JWT")
-            .claim("email", "hibob@hibob.academy")
-            .claim("username", "ronAzar")
-            .claim("isAdmin", true)
+            .claim("email", user.email)
+            .claim("username", user.name)
+            .claim("isAdmin", user.isAdmin)
             .setExpiration(Date(Date().time + 24 * 60 * 60 * 1000))
-            .signWith(SignatureAlgorithm.HS512, HMAC_SHA256)
+            .signWith(SignatureAlgorithm.HS512, secretKey)
             .compact()
     }
 }

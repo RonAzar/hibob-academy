@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AuthenticationFilter : ContainerRequestFilter {
-    override fun filter(requestContext: ContainerRequestContext?) {
+    override fun filter(requestContext: ContainerRequestContext) {
         if (requestContext.uriInfo.path == "To be implement") return
 
         //here we need to verify the JWT token
