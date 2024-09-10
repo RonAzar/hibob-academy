@@ -1,0 +1,23 @@
+package com.hibob.academy.dao
+
+import com.hibob.academy.utils.JooqTable
+
+class PetTable(tableName: String = "pets"): JooqTable(tableName){
+    val petId = createBigIntField("id")
+    val petName = createVarcharField("name")
+    val petType = createVarcharField("type")
+    val companyId = createBigIntField("company_id")
+    val dateOfArrival = createLocalDateField("date_of_arrival")
+
+    companion object{
+        val  instance = PetTable()
+    }
+}
+
+
+class OwnerTable(tableName: String = "owner"): JooqTable(tableName){
+    //The Id is serial so I didnt know if I shou
+    val ownerName = createVarcharField("name")
+    val companyId = createBigIntField("company_id")
+    val employeeId = createBigIntField("employee_id")
+}
