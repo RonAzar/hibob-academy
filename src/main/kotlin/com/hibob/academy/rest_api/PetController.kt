@@ -58,7 +58,6 @@ class PetResource {
         return Response.status(Response.Status.CREATED).entity(newPet).build()
     }
 
-
     // PUT: Update a pet by ID
     //Example-> "http://localhost:8080/api/ron/pets/envelopes/1" \
     //     "Content-Type: application/json"
