@@ -27,6 +27,13 @@ package com.hibob.academy.unitests.keren
 //*/
 data class Person(val name: String, val age: Int)
 
+data class PeopleStatistics(
+    val averageAge: Double,
+    val youngest: Person,
+    val oldest: Person,
+    val ageCount: Map<Int, Int>
+)
+
 class ListManager {
     private val people: MutableList<Person> = mutableListOf()
 
@@ -51,5 +58,21 @@ class ListManager {
 
     fun getPeopleSortedByAgeAndName(): List<Person> {
         return people.sortedWith(compareBy<Person> { it.age }.thenBy { it.name })
+    }
+
+    fun calculateStatistics(): PeopleStatistics? {
+        if (people.isEmpty()) {
+            return null
+        }
+        val averageAge = people.map { it.age }.average()//Avarage list age
+        val youngest = people.minByOrNull { it.age }//Get the minimum age at the list or null
+        val oldest = people.maxByOrNull { it.age }//Get the maximum age at the list or null
+        val ageCount = people.groupingBy { it.age }.eachCount()//Return a map
+
+        return youngest?.let { young ->
+            oldest?.let { old ->
+                PeopleStatistics(averageAge, young, old, ageCount)
+            }
+        }
     }
 }

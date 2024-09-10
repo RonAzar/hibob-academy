@@ -96,4 +96,34 @@ class ListManagerTest{
         assertEquals(person3, managers.getPeopleSortedByAgeAndName()[0])
         assertEquals(person2, managers.getPeopleSortedByAgeAndName()[2])
     }
+
+
+    //calculateStatistics
+    @Test
+    fun `Test with an empty list for calculateStatistics`()
+    {
+        assertEquals(null, ListManager().calculateStatistics())
+    }
+
+    @Test
+    fun `Test with one person with legal age`(){
+        val ron = Person("Ron Azar", 24)
+        val managers = ListManager()
+        managers.addPerson(ron)
+        assertEquals(PeopleStatistics(24.0,ron,ron, mapOf(24 to 1)),managers.calculateStatistics())
+    }
+
+    @Test
+    fun `Test with few person`(){
+        val person1 = Person("Ron Azar", 24)
+        val person2 = Person("Ron Azar", 26)
+        val person3 = Person("Gery", 23)
+        val person4 = Person("Don", 25)
+        val managers = ListManager()
+        managers.addPerson(person1)
+        managers.addPerson(person2)
+        managers.addPerson(person3)
+        managers.addPerson(person4)
+        assertEquals(PeopleStatistics(24.5,person3,person2, mapOf( 24 to 1, 26 to 1, 23 to 1, 25 to 1)),managers.calculateStatistics())
+    }
 }
