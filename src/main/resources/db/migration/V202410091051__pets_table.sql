@@ -7,7 +7,7 @@ create table pets
     date_of_arrival date not null
 );
 
-CREATE INDEX idx_company_id ON pets(company_id);
+CREATE INDEX idx_pets_company_id ON pets(company_id);
 
 -- --Insert data to your pet table for some pets.
 --
