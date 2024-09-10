@@ -38,11 +38,8 @@ class Location(val street: String,val city: String,val country: Country, val cod
 }
 
 enum class Country(val codeType: String){
-    ISRAEL("zipcode"),
     US("zipcode"),
     UK("postcode"),
-    SPAIN("zipcode"),
-    POLAND("zipcode")
 }
 
 
@@ -57,7 +54,7 @@ fun main() {
     )
 
     val locationsList: List<Location> = listOf(
-        Location("Rabin", "Haifa", Country.ISRAEL, "1234"),
+        Location("Rabin", "Haifa", Country.US, "1234"),
         Location("UsStreet", "New York", Country.US, "2345"),
         Location("UKStreet", "London", Country.UK, "3456")
     )
