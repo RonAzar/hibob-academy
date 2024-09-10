@@ -126,4 +126,15 @@ class ListManagerTest{
         managers.addPerson(person4)
         assertEquals(PeopleStatistics(24.5,person3,person2, mapOf( 24 to 1, 26 to 1, 23 to 1, 25 to 1)),managers.calculateStatistics())
     }
+
+    @Test
+    fun `Test with two persons with the same age to see which one will be the younges and oldest`(){
+        val person1 = Person("Ron Azar", 24)
+        val person2 = Person("BlahBlah", 24)
+        val managers = ListManager()
+        managers.addPerson(person1)
+        managers.addPerson(person2)
+        assertEquals(person1, managers.calculateStatistics()?.youngest)
+        assertEquals(person1, managers.calculateStatistics()?.oldest)
+    }
 }
