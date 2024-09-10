@@ -13,7 +13,7 @@ val owners = mutableListOf(
 
 
 @Controller
-@Path("/api/ron/owners/envelopes")
+@Path("/api/ron/owners")
 @Produces(MediaType.APPLICATION_JSON)
 class OwnerResource {
 
