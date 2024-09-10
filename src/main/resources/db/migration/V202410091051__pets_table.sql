@@ -26,7 +26,7 @@ CREATE INDEX idx_pets_company_id ON pets(company_id);
 --
 -- --Delete pet by id
 --          Delete from pets
--- Where (id == 2)
+-- Where (id = 2)
 --
 --
 -- --Get the pets that arrived more than a year ago
