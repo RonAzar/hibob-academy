@@ -1,7 +1,7 @@
 create table owner(
     id serial primary key ,
     name varchar(100) not null ,
-    company_id int,
+    company_id int not null,
     employee_id int
 );
 
