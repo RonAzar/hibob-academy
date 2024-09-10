@@ -9,11 +9,19 @@ class PetDao(private val sql: DSLContext) {
     private val pet = PetTable.instance
     private val petDataMapper= RecordMapper<Record, PetData> { record ->
         PetData(
-            record[pet.petId],
             record[pet.petName],
-            record[pet.petType]
+            record[pet.dateOfArrival],
+            record[pet.companyId]
         )
     }
 
-    //fun get
+    //Create a function that retrieve all the pets by a given type (represented by enum) and return their name, dateOfArrival and company Id
+    fun getAllPetsByType(type: TYPE): List<PetData>
+    {
+        return sql.select(pet.petName, pet.dateOfArrival, pet.companyId)
+        .from(pet)
+            .where(pet.petType.eq(type.name.lowercase()))
+            .orderBy(pet.petName)
+            .fetch(petDataMapper)
+    }
 }
