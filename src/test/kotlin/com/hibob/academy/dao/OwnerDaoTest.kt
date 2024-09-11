@@ -21,6 +21,8 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
         sql.deleteFrom(owner).where(owner.companyId.eq(companyId)).execute()
     }
 
+
+
     @Test
     fun `Insert new owner to DB`() {
         // Insert the new owner into the database
