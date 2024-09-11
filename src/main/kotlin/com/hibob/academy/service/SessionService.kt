@@ -11,6 +11,9 @@ class SessionService {
         const val SECRET_KEY =
         "secretsdfghjkjhghjhghjhjkjhghjkjhgfghjhg21243e5wredwedywe5te4343tewqawsertyusdfghjkerftgyhujdfgxdewefcvhj"
     }
+    companion object{
+        const val JWT_TOKEN_URL = "jwt/users/login"
+    }
 
     fun createJWTToken(user: User): String {
         return Jwts.builder()

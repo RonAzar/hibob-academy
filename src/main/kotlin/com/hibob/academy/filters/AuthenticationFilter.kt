@@ -13,8 +13,9 @@ import jakarta.ws.rs.ext.Provider
 @Component
 @Provider
 class AuthenticationFilter : ContainerRequestFilter {
+
     override fun filter(requestContext: ContainerRequestContext) {
-        if (requestContext.uriInfo.path == "jwt/users/login") return
+        if (requestContext.uriInfo.path == JWT_TOKEN_URL) return
 
         // Verify the JWT token from the cookie
         val cookie = requestContext.cookies
