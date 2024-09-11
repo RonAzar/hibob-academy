@@ -16,8 +16,13 @@ class PetTable(tableName: String = "pets"): JooqTable(tableName){
 
 
 class OwnerTable(tableName: String = "owner"): JooqTable(tableName){
-    //The Id is serial so I didnt know if I shou
+    val ownerId = createBigIntField("owner_id")
     val ownerName = createVarcharField("name")
     val companyId = createBigIntField("company_id")
     val employeeId = createBigIntField("employee_id")
+
+
+    companion object{
+        val instance = OwnerTable()
+    }
 }
