@@ -14,7 +14,7 @@ import jakarta.ws.rs.ext.Provider
 @Provider
 class AuthenticationFilter : ContainerRequestFilter {
     companion object {
-        private const val LOGIN_PATH = "/jwt/users/login"
+        private const val LOGIN_PATH = "jwt/users/login"
         const val COOKIE_NAME = "ron_cookie_name"  // Replace with actual cookie name
     }
 
