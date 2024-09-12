@@ -10,6 +10,7 @@ import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.NewCookie
 import org.springframework.stereotype.Controller
+import com.hibob.academy.filters.AuthenticationFilter.Companion.COOKIE_NAME
 
 data class User(val email: String,val name: String, val isAdmin: Boolean)
 
@@ -23,7 +24,7 @@ class AuthenticationResourse(private val service: SessionService) {
     @Consumes(MediaType.APPLICATION_JSON)
     fun addNewUser(newUser: User): Response {
         val tokenJwt = service.createJWTToken(newUser)  // Assuming createJWTToken returns a JWT
-        val cookie = NewCookie.Builder("ron_cookie_name").value(tokenJwt).build()//Creating new cookie
+        val cookie = NewCookie.Builder(COOKIE_NAME).value(tokenJwt).build()//Creating new cookie
         return Response.ok().cookie(cookie).build()
     }
 
