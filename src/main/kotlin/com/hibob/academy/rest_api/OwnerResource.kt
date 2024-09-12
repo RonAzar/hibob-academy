@@ -70,12 +70,6 @@ class OwnerResource {
             owners.remove(owner)
             Response.ok("${owner.toString()} Has been removed").build()
         }?: throw NotFoundException("No owner with id $ownerId")
-//        return if(owner != null) {
-//            owners.remove(owner)
-//            Response.ok("${owner.toString()} Has been removed").build()
-//        }
-//        else
-//            throw NotFoundException("No owner with id $ownerId")
     }
 
 }
