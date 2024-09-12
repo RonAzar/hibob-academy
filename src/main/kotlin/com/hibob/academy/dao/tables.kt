@@ -19,7 +19,7 @@ class OwnerTable(tableName: String = "owner"): JooqTable(tableName){
     val ownerId = createBigIntField("owner_id")
     val ownerName = createVarcharField("name")
     val companyId = createBigIntField("company_id")
-    val employeeId = createBigIntField("employee_id")
+    val employeeId = createVarcharField("employee_id")
 
 
     companion object{
