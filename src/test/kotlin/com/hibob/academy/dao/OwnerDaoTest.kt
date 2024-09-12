@@ -13,7 +13,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
     private val companyId = 9L
     private val dao = OwnerDao(sql)
     val owner = OwnerTable.instance
-    private val ownerRon = OwnerData("Ron Azar", 314444444, 9)
+    private val ownerRon = OwnerData("Ron Azar", "314444444", 9)
 
     @BeforeEach
     @AfterEach
@@ -28,13 +28,10 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
         // Insert the new owner into the database
         dao.createNewOwner(ownerRon)
 
-        // Verify that the owner has been added to the database by filtering and checking if it contains ownerRon
-        val owners = dao.getAllOwners().filter { owner ->
-            owner.ownerName == ownerRon.ownerName &&
-                    owner.employeeId == ownerRon.employeeId &&
-                    owner.companyId == ownerRon.companyId
-        }
-        // Check that ownerRon is in the list
-        assertTrue(owners.isNotEmpty(), "Owner should have been added to the database")
+        // Fetch all owners from the database
+        val owners = dao.getAllOwners()
+
+        // Verify that the owner has been added by checking if ownerRon is in the list of all owners
+        assertTrue(ownerRon in owners, "Test failed: Owner should have been added to the database")
     }
 }

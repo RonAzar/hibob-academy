@@ -3,7 +3,7 @@ package com.hibob.academy.dao
 import com.hibob.academy.utils.JooqTable
 
 class PetTable(tableName: String = "pets"): JooqTable(tableName){
-    val petId = createBigIntField("id")
+    val id = createBigIntField("id")
     val petName = createVarcharField("name")
     val petType = createVarcharField("type")
     val companyId = createBigIntField("company_id")
