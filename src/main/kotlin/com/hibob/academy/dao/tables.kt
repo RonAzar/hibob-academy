@@ -4,6 +4,7 @@ import com.hibob.academy.utils.JooqTable
 
 class PetTable(tableName: String = "pets"): JooqTable(tableName){
     val id = createBigIntField("id")
+    val ownerId = createBigIntField("owner_id")
     val petName = createVarcharField("name")
     val petType = createVarcharField("type")
     val companyId = createBigIntField("company_id")
