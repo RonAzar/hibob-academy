@@ -24,6 +24,14 @@ class PetDao(private val sql: DSLContext) {
             .fetch(petDataMapper)
     }
 
+//    Add an API that will receive a pet id and owner id
+//    Update the pet with the ownerID
+//    What should you do if the pet already have an owner Id?
+    fun updatePetOwnerId(petId: Long, petOwnerId: String) {
+
+    }
+
+
     fun createNewPet(newPet: PetData) {
         sql.insertInto(pet)
             .set(pet.petName, newPet.petName)

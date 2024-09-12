@@ -22,7 +22,7 @@ class OwnerDao(private val sql: DSLContext) {
             .fetch(ownerDataMapper)
     }
 
-
+//Create a new function in the DAO file that create a new owner record (if it doesn’t exist already).
     fun createNewOwner(newOwner: OwnerData){
         sql.insertInto(owner)
             .set(owner.ownerName, newOwner.ownerName)
