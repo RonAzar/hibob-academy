@@ -7,6 +7,7 @@ create table pets
     date_of_arrival date default CURRENT_DATE
 );
 
+-- CREATE unique index idx_pets_company_id ON pets(company_id);
 -- --Insert data to your pet table for some pets.
 --
 -- INSERT INTO pets (name, type, company_id, date_of_arrival)
