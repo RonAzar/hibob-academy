@@ -1,5 +1,4 @@
 package com.hibob.academy.dao
-
 import com.hibob.academy.utils.BobDbTest
 import org.jooq.DSLContext
 import org.junit.jupiter.api.AfterEach
