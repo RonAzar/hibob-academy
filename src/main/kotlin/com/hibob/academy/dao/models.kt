@@ -2,6 +2,8 @@ package com.hibob.academy.dao
 
 import java.time.LocalDate
 
+data class PetAllInfo(val petName: String, val dateOfArrival: LocalDate, val companyId: Long, val petType: PetType, val ownerId: Long)
+
 //return their name, dateOfArrival and company Id
 data class PetData(val petName: String, val dateOfArrival: LocalDate, val companyId: Long)
 
