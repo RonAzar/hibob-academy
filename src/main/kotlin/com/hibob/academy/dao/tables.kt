@@ -16,7 +16,7 @@ class PetTable(tableName: String = "pets"): JooqTable(tableName){
 
 
 class OwnerTable(tableName: String = "owner"): JooqTable(tableName){
-    val ownerId = createBigIntField("owner_id")
+    val id = createBigIntField("owner_id")
     val ownerName = createVarcharField("name")
     val companyId = createBigIntField("company_id")
     val employeeId = createVarcharField("employee_id")
