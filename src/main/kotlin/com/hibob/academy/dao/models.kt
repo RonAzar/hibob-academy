@@ -9,7 +9,7 @@ data class PetData(val petName: String, val dateOfArrival: LocalDate, val compan
 data class OwnerData(val ownerName: String, val employeeId: Long, val companyId: Long)
 
 //pets by a given type (represented by enum)
-enum class TYPE{
+enum class PetType{
     DOG,
     CAT,
     HAMSTER,

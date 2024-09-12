@@ -28,7 +28,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
         dao.createNewPet(petWaffle)
 
         // Use filter to find matching pets and check if the list is not empty
-        val filteredPets = dao.getAllPetsByType(TYPE.DOG).filter { pet ->
+        val filteredPets = dao.getAllPetsByType(PetType.DOG).filter { pet ->
             pet.petName == petWaffle.petName &&
                     pet.companyId == petWaffle.companyId &&
                     pet.dateOfArrival == petWaffle.dateOfArrival
