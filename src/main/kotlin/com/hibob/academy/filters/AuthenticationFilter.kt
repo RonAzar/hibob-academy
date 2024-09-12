@@ -22,10 +22,12 @@ class AuthenticationFilter : ContainerRequestFilter {
         if (requestContext.uriInfo.path == LOGIN_PATH) return
 
         // Verify the JWT token from the cookie
-        val cookie = requestContext.cookies
-        val jwtClaims = verify(cookie[COOKIE_NAME]?.value)
+        val cookie = requestContext.cookies[COOKIE_NAME]?.value
 
-        if (jwtClaims == null) {
+        try {
+            val jwtClaims = verify(cookie) ?: throw Exception("Invalid or expired token")  // If claims are null, throw an exception
+        } catch (e: Exception) {
+            // Catch any exceptions (including null or verification failure) and abort with UNAUTHORIZED status
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
         }
     }
