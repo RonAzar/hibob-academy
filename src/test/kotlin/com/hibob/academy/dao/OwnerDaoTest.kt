@@ -29,7 +29,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
         dao.createNewOwner(ownerRon)
 
         // Fetch all owners from the database
-        val owners = dao.getAllOwners()
+        val owners = dao.getAllOwners(companyId)
 
         // Verify that the owner has been added by checking if ownerRon is in the list of all owners
         assertTrue(ownerRon in owners, "Test failed: Owner should have been added to the database")

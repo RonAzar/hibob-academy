@@ -16,10 +16,11 @@ class PetDao(private val sql: DSLContext) {
     }
 
     //Create a function that retrieve all the pets by a given type (represented by enum) and return their name, dateOfArrival and company Id
-    fun getAllPetsByType(type: PetType): List<PetData> {
-        return sql.select(pet.petName, pet.dateOfArrival, pet.companyId, pet.petType)  // Include petType
+    fun getAllPetsByType(type: PetType, companyId: Long): List<PetData> {
+        return sql.select(pet.petName, pet.dateOfArrival, pet.companyId, pet.petType)  // Include petType and companyId
             .from(pet)
-            .where(pet.petType.eq(type.name.lowercase()))
+            .where(pet.petType.eq(type.name))
+            .and(pet.companyId.eq(companyId))  // Add companyId condition
             .fetch(petDataMapper)
     }
 
@@ -27,10 +28,8 @@ class PetDao(private val sql: DSLContext) {
         sql.insertInto(pet)
             .set(pet.petName, newPet.petName)
             .set(pet.dateOfArrival, newPet.dateOfArrival)
-            .set(pet.petType, PetType.DOG.name.lowercase())  // Set the type dynamically
+            .set(pet.petType, PetType.DOG.name)  // Set the type dynamically
             .set(pet.companyId, newPet.companyId)
-            .onConflict(pet.companyId)
-            .doNothing()
             .execute()
     }
 }
