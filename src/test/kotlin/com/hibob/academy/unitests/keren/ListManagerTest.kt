@@ -48,7 +48,7 @@ class ListManagerTest{
     }
 
     @Test
-    fun `Test the state of the list after multiple add and remove operations`(){
+    fun `Test the state of the list after multiple add and Need to make sure it was actually removedremove operations`(){
         val ron = Person("Ron Azar", 24)
         val blah = Person("BlahBlah", 120)
         val managers = ListManager()
@@ -110,7 +110,7 @@ class ListManagerTest{
     @Test
     fun `Test with an empty list for calculateStatistics`()
     {
-        assertEquals(null, ListManager().calculateStatistics())
+        assertNull(ListManager().calculateStatistics())
     }
 
     @Test
