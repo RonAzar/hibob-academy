@@ -10,11 +10,13 @@ class ListManagerTest{
     }
 
     @Test
-    fun `Test adding a duplicate person and ensure it throws the expected exception`(){
+    fun `Test adding a duplicate person and ensure it throws the expected exception`() {
+        val managers = ListManager()
+        managers.addPerson(Person("Ron Azar", 24)) // First insertion should not throw an exception
+
+        // Verify that the exception is thrown when trying to add a duplicate person
         assertThrows(IllegalArgumentException::class.java) {
-            val managers = ListManager()
-            managers.addPerson(Person("Ron Azar", 24))
-            managers.addPerson(Person("Ron Azar", 24))
+            managers.addPerson(Person("Ron Azar", 24)) // Second insertion should throw an exception
         }
     }
 
