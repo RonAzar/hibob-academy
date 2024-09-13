@@ -28,10 +28,18 @@ class ListManagerTest{
 
     //* Write tests for removePerson method:
     @Test
-    fun `Test removing a person that exists in the list`(){
+    fun `Test removing a person that exists in the list`() {
         val managers = ListManager()
-        managers.addPerson(Person("Ron Azar", 24))
-        assertEquals(true,managers.removePerson(Person("Ron Azar",24)))
+        val person = Person("Ron Azar", 24)
+
+        // Add the person to the list
+        managers.addPerson(person)
+
+        // Remove the person and check that the removal was successful
+        assertTrue(managers.removePerson(person), "The person should have been removed from the list")
+
+        // Verify that the person is no longer in the list
+        assertFalse(managers.getPeopleSortedByAgeAndName().contains(person), "The person should no longer be in the list")
     }
 
     @Test
