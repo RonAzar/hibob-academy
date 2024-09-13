@@ -17,7 +17,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
     private val dao = OwnerDao(sql)
 
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-    //used for my Get owner details by pet Id and owner Id Test
+    //used for my Get owner details by pet id and owner id Test
     private val daoPet = PetDao(sql)
     private val pet = PetTable.instance
 //±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±

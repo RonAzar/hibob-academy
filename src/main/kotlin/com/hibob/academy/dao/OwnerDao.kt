@@ -17,7 +17,7 @@ class OwnerDao(private val sql: DSLContext) {
             )
     }
 
-    //Create a function that retrieve all the owners from the owner table and return their name, employee Id and company Id
+    //Create a function that retrieve all the owners from the owner table and return their name, employee id and company id
     fun getAllOwners(companyId: Long): List<OwnerData>{
         return sql.select(owner.id, owner.ownerName,owner.employeeId,owner.companyId)
             .from(owner)
