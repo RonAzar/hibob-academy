@@ -2,13 +2,13 @@ package com.hibob.academy.dao
 
 import java.time.LocalDate
 
-data class PetAllInfo(val petName: String, val dateOfArrival: LocalDate, val companyId: Long, val petType: PetType, val ownerId: Long)
+data class PetAllInfo(val petId: Long ,val petName: String, val dateOfArrival: LocalDate, val companyId: Long, val petType: PetType, val ownerId: Long?)
 
 //return their name, dateOfArrival and company Id
 data class PetData(val petName: String, val dateOfArrival: LocalDate, val companyId: Long)
 
 //return their name, employee Id and company Id.
-data class OwnerData(val ownerName: String, val employeeId: String, val companyId: Long)
+data class OwnerData(val ownerId: Long,val ownerName: String, val employeeId: String, val companyId: Long)
 
 //pets by a given type (represented by enum)
 enum class PetType{

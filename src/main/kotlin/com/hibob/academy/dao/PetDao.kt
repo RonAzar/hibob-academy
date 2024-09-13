@@ -11,7 +11,18 @@ class PetDao(private val sql: DSLContext) {
         PetData(
             record[pet.petName],
             record[pet.dateOfArrival],
-            record[pet.companyId]
+            record[pet.companyId],
+        )
+    }
+
+    private val petAllInfoMapper = RecordMapper<Record, PetAllInfo>{ record ->
+        PetAllInfo(
+            record[pet.id],
+            record[pet.petName],
+            record[pet.dateOfArrival],
+            record[pet.companyId],
+            PetType.valueOf(record[pet.petType].uppercase()),  // Convert string to enum (assuming your DB stores it as a string)
+            record[pet.ownerId]
         )
     }
 
@@ -27,8 +38,42 @@ class PetDao(private val sql: DSLContext) {
 //    Add an API that will receive a pet id and owner id
 //    Update the pet with the ownerID
 //    What should you do if the pet already have an owner Id?
-    fun updatePetOwnerId(petId: Long, petOwnerId: Long) {
-        
+    fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long) {
+        sql.update(pet)
+            .set(pet.ownerId, petOwnerId)
+            .where(pet.companyId.eq(companyId))
+            .and(pet.id.eq(petId))
+            .and(pet.ownerId.isNull())
+            .execute()
+    }
+
+    fun getAllPets(companyId: Long): List<PetAllInfo> {
+        return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
+            .from(pet)
+            .where(pet.companyId.eq(companyId))
+            .fetch(petAllInfoMapper)
+    }
+
+
+
+    fun getPetByDetails(petInfo: PetAllInfo): PetAllInfo? {
+        return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
+            .from(pet)  // Make sure to include 'from' in the query
+            .where(pet.petName.eq(petInfo.petName))
+            .and(pet.dateOfArrival.eq(petInfo.dateOfArrival))
+            .and(pet.companyId.eq(petInfo.companyId))
+            .and(pet.petType.eq(petInfo.petType.name))
+            .fetchOne(petAllInfoMapper)  // Use 'fetchOne' since we expect one result
+    }
+
+    fun insertNewPet(newPet: PetAllInfo) {
+        sql.insertInto(pet)
+            .set(pet.petName, newPet.petName)
+            .set(pet.dateOfArrival, newPet.dateOfArrival)
+            .set(pet.petType, newPet.petType.name)
+            .set(pet.companyId, newPet.companyId)
+            .set(pet.ownerId, newPet.ownerId)
+            .execute()
     }
 
 
