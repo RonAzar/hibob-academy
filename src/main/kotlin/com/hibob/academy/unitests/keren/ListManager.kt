@@ -44,7 +44,7 @@ class ListManager {
         return people.add(person)
     }
 
-    fun getManagersAmount(): Int{
+    fun getPeopleCount(): Int{
         return people.size
     }
 

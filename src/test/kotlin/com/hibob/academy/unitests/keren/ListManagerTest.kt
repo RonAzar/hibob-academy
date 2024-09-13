@@ -23,7 +23,7 @@ class ListManagerTest{
         val managers = ListManager()
         managers.addPerson(Person("Ron Azar", 24))
         managers.addPerson(Person("Or Azar", 26))
-        assertEquals(2,managers.getManagersAmount())
+        assertEquals(2,managers.getPeopleCount())
     }
 
     //* Write tests for removePerson method:
@@ -50,7 +50,7 @@ class ListManagerTest{
         assertTrue(managers.containManger(blah))
         assertFalse(managers.containManger(ron))
         managers.removePerson(blah)
-        assertEquals(0, managers.getManagersAmount())
+        assertEquals(0, managers.getPeopleCount())
     }
 
     //* Write tests for getPeopleSortedByAgeAndName method:
@@ -58,7 +58,7 @@ class ListManagerTest{
     fun `Test with an empty list`(){
         val managers = ListManager()
         val listAfterSort = managers.getPeopleSortedByAgeAndName()
-        assertEquals(listAfterSort.size,managers.getManagersAmount())
+        assertEquals(listAfterSort.size,managers.getPeopleCount())
     }
 
     @Test
