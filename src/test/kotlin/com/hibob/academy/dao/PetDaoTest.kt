@@ -38,7 +38,6 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
         assertTrue(petInsideDataBase in petsWithDogType, "Test failed: Pet Waffle should have been added to the database")
     }
 
-
     @Test
     fun `Update pet owner id if the pet has no owner`(){
         // Step 1: Insert a new pet without an owner
