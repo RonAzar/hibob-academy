@@ -14,8 +14,9 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     private val ownerId = 123L
     private val dao = PetDao(sql)
     val pet = PetTable.instance
-    private val petWaffle = PetData("Waffle" , LocalDate.now(), companyId)
-    private val petWithoutOwner = PetAllInfo(34,"George",LocalDate.now(), companyId, PetType.CAT, null)
+    private val petWithoutOwner = PetData(34,"George",LocalDate.now(), companyId, PetType.CAT, null)
+    private val waffle = PetData(-2,"Waffle",LocalDate.now(), companyId, PetType.DOG, ownerId)
+
 
     @BeforeEach
     @AfterEach
@@ -26,13 +27,15 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `Insert new pet to DB`() {
         // Insert the new pet into the database
-        dao.createNewPet(petWaffle)
+        dao.insertNewPet(waffle)
 
         // Use filter to find matching pets and check if the list is not empty
         val petsWithDogType = dao.getAllPetsByType(PetType.DOG,companyId)
 
+        val petInsideDataBase = dao.getPetByDetails(waffle)
+
         // Assert that the filtered list is not empty, meaning the pet exists
-        assertTrue(petWaffle in petsWithDogType, "Test failed: Pet Waffle should have been added to the database")
+        assertTrue(petInsideDataBase in petsWithDogType, "Test failed: Pet Waffle should have been added to the database")
     }
 
 

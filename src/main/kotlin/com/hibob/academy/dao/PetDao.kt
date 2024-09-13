@@ -7,16 +7,9 @@ import org.jooq.RecordMapper
 
 class PetDao(private val sql: DSLContext) {
     private val pet = PetTable.instance
-    private val petDataMapper= RecordMapper<Record, PetData> { record ->
-        PetData(
-            record[pet.petName],
-            record[pet.dateOfArrival],
-            record[pet.companyId],
-        )
-    }
 
-    private val petAllInfoMapper = RecordMapper<Record, PetAllInfo>{ record ->
-        PetAllInfo(
+    private val PetDataMapper = RecordMapper<Record, PetData>{ record ->
+        PetData(
             record[pet.id],
             record[pet.petName],
             record[pet.dateOfArrival],
@@ -28,11 +21,11 @@ class PetDao(private val sql: DSLContext) {
 
     //Create a function that retrieve all the pets by a given type (represented by enum) and return their name, dateOfArrival and company Id
     fun getAllPetsByType(type: PetType, companyId: Long): List<PetData> {
-        return sql.select(pet.petName, pet.dateOfArrival, pet.companyId, pet.petType)  // Include petType and companyId
+        return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)  // Include petType and companyId
             .from(pet)
             .where(pet.petType.eq(type.name))
             .and(pet.companyId.eq(companyId))  // Add companyId condition
-            .fetch(petDataMapper)
+            .fetch(PetDataMapper)
     }
 
 //    Add an API that will receive a pet id and owner id
@@ -47,42 +40,32 @@ class PetDao(private val sql: DSLContext) {
             .execute()
     }
 
-    fun getAllPets(companyId: Long): List<PetAllInfo> {
+    fun getAllPets(companyId: Long): List<PetData> {
         return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
             .from(pet)
             .where(pet.companyId.eq(companyId))
-            .fetch(petAllInfoMapper)
+            .fetch(PetDataMapper)
     }
 
 
 
-    fun getPetByDetails(petInfo: PetAllInfo): PetAllInfo? {
+    fun getPetByDetails(petInfo: PetData): PetData? {
         return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
             .from(pet)  // Make sure to include 'from' in the query
             .where(pet.petName.eq(petInfo.petName))
             .and(pet.dateOfArrival.eq(petInfo.dateOfArrival))
             .and(pet.companyId.eq(petInfo.companyId))
             .and(pet.petType.eq(petInfo.petType.name))
-            .fetchOne(petAllInfoMapper)  // Use 'fetchOne' since we expect one result
+            .fetchOne(PetDataMapper)  // Use 'fetchOne' since we expect one result
     }
 
-    fun insertNewPet(newPet: PetAllInfo) {
+    fun insertNewPet(newPet: PetData) {
         sql.insertInto(pet)
             .set(pet.petName, newPet.petName)
             .set(pet.dateOfArrival, newPet.dateOfArrival)
             .set(pet.petType, newPet.petType.name)
             .set(pet.companyId, newPet.companyId)
             .set(pet.ownerId, newPet.ownerId)
-            .execute()
-    }
-
-
-    fun createNewPet(newPet: PetData) {
-        sql.insertInto(pet)
-            .set(pet.petName, newPet.petName)
-            .set(pet.dateOfArrival, newPet.dateOfArrival)
-            .set(pet.petType, PetType.DOG.name)  // Set the type dynamically
-            .set(pet.companyId, newPet.companyId)
             .execute()
     }
 }

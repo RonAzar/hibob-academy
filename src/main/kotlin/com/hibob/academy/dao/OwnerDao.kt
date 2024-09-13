@@ -29,7 +29,7 @@ class OwnerDao(private val sql: DSLContext) {
     fun getOwnerByPetId(petId: Long, companyId: Long): OwnerData?{
         return sql.select(owner.id, owner.ownerName,owner.employeeId,owner.companyId)
             .from(pet)
-            .join(owner).on(pet.ownerId.eq(owner.id))
+            .rightJoin(owner).on(pet.ownerId.eq(owner.id))
             .where(pet.id.eq(petId))
             .and(pet.companyId.eq(companyId))
             .fetchOne(ownerDataMapper)  // Fetch a single record

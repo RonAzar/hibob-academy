@@ -53,7 +53,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
         //Check if the ownerId was found and not null
         assertNotNull(addedOwner?.ownerId, "Test failed: The owner was not added to the database.")
 
-        val pet = PetAllInfo(-2,"Waffle" , LocalDate.now(), companyId, PetType.DOG, addedOwner!!.ownerId)
+        val pet = PetData(-2,"Waffle" , LocalDate.now(), companyId, PetType.DOG, addedOwner!!.ownerId)
 
         // Step 5: Insert the new pet into the database
         daoPet.insertNewPet(pet)
