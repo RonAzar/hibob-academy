@@ -58,15 +58,15 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
 
     @Test
     fun `test GetAllPets function`() {
-        // Arrange: Insert two pets for the same company
+        // Insert two pets for the same company
         val companyId = 1L
-        val pet1Id = dao.insertNewPet("Waffle", LocalDate.of(2023, 9, 1), PetType.DOG, companyId, null)
-        val pet2Id = dao.insertNewPet("Mittens", LocalDate.of(2023, 8, 15), PetType.CAT, companyId, 5L)
+        val pet1Id = dao.insertNewPet("Waffle", LocalDate.now(), PetType.DOG, companyId, null)
+        val pet2Id = dao.insertNewPet("Mittens", LocalDate.now(), PetType.CAT, companyId, 5L)
 
-        // Act: Get all pets for the company
+        // Get all pets for the company
         val pets = dao.getAllPets(companyId)
 
-        // Assert: Check the result
+        // Check the result
         assertEquals(2, pets.size, "Test failed: Incorrect number of pets returned")
         assertTrue(pets.any { it.petId == pet1Id }, "Test failed: Pet 1 not found")
         assertTrue(pets.any { it.petId == pet2Id }, "Test failed: Pet 2 not found")
