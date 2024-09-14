@@ -59,7 +59,6 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `test GetAllPets function`() {
         // Insert two pets for the same company
-        val companyId = 1L
         val pet1Id = dao.insertNewPet("Waffle", LocalDate.now(), PetType.DOG, companyId, null)
         val pet2Id = dao.insertNewPet("Mittens", LocalDate.now(), PetType.CAT, companyId, 5L)
 
