@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.not
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 
@@ -25,31 +26,28 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     }
 
     @Test
-    fun `Insert new pet to DB`() {
-        // Insert the new pet into the database
-        dao.insertNewPet(waffle)
+    fun `Insert new pet to DB And Checking the function that get all pets by type`() {
+        // Insert the new pet into the database and get the serial id
+        val newPetSerialId = dao.insertNewPet(waffle)
+        assertTrue(newPetSerialId != -1L, "Test failed: Pet not added successfully!")
 
-        // Use filter to find matching pets and check if the list is not empty
+        //Get all pets by the type -->DOG
         val petsWithDogType = dao.getAllPetsByType(PetType.DOG,companyId)
 
-        val petInsideDataBase = dao.getPetByDetails(waffle)
-
         // Assert that the filtered list is not empty, meaning the pet exists
-        assertTrue(petInsideDataBase in petsWithDogType, "Test failed: Pet Waffle should have been added to the database")
+        assertNotNull(petsWithDogType.filter { pet-> pet.petId == newPetSerialId }, "Test failed: Pet Waffle should have been added to the database")
     }
 
     @Test
     fun `Update pet owner id if the pet has no owner`(){
         // Step 1: Insert a new pet without an owner
-        dao.insertNewPet(petWithoutOwner)
-
-        val petIdInDataBase = dao.getPetByDetails(petWithoutOwner)
+        val newPetSerialId = dao.insertNewPet(petWithoutOwner)
 
         // Step 2: Update the pet's ownerId
-        dao.updatePetOwnerId(petIdInDataBase!!.petId, ownerId, companyId)
+        assertEquals(1, dao.updatePetOwnerId(newPetSerialId, ownerId, companyId), "Test failed: Update pet owner id failed!")
 
         // Step 3: Fetch the updated pet
-        val updatedPet = dao.getPetByDetails(petWithoutOwner)
+        val updatedPet = dao.getPetById(newPetSerialId,companyId)
 
         // Step 4: Check if the pet was found and not null
         assertNotNull(updatedPet, "Test failed: The pet was not found after insertion.")

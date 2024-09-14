@@ -31,14 +31,17 @@ class PetDao(private val sql: DSLContext) {
 //    Add an API that will receive a pet id and owner id
 //    Update the pet with the ownerID
 //    What should you do if the pet already have an owner id?
-    fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long) {
-        sql.update(pet)
-            .set(pet.ownerId, petOwnerId)
-            .where(pet.companyId.eq(companyId))
-            .and(pet.id.eq(petId))
-            .and(pet.ownerId.isNull())
-            .execute()
-    }
+fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): Int {
+    // Perform the update only if ownerId is null and return the updated pet
+    val rowsAffected = sql.update(pet)
+        .set(pet.ownerId, petOwnerId)
+        .where(pet.companyId.eq(companyId))
+        .and(pet.id.eq(petId))
+        .and(pet.ownerId.isNull())  // Update only if ownerId is null
+        .execute()
+
+    return rowsAffected
+}
 
     fun getAllPets(companyId: Long): List<PetData> {
         return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
@@ -49,23 +52,24 @@ class PetDao(private val sql: DSLContext) {
 
 
 
-    fun getPetByDetails(petInfo: PetData): PetData? {
+    fun getPetById(petId: Long, companyId: Long): PetData? {
         return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
-            .from(pet)  // Make sure to include 'from' in the query
-            .where(pet.petName.eq(petInfo.petName))
-            .and(pet.dateOfArrival.eq(petInfo.dateOfArrival))
-            .and(pet.companyId.eq(petInfo.companyId))
-            .and(pet.petType.eq(petInfo.petType.name))
+            .from(pet)
+            .where(pet.id.eq(petId))
+            .and(pet.companyId.eq(companyId))
             .fetchOne(petDataMapper)  // Use 'fetchOne' since we expect one result
     }
 
-    fun insertNewPet(newPet: PetData) {
-        sql.insertInto(pet)
+    //Return new pet serial id or -1 if insertion failed!
+    fun insertNewPet(newPet: PetData): Long {
+        return sql.insertInto(pet)
             .set(pet.petName, newPet.petName)
             .set(pet.dateOfArrival, newPet.dateOfArrival)
             .set(pet.petType, newPet.petType.name)
             .set(pet.companyId, newPet.companyId)
             .set(pet.ownerId, newPet.ownerId)
-            .execute()
+            .returning(pet.id)  // Return the generated ID after insertion
+            .fetchOne()         // Fetch the newly created row
+            ?.get(pet.id) ?: -1    // Extract the ID from the row
     }
 }
