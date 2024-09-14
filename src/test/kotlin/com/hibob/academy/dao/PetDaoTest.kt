@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.not
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 
@@ -28,7 +27,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `Insert new pet to DB And Checking the function that get all pets by type`() {
         // Insert the new pet into the database and get the serial id
-        val newPetSerialId = dao.insertNewPet(waffle)
+        val newPetSerialId = dao.insertNewPet(waffle.petName, waffle.dateOfArrival,waffle.petType,waffle.companyId,waffle.ownerId)
         assertTrue(newPetSerialId != -1L, "Test failed: Pet not added successfully!")
 
         //Get all pets by the type -->DOG
@@ -41,7 +40,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `Update pet owner id if the pet has no owner`(){
         // Step 1: Insert a new pet without an owner
-        val newPetSerialId = dao.insertNewPet(petWithoutOwner)
+        val newPetSerialId = dao.insertNewPet(petWithoutOwner.petName, petWithoutOwner.dateOfArrival,petWithoutOwner.petType,petWithoutOwner.companyId,petWithoutOwner.ownerId)
 
         // Step 2: Update the pet's ownerId
         assertEquals(1, dao.updatePetOwnerId(newPetSerialId, ownerId, companyId), "Test failed: Update pet owner id failed!")
@@ -54,5 +53,22 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
 
         // Step 5: Verify that the ownerId was updated
         assertEquals(ownerId, updatedPet!!.ownerId, "Test failed: The pet's ownerId should be updated.")
+    }
+
+
+    @Test
+    fun `test GetAllPets function`() {
+        // Arrange: Insert two pets for the same company
+        val companyId = 1L
+        val pet1Id = dao.insertNewPet("Waffle", LocalDate.of(2023, 9, 1), PetType.DOG, companyId, null)
+        val pet2Id = dao.insertNewPet("Mittens", LocalDate.of(2023, 8, 15), PetType.CAT, companyId, 5L)
+
+        // Act: Get all pets for the company
+        val pets = dao.getAllPets(companyId)
+
+        // Assert: Check the result
+        assertEquals(2, pets.size, "Test failed: Incorrect number of pets returned")
+        assertTrue(pets.any { it.petId == pet1Id }, "Test failed: Pet 1 not found")
+        assertTrue(pets.any { it.petId == pet2Id }, "Test failed: Pet 2 not found")
     }
 }

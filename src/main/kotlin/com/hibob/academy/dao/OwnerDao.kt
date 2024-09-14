@@ -44,11 +44,11 @@ class OwnerDao(private val sql: DSLContext) {
     }
 
     //Create a new function in the DAO file that create a new owner record (if it doesn’t exist already).
-    fun createNewOwner(newOwner: OwnerData){
+    fun insertNewOwner(ownerName: String, employeeId: String, companyId: Long){
         sql.insertInto(owner)
-            .set(owner.ownerName, newOwner.ownerName)
-            .set(owner.employeeId, newOwner.employeeId)
-            .set(owner.companyId, newOwner.companyId)
+            .set(owner.ownerName, ownerName)
+            .set(owner.employeeId,employeeId)
+            .set(owner.companyId, companyId)
             .onConflict(owner.companyId, owner.employeeId)
             .doNothing()
             .execute()

@@ -3,6 +3,7 @@ package com.hibob.academy.dao
 import org.jooq.Record
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
+import java.time.LocalDate
 
 
 class PetDao(private val sql: DSLContext) {
@@ -61,13 +62,13 @@ fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): Int {
     }
 
     //Return new pet serial id or -1 if insertion failed!
-    fun insertNewPet(newPet: PetData): Long {
+    fun insertNewPet(petName: String, petDateOfArrival: LocalDate, petType: PetType, companyId: Long, ownerId: Long?): Long {
         return sql.insertInto(pet)
-            .set(pet.petName, newPet.petName)
-            .set(pet.dateOfArrival, newPet.dateOfArrival)
-            .set(pet.petType, newPet.petType.name)
-            .set(pet.companyId, newPet.companyId)
-            .set(pet.ownerId, newPet.ownerId)
+            .set(pet.petName, petName)
+            .set(pet.dateOfArrival, petDateOfArrival)
+            .set(pet.petType, petType.name)
+            .set(pet.companyId, companyId)
+            .set(pet.ownerId, ownerId)
             .returning(pet.id)  // Return the generated ID after insertion
             .fetchOne()         // Fetch the newly created row
             ?.get(pet.id) ?: -1    // Extract the ID from the row
