@@ -6,6 +6,6 @@ import jakarta.ws.rs.core.MediaType
 import org.springframework.stereotype.Controller
 
 @Controller
-@Path("/api/ron/azar/owner/")
+@Path("/api/ron/azar/pets/")
 @Produces(MediaType.APPLICATION_JSON)
 class PetsResource
