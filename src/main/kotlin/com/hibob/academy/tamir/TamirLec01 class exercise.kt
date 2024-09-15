@@ -1,4 +1,4 @@
-package Basics.Tamir
+package com.hibob.academy.tamir
 fun main() {
     //Q1
     printHelloWorld()

@@ -1,4 +1,4 @@
-package sequence.omri
+package com.hibob.academy.omri
 import org.springframework.cglib.core.Predicate
 import kotlin.system.exitProcess
 
