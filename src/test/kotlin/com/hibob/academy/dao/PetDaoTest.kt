@@ -55,6 +55,40 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
         assertEquals(ownerId, updatedPet!!.ownerId, "Test failed: The pet's ownerId should be updated.")
     }
 
+    @Test
+    fun `Update pet owner id should not update if ownerId already exists`() {
+        // Step 1: Insert a new pet with an existing owner
+        val newPetSerialId = dao.insertNewPet(waffle)
+
+        // Step 2: Attempt to update the pet's ownerId (should not update because the pet already has an owner)
+        val rowsAffected = dao.updatePetOwnerId(newPetSerialId, ownerId + 1, companyId)
+
+        // Step 3: Verify that no rows were affected (since the pet already has an owner)
+        assertEquals(0, rowsAffected, "Test failed: OwnerId should not be updated if pet already has an owner")
+
+        // Step 4: Fetch the pet and verify that the ownerId has not changed
+        val petAfterUpdate = dao.getPetById(newPetSerialId, companyId)
+        assertEquals(ownerId, petAfterUpdate!!.ownerId, "Test failed: The pet's ownerId should remain unchanged")
+    }
+
+    @Test
+    fun `Update pet owner id should fail for non-existent pet`() {
+        // Step 1: Attempt to update the ownerId of a non-existent pet (invalid petId)
+        val rowsAffected = dao.updatePetOwnerId(-1L, ownerId, companyId)
+
+        // Step 2: Verify that no rows were affected (since the pet doesn't exist)
+        assertEquals(0, rowsAffected, "Test failed: Update should fail for non-existent petId")
+    }
+
+    @Test
+    fun `Get pet by invalid petId should return null`() {
+        // Step 1: Try to fetch a pet with an invalid petId
+        val fetchedPet = dao.getPetById(-1L, companyId)
+
+        // Step 2: Verify that the result is null
+        assertNull(fetchedPet, "Test failed: Fetching a non-existent pet should return null")
+    }
+
 
     @Test
     fun `test GetAllPets function`() {
