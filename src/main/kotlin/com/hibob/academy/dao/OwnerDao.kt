@@ -3,7 +3,9 @@ package com.hibob.academy.dao
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.jooq.Record
+import org.springframework.stereotype.Repository
 
+@Repository
 class OwnerDao(private val sql: DSLContext) {
     private val owner = OwnerTable.instance
     private val pet = PetTable.instance
