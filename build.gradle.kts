@@ -66,6 +66,6 @@ tasks {
 		systemProperty("spring.profiles.active", "development,test")
 	}
 	bootRun {
-		mainClass.set("com.hibob.AcademyApplication") // Replace with your actual main class
+		mainClass.set("com.hibob.AcademyApplicationKt") // Replace with your actual main class
 	}
 }
