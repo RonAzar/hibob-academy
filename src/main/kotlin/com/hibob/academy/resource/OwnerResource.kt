@@ -5,10 +5,7 @@ import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
-import org.jooq.DSLContext
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.RequestBody
 
 @Controller  // Marks the class as a controller, meaning it's responsible for handling incoming HTTP requests
 @Path("/api/ron/azar/owner/")  // Defines the base URL path that this controller will handle
@@ -16,31 +13,25 @@ import org.springframework.web.bind.annotation.RequestBody
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
 class OwnerResource (private val ownerService: OwnerService){
 
-//    @POST
-//    @Path("getAllOwners")
-//    fun getAllOwners(companyId: Long): Response {
-//        // Check if companyId is null or invalid (for example, less than 1)
-//        if (companyId <= 0) {
-//            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid companyId provided").build()
-//        }
-//
-//        // Call the DAO to fetch the owners based on the companyId
-//        val owners = ownerDao.getAllOwners(request.companyId)
-//
-//        // If no owners found, return a 404 response
-//        if (owners.isEmpty()) {
-//            return Response.status(Response.Status.NOT_FOUND).entity("No owners found for the given company").build()
-//        }
-//
-//        // Return the owners list as a JSON response
-//        return Response.ok(owners).build()
-//    }
+    @GET
+    @Path("getAllOwners/{companyId}")
+    fun getAllOwners(@PathParam("companyId") companyId: Long): Response {
+        if (companyId <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid companyId provided").build()
+        }
+
+        val owners = ownerService.getAllOwners(companyId)
+
+        if (owners.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("No owners found for the given company").build()
+        }
+
+        return Response.ok(owners).build()
+    }
 
 
     @POST
     @Path("insertNewOwner")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     fun insertNewOwner(newOwner: Owner): Response {
         return try {
             val insertOwnerSerialId = ownerService.insertOwner(newOwner)
@@ -55,25 +46,34 @@ class OwnerResource (private val ownerService: OwnerService){
         }
     }
 
-//    @POST
-//    @Path("getOwnerByPetId")
-//    fun getOwnerByPetId(petId: Long, companyId: Long): Response {
-//        val owner = ownerDao.getOwnerByPetId(petId,companyId)
-//
-//        if (owner != null)
-//            return Response.ok(owner).build()
-//
-//        return Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
-//    }
-//
-//    @POST
-//    @Path("getOwnerByEmployeeIdAndCompanyId")
-//    fun getOwnerByEmployeeIdAndCompanyId(employeeId: String, companyId: Long): Response {
-//        val owner = ownerDao.getOwnerByEmployeeIdAndCompanyId(employeeId,companyId)
-//
-//        if (owner != null)
-//            return Response.ok(owner).build()
-//
-//        return Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
-//    }
+    @GET
+    @Path("getOwnerByPetId/{petId}/companyId/{companyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    fun getOwnerByPetId(
+        @PathParam("petId") petId: Long,
+        @PathParam("companyId") companyId: Long
+    ): Response {
+        val owner = ownerService.getOwnerByPetId(petId, companyId)
+
+        return if (owner != null) {
+            Response.ok(owner).build()
+        } else {
+            Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
+        }
+    }
+
+    @GET
+    @Path("getOwnerByEmployeeId/{employeeId}/CompanyId/{companyId}")
+    fun getOwnerByEmployeeIdAndCompanyId(
+        @PathParam("employeeId") employeeId: String,
+        @PathParam("companyId") companyId: Long
+    ): Response {
+        val owner = ownerService.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId)
+
+        return if (owner != null) {
+            Response.ok(owner).build()
+        } else {
+            Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
+        }
+    }
 }
