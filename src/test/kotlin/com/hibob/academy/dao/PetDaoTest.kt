@@ -14,8 +14,8 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     private val ownerId = 123L
     private val dao = PetDao(sql)
     val pet = PetTable.instance
-    private val petWithoutOwner = PetData(34,"George",LocalDate.now(), companyId, PetType.CAT, null)
-    private val waffle = PetData(-2,"Waffle",LocalDate.now(), companyId, PetType.DOG, ownerId)
+    private val petWithoutOwner = Pet("George",PetType.CAT,LocalDate.now(), companyId, null)
+    private val waffle = Pet("Waffle",PetType.DOG, LocalDate.now(), companyId, ownerId)
 
 
     @BeforeEach
@@ -27,7 +27,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `Insert new pet to DB And Checking the function that get all pets by type`() {
         // Insert the new pet into the database and get the serial id
-        val newPetSerialId = dao.insertNewPet(waffle.petName, waffle.dateOfArrival,waffle.petType,waffle.companyId,waffle.ownerId)
+        val newPetSerialId = dao.insertNewPet(waffle)
         assertTrue(newPetSerialId != -1L, "Test failed: Pet not added successfully!")
 
         //Get all pets by the type -->DOG
@@ -40,7 +40,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `Update pet owner id if the pet has no owner`(){
         // Step 1: Insert a new pet without an owner
-        val newPetSerialId = dao.insertNewPet(petWithoutOwner.petName, petWithoutOwner.dateOfArrival,petWithoutOwner.petType,petWithoutOwner.companyId,petWithoutOwner.ownerId)
+        val newPetSerialId = dao.insertNewPet(petWithoutOwner)
 
         // Step 2: Update the pet's ownerId
         assertEquals(1, dao.updatePetOwnerId(newPetSerialId, ownerId, companyId), "Test failed: Update pet owner id failed!")
@@ -59,8 +59,8 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `test GetAllPets function`() {
         // Insert two pets for the same company
-        val pet1Id = dao.insertNewPet("Waffle", LocalDate.now(), PetType.DOG, companyId, null)
-        val pet2Id = dao.insertNewPet("Mittens", LocalDate.now(), PetType.CAT, companyId, 5L)
+        val pet1Id = dao.insertNewPet(Pet("Waffle",PetType.DOG, LocalDate.now(), companyId, null))
+        val pet2Id = dao.insertNewPet(Pet("Mittens",PetType.CAT, LocalDate.now(), companyId, 5L))
 
         // Get all pets for the company
         val pets = dao.getAllPets(companyId)

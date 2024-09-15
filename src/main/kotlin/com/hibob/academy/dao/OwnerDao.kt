@@ -3,10 +3,12 @@ package com.hibob.academy.dao
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.jooq.Record
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
 
-@Repository
-class OwnerDao(private val sql: DSLContext) {
+@Component
+class OwnerDao @Autowired constructor(private val sql: DSLContext) {
     private val owner = OwnerTable.instance
     private val pet = PetTable.instance
 
@@ -46,11 +48,11 @@ class OwnerDao(private val sql: DSLContext) {
     }
 
     //Create a new function in the DAO file that create a new owner record (if it doesn’t exist already).
-    fun insertNewOwner(ownerName: String, employeeId: String, companyId: Long): Long{
+    fun insertNewOwner(newOwner: Owner): Long{
         return sql.insertInto(owner)
-            .set(owner.ownerName, ownerName)
-            .set(owner.employeeId,employeeId)
-            .set(owner.companyId, companyId)
+            .set(owner.ownerName, newOwner.ownerName)
+            .set(owner.employeeId,newOwner.employeeId)
+            .set(owner.companyId, newOwner.companyId)
             .onConflict(owner.companyId, owner.employeeId)
             .doNothing()
             .returning(owner.id)  // Return the generated ID after insertion

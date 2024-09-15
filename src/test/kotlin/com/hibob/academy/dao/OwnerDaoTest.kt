@@ -12,7 +12,7 @@ import java.time.LocalDate
 @BobDbTest
 class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
     val owner = OwnerTable.instance
-    private val ownerRon = OwnerData(123,"Ron Azar", "314444444", 9)
+    private val newOwner=  Owner("Ron", "1234578", 9)
     private val companyId = 9L
     private val dao = OwnerDao(sql)
 
@@ -30,16 +30,15 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
     }
 
 
-
     @Test
     fun `Insert new owner to DB`() {
         // Insert the new owner into the database
-        dao.insertNewOwner(ownerRon.ownerName, ownerRon.employeeId, ownerRon.companyId)
+        dao.insertNewOwner(newOwner)
 
         // Fetch all owners from the database
         val owners = dao.getAllOwners(companyId)
 
-        val addedOwner = dao.getOwnerByEmployeeIdAndCompanyId(ownerRon.employeeId, ownerRon.companyId)
+        val addedOwner = dao.getOwnerByEmployeeIdAndCompanyId(newOwner.employeeId, newOwner.companyId)
 
         // Verify that the owner has been added by checking if ownerRon is in the list of all owners
         assertTrue(addedOwner in owners, "Test failed: Owner should have been added to the database")
@@ -47,16 +46,16 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
 
     @Test
     fun `Get owner details by pet Id and owner Id`(){
-        dao.insertNewOwner(ownerRon.ownerName, ownerRon.employeeId, ownerRon.companyId)
-        val addedOwner = dao.getOwnerByEmployeeIdAndCompanyId(ownerRon.employeeId, ownerRon.companyId)
+        dao.insertNewOwner(newOwner)
+        val addedOwner = dao.getOwnerByEmployeeIdAndCompanyId(newOwner.employeeId, newOwner.companyId)
 
         //Check if the ownerId was found and not null
         assertNotNull(addedOwner?.ownerId, "Test failed: The owner was not added to the database.")
 
-        val pet = PetData(-2,"Waffle" , LocalDate.now(), companyId, PetType.DOG, addedOwner!!.ownerId)
+        val pet = Pet("Waffle" ,PetType.DOG, LocalDate.now(), companyId, addedOwner!!.ownerId)
 
         // Step 5: Insert the new pet into the database
-        val newPetSerialId = daoPet.insertNewPet(pet.petName, pet.dateOfArrival,pet.petType,pet.companyId,pet.ownerId)
+        val newPetSerialId = daoPet.insertNewPet(pet)
         assertTrue(newPetSerialId != -1L, "Test failed: Pet not added successfully!")
 
         // Step 6: Fetch the owner's details using the petId

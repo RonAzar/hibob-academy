@@ -1,5 +1,6 @@
 package com.hibob.academy.resource
 
+import com.hibob.academy.dao.Owner
 import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 @Path("/api/ron/azar/owner/")  // Defines the base URL path that this controller will handle
 @Produces(MediaType.APPLICATION_JSON)  // Specifies that the responses produced by this controller will be in JSON format
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
-class OwnerResource @Autowired constructor(private val ownerService: OwnerService){
+class OwnerResource (private val ownerService: OwnerService){
 
 //    @POST
 //    @Path("getAllOwners")
@@ -35,17 +36,22 @@ class OwnerResource @Autowired constructor(private val ownerService: OwnerServic
 //        return Response.ok(owners).build()
 //    }
 
+
     @POST
     @Path("insertNewOwner")
-    fun insertNewOwner(@RequestBody owner: OwnerService.Owner): Response {
-        // Insert the new owner (if it doesn't exist) using the DAO function
-        val insertOwnerSerialId = ownerService.insertOwner(owner.ownerName, owner.employeeId, owner.companyId)
-
-        // Check if the owner was inserted or already existed
-        return if (insertOwnerSerialId > 0L) {
-            Response.status(Response.Status.CREATED).entity("Owner successfully inserted").build()
-        } else {
-            Response.status(Response.Status.OK).entity("Owner already exists").build()
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    fun insertNewOwner(newOwner: Owner): Response {
+        return try {
+            val insertOwnerSerialId = ownerService.insertOwner(newOwner)
+            if (insertOwnerSerialId > 0L) {
+                Response.status(Response.Status.CREATED).entity("Owner successfully inserted").build()
+            } else {
+                Response.status(Response.Status.OK).entity("Owner already exists").build()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error: ${e.message}").build()
         }
     }
 
