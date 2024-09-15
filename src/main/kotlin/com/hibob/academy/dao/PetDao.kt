@@ -4,7 +4,6 @@ import org.jooq.Record
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 
 @Repository
 class PetDao(private val sql: DSLContext) {
@@ -71,7 +70,7 @@ fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): Int {
             .set(pet.companyId, newPet.companyId)
             .set(pet.ownerId, newPet.ownerId)
             .returning(pet.id)  // Return the generated ID after insertion
-            .fetchOne()         // Fetch the newly created row
-            ?.get(pet.id) ?: -1    // Extract the ID from the row
+            .fetchOne()!!  // Force unwrap, will throw NPE if null
+            .get(pet.id)  // Extract the ID from the row
     }
 }
