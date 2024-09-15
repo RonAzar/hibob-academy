@@ -19,8 +19,6 @@ class OwnerResource @Autowired constructor(private val sql: DSLContext){
 
     @POST
     @Path("getAllOwners")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     fun getAllOwners(request: CompanyRequest): Response {
         // Check if companyId is null or invalid (for example, less than 1)
         if (request.companyId <= 0) {
@@ -51,5 +49,27 @@ class OwnerResource @Autowired constructor(private val sql: DSLContext){
         } else {
             Response.status(Response.Status.OK).entity("Owner already exists").build()
         }
+    }
+
+    @POST
+    @Path("getOwnerByPetId")
+    fun getOwnerByPetId(petId: Long, companyId: Long): Response {
+        val owner = dao.getOwnerByPetId(petId,companyId)
+
+        if (owner != null)
+            return Response.ok(owner).build()
+
+        return Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
+    }
+
+    @POST
+    @Path("getOwnerByEmployeeIdAndCompanyId")
+    fun getOwnerByEmployeeIdAndCompanyId(employeeId: String, companyId: Long): Response {
+        val owner = dao.getOwnerByEmployeeIdAndCompanyId(employeeId,companyId)
+
+        if (owner != null)
+            return Response.ok(owner).build()
+
+        return Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
     }
 }
