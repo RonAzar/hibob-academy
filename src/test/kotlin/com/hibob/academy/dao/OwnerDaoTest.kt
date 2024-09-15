@@ -65,4 +65,34 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext)  {
         assertNotNull(fetchedOwner, "Test failed: No owner found for the given pet.")
         assertEquals(fetchedOwner,addedOwner, "Test failed: No owner found for the given pet.")
     }
+
+    @Test
+    fun `Insert existing owner does not create duplicate`() {
+        // Insert the owner once
+        val firstInsertId = dao.insertNewOwner(newOwner)
+        assertTrue(firstInsertId != -1L, "Test failed: The first owner insertion failed.")
+
+        // Attempt to insert the same owner again
+        val secondInsertId = dao.insertNewOwner(newOwner)
+
+        // Check that the second insertion does not create a new record
+        assertTrue(secondInsertId == -1L, "Test failed: Duplicate owner should not be created.")
+    }
+
+    @Test
+    fun `Get owner by non-existent employeeId and companyId`() {
+        val nonExistentOwner = dao.getOwnerByEmployeeIdAndCompanyId("nonExistentEmployeeId", companyId)
+
+        // Assert that the result is null
+        assertNull(nonExistentOwner, "Test failed: Non-existent owner should return null.")
+    }
+
+    @Test
+    fun `Get owner by invalid petId and companyId`() {
+        // Try to fetch owner using invalid petId
+        val fetchedOwner = dao.getOwnerByPetId(-1L, companyId)
+
+        // Assert that the result is null
+        assertNull(fetchedOwner, "Test failed: Invalid petId should return null.")
+    }
 }
