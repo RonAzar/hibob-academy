@@ -55,7 +55,7 @@ fun checkIfCustomIsValid(custom: Any):Boolean {
 //   * in case of credit card need to validate the expiryDate is after the current date + limit is bigger than the total we need to pay and we allow to use only  VISA or MASTERCARD
 //   * in case of payPal validate we hae @
 ///  * the return value of this function, should be a data class with employee id, status (success or FAILURE) and total called Check
-fun checkout(cart: Cart,payment: Payment):Check{
+fun checkout(cart: Cart,payment: Payment): Check{
     val total = cart.products
         .filter { product -> checkIfCustomIsValid(product.custom) }
         .sumOf { product -> product.price }
