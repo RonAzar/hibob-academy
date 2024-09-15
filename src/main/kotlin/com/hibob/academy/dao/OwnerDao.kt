@@ -26,10 +26,10 @@ class OwnerDao(private val sql: DSLContext) {
     }
 
 //    Add a new API that get pet id and  return the owner’s information.
-    fun getOwnerByPetId(petId: Long, companyId: Long): OwnerData?{
-        return sql.select(owner.id, owner.ownerName,owner.employeeId,owner.companyId)
+    fun getOwnerByPetId(petId: Long, companyId: Long): OwnerData? {
+        return sql.select(owner.id, owner.ownerName, owner.employeeId, owner.companyId)
             .from(pet)
-            .rightJoin(owner).on(pet.ownerId.eq(owner.id))
+            .leftJoin(owner).on(pet.ownerId.eq(owner.id))  // Left join to include pets without an owner
             .where(pet.id.eq(petId))
             .and(pet.companyId.eq(companyId))
             .fetchOne(ownerDataMapper)  // Fetch a single record
