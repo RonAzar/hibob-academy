@@ -1,4 +1,4 @@
-package lambda.yael
+package com.hibob.academy.yael
 
 import java.time.LocalDate
 
@@ -14,7 +14,7 @@ fun main13() {
 }
 
 //2. Initiate the variable movie in line 18 with the function createGoodMovie()
-val createGoodMovie :() -> SpidermanNoWayHome = { SpidermanNoWayHome()}
+val createGoodMovie :() -> SpidermanNoWayHome = { SpidermanNoWayHome() }
 
 fun printSuccessMessage(success: Boolean) {
     if (success) {

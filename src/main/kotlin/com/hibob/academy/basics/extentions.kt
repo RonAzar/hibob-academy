@@ -1,4 +1,4 @@
-package com.hibob.KotlinBasics
+package com.hibob.academy.basics
 //Q1
 fun List<Int>.sum():Int{
     var result = 0

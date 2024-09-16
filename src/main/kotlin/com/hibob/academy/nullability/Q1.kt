@@ -1,4 +1,4 @@
-package NullAbilityUpdated.Keren
+package com.hibob.academy.nullability
 
 /**
  * Modify the main function to print each user's email safely.

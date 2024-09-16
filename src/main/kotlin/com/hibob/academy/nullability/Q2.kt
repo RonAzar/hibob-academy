@@ -1,4 +1,4 @@
-package NullAbilityUpdated.Keren
+package com.hibob.academy.nullability
 /**
  * Modify the main function to calculate and print the sum of all non-null integers in the list numbers.
  * Use safe calls and/or the Elvis operator where appropriate.

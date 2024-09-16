@@ -1,4 +1,4 @@
-package NullAbilityUpdated.Keren
+package com.hibob.academy.nullability
 /**
  * Write an extension function nullSafeToUpper() for String? that converts the string
  * to uppercase if it is not null, or returns "NO TEXT PROVIDED" if it is null.

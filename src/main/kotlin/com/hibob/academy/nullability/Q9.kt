@@ -1,4 +1,4 @@
-package NullAbilityUpdated.Keren
+package com.hibob.academy.nullability
 
 data class DepartmentData(val name: String?, val manager: EmployeeData?)
 data class EmployeeData(val name: String?, val contactInfo: Contact?)

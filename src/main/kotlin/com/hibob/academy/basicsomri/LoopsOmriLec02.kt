@@ -1,4 +1,4 @@
-package Omri.Basics
+package com.hibob.academy.basicsomri
 
 //Omri Solution
 fun isValidIdentifier(s: String): Boolean {
