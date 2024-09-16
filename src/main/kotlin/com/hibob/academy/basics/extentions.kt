@@ -1,4 +1,4 @@
-package com.hibob.KotlinBasics
+package com.hibob.academy.basics
 //Q1
 fun List<Int>.sum():Int{
     var result = 0
@@ -8,7 +8,7 @@ fun List<Int>.sum():Int{
     return result
 }
 
-fun main(args:Array<String>){
+fun main12(args:Array<String>){
     val sum = listOf(1,2,3).sum()
     println(sum) //6
     println(3 toPowerOf -2)

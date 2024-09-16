@@ -1,4 +1,4 @@
-package Properties.Tamir
+package com.hibob.academy.properties
 import java.time.DayOfWeek
 
 //1. create class called Store that initlize by day and list of products
