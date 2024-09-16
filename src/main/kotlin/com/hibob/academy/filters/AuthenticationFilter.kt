@@ -25,7 +25,7 @@ class AuthenticationFilter : ContainerRequestFilter {
         val cookie = requestContext.cookies[COOKIE_NAME]?.value
 
         try {
-            val jwtClaims = verify(cookie)  // If claims are null, throw an exception
+            val jwtClaims = verify(cookie) ?: throw Exception("Invalid token")
         } catch (e: Exception) {
             // Catch any exceptions (including null or verification failure) and abort with UNAUTHORIZED status
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
