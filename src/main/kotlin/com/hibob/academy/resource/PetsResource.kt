@@ -22,11 +22,12 @@ class PetsResource (private val petService: PetService){
     @GET
     @Path("getAllPetsByType/{petType}/companyId/{companyId}")
     fun getAllPetsByType(@PathParam("petType") petType: PetType, @PathParam("companyId") companyId: Long): Response {
-        val petsList = petService.getAllPetsByType(petType, companyId)
-        return if (petsList.isEmpty())
-            Response.noContent().build()
-        else
-            Response.ok(petsList).build()
+        return try {
+            val pet = petService.getAllPetsByType(petType, companyId)
+            Response.ok(pet).build()
+        } catch (e: IllegalArgumentException) {
+            Response.status(Response.Status.NOT_FOUND).entity(e.message).build()
+        }
     }
 
     @GET

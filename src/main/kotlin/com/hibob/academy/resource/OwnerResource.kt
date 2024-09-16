@@ -19,13 +19,10 @@ class OwnerResource (private val ownerService: OwnerService){
         if (companyId <= 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid companyId provided").build()
         }
-
         val owners = ownerService.getAllOwners(companyId)
-
         if (owners.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("No owners found for the given company").build()
         }
-
         return Response.ok(owners).build()
     }
 
@@ -68,12 +65,11 @@ class OwnerResource (private val ownerService: OwnerService){
         @PathParam("employeeId") employeeId: String,
         @PathParam("companyId") companyId: Long
     ): Response {
-        val owner = ownerService.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId)
-
-        return if (owner != null) {
+        return try {
+            val owner = ownerService.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId)
             Response.ok(owner).build()
-        } else {
-            Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
+        } catch (e: IllegalArgumentException) {
+            Response.status(Response.Status.NOT_FOUND).entity(e.message).build()
         }
     }
 }

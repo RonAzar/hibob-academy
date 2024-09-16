@@ -1,135 +1,127 @@
-package com.hibob.academy.service
+package com.hibob.academy.unittests
 
 import com.hibob.academy.dao.Pet
 import com.hibob.academy.dao.PetDao
 import com.hibob.academy.dao.PetData
 import com.hibob.academy.dao.PetType
-import org.hamcrest.CoreMatchers.any
+import com.hibob.academy.service.PetService
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.junit.jupiter.api.assertThrows
+import org.mockito.kotlin.*
 import java.time.LocalDate
 
-class PetServiceTest{
-    @Mock
-    private lateinit var petDao: PetDao
+class PetServiceTest {
 
-    @InjectMocks
-    private lateinit var petService: PetService
+    private val petId: Long = 123
+    private val companyId: Long = 9
+    private val ownerId: Long = 456
+    private val pet = PetData(petId, "Waffle", LocalDate.now(), companyId, PetType.DOG, null)
 
-    private val companyId = 9L
-    private val petId = 1L
-    private val ownerId = 123L
-    private val petData = PetData(petId, "Waffle", LocalDate.now(), companyId, PetType.DOG, null)
+    private val petDao = mock<PetDao>()
+    private val petService = PetService(petDao)
 
-    @BeforeEach
-    fun setUp() {
-        MockitoAnnotations.openMocks(this)
+    @Test
+    fun `Test getPetById -- Pet not found`() {
+        whenever(petDao.getPetById(petId, companyId)).thenReturn(null)
+
+        val errorMessage = assertThrows<IllegalArgumentException> {
+            petService.getPetById(petId, companyId)
+        }
+
+        assertEquals("Pet not found for the given ID", errorMessage.message)
     }
 
     @Test
-    fun `getAllPets should return list of pets`() {
-        // Arrange
-        whenever(petDao.getAllPets(companyId)).thenReturn(listOf(petData))
+    fun `Test getPetById -- Pet found`() {
+        whenever(petDao.getPetById(petId, companyId)).thenReturn(pet)
 
-        // Act
+        val result = petService.getPetById(petId, companyId)
+
+        assertNotNull(result)
+        assertEquals(petId, result?.petId)
+        assertEquals("Waffle", result?.petName)
+    }
+
+    @Test
+    fun `Test insertNewPet -- Pet inserted successfully`() {
+        val newPet = Pet("Waffle", PetType.DOG, LocalDate.now(), companyId, null)
+        whenever(petDao.insertNewPet(newPet)).thenReturn(10L)
+
+        val result = petService.insertNewPet(newPet)
+
+        assertEquals(10L, result)
+    }
+
+    @Test
+    fun `Test updatePetOwnerId -- Pet not found`() {
+        whenever(petDao.getPetById(petId, companyId)).thenReturn(null)
+
+        val errorMessage = assertThrows<IllegalArgumentException> {
+            petService.updatePetOwnerId(petId, ownerId, companyId)
+        }
+
+        assertEquals("Pet not found for the given ID", errorMessage.message)
+        verify(petDao, never()).updatePetOwnerId(any(), any(), any())
+    }
+
+    @Test
+    fun `Test updatePetOwnerId -- Pet already has an owner`() {
+        val petWithOwner = pet.copy(ownerId = ownerId)
+        whenever(petDao.getPetById(petId, companyId)).thenReturn(petWithOwner)
+
+        val errorMessage = assertThrows<IllegalArgumentException> {
+            petService.updatePetOwnerId(petId, ownerId, companyId)
+        }
+
+        assertEquals("Pet already has an owner", errorMessage.message)
+        verify(petDao, never()).updatePetOwnerId(any(), any(), any())
+    }
+
+    @Test
+    fun `Test updatePetOwnerId -- Owner ID updated successfully`() {
+        // Arrange
+        val petWithoutOwner = pet.copy(ownerId = null)
+        whenever(petDao.getPetById(petId, companyId)).thenReturn(petWithoutOwner)
+        whenever(petDao.updatePetOwnerId(petId, ownerId, companyId)).thenReturn(1)
+
+        val result = petService.updatePetOwnerId(petId, ownerId, companyId)
+
+        assertEquals("Pet owner ID updated successfully", result)
+    }
+
+    @Test
+    fun `Test updatePetOwnerId -- Failed to update owner ID`() {
+        val petWithoutOwner = pet.copy(ownerId = null)
+        whenever(petDao.getPetById(petId, companyId)).thenReturn(petWithoutOwner)
+        whenever(petDao.updatePetOwnerId(petId, ownerId, companyId)).thenReturn(0)
+
+        val errorMessage = assertThrows<IllegalArgumentException> {
+            petService.updatePetOwnerId(petId, ownerId, companyId)
+        }
+
+        assertEquals("Failed to update pet's owner. The pet may already have an owner.", errorMessage.message)
+    }
+
+    @Test
+    fun `Test getAllPets -- Return list of pets`() {
+        whenever(petDao.getAllPets(companyId)).thenReturn(listOf(pet))
+
         val result = petService.getAllPets(companyId)
 
-        // Assert
         assertNotNull(result)
         assertEquals(1, result.size)
         assertEquals("Waffle", result[0].petName)
-        verify(petDao, times(1)).getAllPets(companyId)
     }
 
     @Test
-    fun `insertNewPet should return new pet ID`() {
-        // Arrange
-        whenever(petDao.insertNewPet(org.mockito.kotlin.any(Pet))).thenReturn(10L)
+    fun `Test getAllPetsByType -- Return list of pets by type`() {
+        whenever(petDao.getAllPetsByType(PetType.DOG, companyId)).thenReturn(listOf(pet))
 
-        // Act
-        val newPetId = petService.insertNewPet(Pet("Waffle", PetType.DOG, LocalDate.now(), companyId, null))
+        val result = petService.getAllPetsByType(PetType.DOG, companyId)
 
-        // Assert
-        assertEquals(10L, newPetId)
-        verify(petDao, times(1)).insertNewPet(any(Pet::class.java))
-    }
-
-    @Test
-    fun `getPetById should return pet when pet exists`() {
-        // Arrange
-        `when`(petDao.getPetById(petId, companyId)).thenReturn(petData)
-
-        // Act
-        val result = petService.getPetById(petId, companyId)
-
-        // Assert
         assertNotNull(result)
-        assertEquals("Waffle", result!!.petName)
-        verify(petDao, times(1)).getPetById(petId, companyId)
-    }
-
-    @Test
-    fun `getPetById should throw exception when pet does not exist`() {
-        // Arrange
-        `when`(petDao.getPetById(petId, companyId)).thenReturn(null)
-
-        // Act & Assert
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            petService.getPetById(petId, companyId)
-        }
-        assertEquals("Pet not found for the given ID", exception.message)
-        verify(petDao, times(1)).getPetById(petId, companyId)
-    }
-
-    @Test
-    fun `updatePetOwnerId should update owner ID successfully`() {
-        // Arrange
-        val petWithoutOwner = petData.copy(ownerId = null)
-        `when`(petDao.getPetById(petId, companyId)).thenReturn(petWithoutOwner)
-        `when`(petDao.updatePetOwnerId(petId, ownerId, companyId)).thenReturn(1)
-
-        // Act
-        val result = petService.updatePetOwnerId(petId, ownerId, companyId)
-
-        // Assert
-        assertEquals("Pet owner ID updated successfully", result)
-        verify(petDao, times(1)).getPetById(petId, companyId)
-        verify(petDao, times(1)).updatePetOwnerId(petId, ownerId, companyId)
-    }
-
-    @Test
-    fun `updatePetOwnerId should throw exception if pet already has an owner`() {
-        // Arrange
-        val petWithOwner = petData.copy(ownerId = 45L)
-        `when`(petDao.getPetById(petId, companyId)).thenReturn(petWithOwner)
-
-        // Act & Assert
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            petService.updatePetOwnerId(petId, ownerId, companyId)
-        }
-        assertEquals("Pet already has an owner", exception.message)
-        verify(petDao, times(1)).getPetById(petId, companyId)
-        verify(petDao, never()).updatePetOwnerId(petId, ownerId, companyId)
-    }
-
-    @Test
-    fun `updatePetOwnerId should throw exception if pet is not found`() {
-        // Arrange
-        `when`(petDao.getPetById(petId, companyId)).thenReturn(null)
-
-        // Act & Assert
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            petService.updatePetOwnerId(petId, ownerId, companyId)
-        }
-        assertEquals("Pet not found for the given ID", exception.message)
-        verify(petDao, times(1)).getPetById(petId, companyId)
-        verify(petDao, never()).updatePetOwnerId(petId, ownerId, companyId)
+        assertEquals(1, result.size)
+        assertEquals(PetType.DOG, result[0].petType)
     }
 }
