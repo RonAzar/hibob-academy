@@ -1,4 +1,4 @@
-package NullAbilityUpdated.Keren
+package com.hibob.academy.nullability
 
 /**
  *
@@ -47,6 +47,6 @@ fun List<Customer?>.printAllCustomersDetails(){
                 }
             }
         }
-        println(Customer(costumerName,Account(accountId,AccountDetails(accountType,accountBalance))))
+        println(Customer(costumerName, Account(accountId, AccountDetails(accountType,accountBalance))))
     }
 }
