@@ -1,5 +1,5 @@
 package com.hibob.academy.tamir
-fun main() {
+fun main14() {
     //Q1
     printHelloWorld()
     //Q2
