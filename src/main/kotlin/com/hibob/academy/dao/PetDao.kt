@@ -1,8 +1,11 @@
 package com.hibob.academy.dao
 
+import jakarta.ws.rs.NotFoundException
 import org.jooq.Record
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
+import org.jooq.impl.DSL
+import org.jooq.impl.DSL.count
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -18,6 +21,26 @@ class PetDao(private val sql: DSLContext) {
             PetType.valueOf(record[pet.petType].uppercase()),  // Convert string to enum (assuming your DB stores it as a string)
             record[pet.ownerId]
         )
+    }
+
+    fun getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
+        return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
+            .from(pet)
+            .where(pet.ownerId.eq(ownerId))
+            .and(pet.companyId.eq(companyId))
+            .fetch(petDataMapper)
+    }
+
+    fun petTypesAmount(): Map<PetType, Long> {
+        val count = DSL.count(pet.id)
+        return sql.select(pet.petType, count)
+            .from(pet)
+            .where(pet.companyId.eq(9L))
+            .groupBy(pet.petType)
+            .fetch()
+            .associate { record ->
+                PetType.valueOf(record[pet.petType] as String) to (record[count].toLong())
+            }
     }
 
     //Create a function that retrieve all the pets by a given type (represented by enum) and return their name, dateOfArrival and company id
