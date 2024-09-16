@@ -7,7 +7,7 @@ package NullAbilityUpdated.Keren
  */
 data class User(val name: String?, val email: String?)
 
-fun main() {
+fun main2() {
     val user1: User = User("Alice", null)
     val user2: User = User(null, "alice@example.com")
 

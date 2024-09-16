@@ -1,5 +1,5 @@
 package Basics.Tamir
-fun main() {
+fun main1() {
     //Q1
     printHelloWorld()
     //Q2

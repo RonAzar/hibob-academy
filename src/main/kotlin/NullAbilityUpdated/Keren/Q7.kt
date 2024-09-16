@@ -24,7 +24,7 @@ fun initializeNullableCustomers(): List<Customer?> {
     )
 }
 
-fun main() {
+fun main8() {
     val customers = initializeNullableCustomers()
 
     // Task: Print each customer's name, account ID, and account balance. Handle all null cases appropriately.

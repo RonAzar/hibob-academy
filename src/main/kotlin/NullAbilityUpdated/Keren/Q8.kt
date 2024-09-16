@@ -31,7 +31,7 @@ fun initializeCompany(): Company {
     )
 }
 
-fun main() {
+fun main9() {
     val company = initializeCompany()
 
     // Task: Print detailed information about each department, team, and team members, handling all null values appropriately.
