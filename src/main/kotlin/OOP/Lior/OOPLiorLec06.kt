@@ -1,5 +1,4 @@
 package OOP.Lior
-
 //- Add a class Participant.kt - each participant has a name (Name), email. Create getter and setter
 data class Participant(val name: String, val email: String)
 
