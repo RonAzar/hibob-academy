@@ -2,7 +2,7 @@ package com.hibob.academy.omri
 import org.springframework.cglib.core.Predicate
 import kotlin.system.exitProcess
 
-fun main(args: Array<String>) {
+fun main14(args: Array<String>) {
     ex1()
     ex2()
     ex3()

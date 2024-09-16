@@ -28,7 +28,7 @@ fun isValidIdentifier(s: String): Boolean {
 //}
 
 
-fun main(args:Array<String>){
+fun main11(args:Array<String>){
     println(isValidIdentifier("name"))//true
     println(isValidIdentifier("_name"))//true
     println(isValidIdentifier("_12"))//true

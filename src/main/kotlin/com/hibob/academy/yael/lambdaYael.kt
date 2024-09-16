@@ -2,7 +2,7 @@ package com.hibob.academy.yael
 
 import java.time.LocalDate
 
-fun main() {
+fun main13() {
     //2. Initiate the variable movie in line 18 with the function createGoodMovie()
     val movie = createGoodMovie()
     val runner = Runner(movie)

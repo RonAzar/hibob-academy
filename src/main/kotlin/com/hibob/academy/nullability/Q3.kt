@@ -5,7 +5,7 @@ package com.hibob.academy.nullability
  * Apply this function in the main function to handle the variable text.
  *
  **/
-fun main() {
+fun main4() {
     val text: String? = null
     // Task: Create and use an extension function to print text in uppercase if it's not null, or "NO TEXT PROVIDED" if it is null.
     println(text.printTextInUppercase())
