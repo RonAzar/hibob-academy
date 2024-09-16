@@ -19,53 +19,60 @@ import org.springframework.stereotype.Controller
 @Produces(MediaType.APPLICATION_JSON)  // Specifies that the responses produced by this controller will be in JSON format
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
 class PetsResource (private val petService: PetService){
-
     @GET
     @Path("getAllPetsByType/{petType}/companyId/{companyId}")
-    fun getAllPetsByType(@PathParam("petType")petType: PetType,@PathParam("companyId") companyId: Long): Response {
+    fun getAllPetsByType(@PathParam("petType") petType: PetType, @PathParam("companyId") companyId: Long): Response {
         val petsList = petService.getAllPetsByType(petType, companyId)
-        if (petsList.isEmpty())
-            return Response.noContent().build()
-        return Response.ok(petsList).build()
+        return if (petsList.isEmpty())
+            Response.noContent().build()
+        else
+            Response.ok(petsList).build()
     }
 
     @GET
     @Path("getAllPets/{companyId}")
     fun getAllPets(@PathParam("companyId") companyId: Long): Response {
         val petsList = petService.getAllPets(companyId)
-        if (petsList.isEmpty())
-            return Response.noContent().build()
-        return Response.ok(petsList).build()
+        return if (petsList.isEmpty())
+            Response.noContent().build()
+        else
+            Response.ok(petsList).build()
     }
 
     @GET
     @Path("getPetById/{petId}/companyId/{companyId}")
-    fun getPetById(@PathParam("petId")petId: Long,@PathParam("companyId")companyId: Long): Response {
-        val pet = petService.getPetById(petId, companyId)
-
-        pet?.let {
-            return Response.ok(pet).build()
-        }?: return Response.status(Response.Status.NOT_FOUND).build()
+    fun getPetById(@PathParam("petId") petId: Long, @PathParam("companyId") companyId: Long): Response {
+        return try {
+            val pet = petService.getPetById(petId, companyId)
+            Response.ok(pet).build()
+        } catch (e: IllegalArgumentException) {
+            Response.status(Response.Status.NOT_FOUND).entity(e.message).build()
+        }
     }
 
     @POST
     @Path("insertNewPet")
     fun insertNewPet(newPet: Pet): Response {
         val insertPetSerialId = petService.insertNewPet(newPet)
-        if (insertPetSerialId < 0L){
-            return Response.status(Response.Status.OK).entity("Pet already exists").build()
+        return if (insertPetSerialId < 0L) {
+            Response.status(Response.Status.OK).entity("Pet already exists").build()
+        } else {
+            Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
         }
-        return Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
     }
 
     @PUT
     @Path("updatePetOwnerId/{petId}/newOwnerId/{newOwnerId}/companyId/{companyId}")
-    fun updatePetOwnerId(@PathParam("petId")petId: Long,@PathParam("newOwnerId")newOwnerId: Long,@PathParam("companyId")companyId: Long): Response{
-        val rowEffect = petService.updatePetOwnerId(petId, newOwnerId, companyId)
-
-        if (rowEffect == 0){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Owner id not updated! This pet may already has an owner id").build()
+    fun updatePetOwnerId(
+        @PathParam("petId") petId: Long,
+        @PathParam("newOwnerId") newOwnerId: Long,
+        @PathParam("companyId") companyId: Long
+    ): Response {
+        return try {
+            val resultMessage = petService.updatePetOwnerId(petId, newOwnerId, companyId)
+            Response.ok(resultMessage).build()
+        } catch (e: IllegalArgumentException) {
+            Response.status(Response.Status.BAD_REQUEST).entity(e.message).build()
         }
-        return Response.ok("Pet owner id Updated successfully").build()
     }
 }
