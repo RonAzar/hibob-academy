@@ -4,7 +4,7 @@ import com.hibob.academy.utils.JooqTable
 
 class VaccineTable(tableName: String = "vaccine"): JooqTable(tableName){
     val id = createBigIntField("id")
-    val name = createBigIntField("name") // Nullable Long for ownerId
+    val name = createVarcharField("name") // Nullable Long for ownerId
 
     companion object{
         val  instance = VaccineTable()
@@ -14,8 +14,8 @@ class VaccineTable(tableName: String = "vaccine"): JooqTable(tableName){
 
 class VaccineToPetTable(tableName: String = "vaccineToPetTable"): JooqTable(tableName){
     val id = createBigIntField("id")
-    val petId = createVarcharField("pet_id")
-    val vaccinationDate = createBigIntField("vaccination_date")
+    val petId = createBigIntField("pet_id")
+    val vaccinationDate = createLocalDateField("vaccination_date")
 
     companion object{
         val instance = VaccineToPetTable()
