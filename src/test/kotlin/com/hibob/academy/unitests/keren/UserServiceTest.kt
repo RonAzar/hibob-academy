@@ -11,12 +11,8 @@ import org.mockito.kotlin.*
 class UserServiceTest{
     val token = "Waffle"
     val id: Long= 123
-    val name: String = "Ron Azar"
-    val email: String = "ron.azar@hibob.io"
-    val password: String ="12345"
-    val isEmailValid = true
 
-    private val user = User(id,name, email ,password, isEmailValid)
+    private val user = User(123,"Ron Azar", "ron.azar@hibob.io" ,"12345", true)
     private val userDao=  mock<UserDao>{}
     private val notificationService=  mock<NotificationService>{}
     private val emailVerificationService= mock<EmailVerificationService>{}
