@@ -1,4 +1,5 @@
-create table test_me(
+create table test_me
+(
     name text,
     size int
 )
