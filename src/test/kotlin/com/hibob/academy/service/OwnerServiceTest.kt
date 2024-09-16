@@ -10,7 +10,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
 class OwnerServiceTest{
-
     private val petId = 10L
     private val ownerId = 123L
     private val employeeId = "1234578"
