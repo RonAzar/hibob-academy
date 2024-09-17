@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 
 @BobDbTest
-class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
+class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
     private val companyId = 9L
     private val ownerId = 123L
     private val dao = PetDao(sql)
     val pet = PetTable.instance
-    private val petWithoutOwner = Pet("George",PetType.CAT,LocalDate.now(), companyId, null)
-    private val waffle = Pet("Waffle",PetType.DOG, LocalDate.now(), companyId, ownerId)
+    private val petWithoutOwner = PetRecord("George",PetType.CAT,LocalDate.now(), companyId, null)
+    private val waffle = PetRecord("Waffle",PetType.DOG, LocalDate.now(), companyId, ownerId)
 
 
     @BeforeEach
@@ -93,8 +93,8 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
     @Test
     fun `test GetAllPets function`() {
         // Insert two pets for the same company
-        val pet1Id = dao.insertNewPet(Pet("Waffle",PetType.DOG, LocalDate.now(), companyId, null))
-        val pet2Id = dao.insertNewPet(Pet("Mittens",PetType.CAT, LocalDate.now(), companyId, 5L))
+        val pet1Id = dao.insertNewPet(PetRecord("Waffle",PetType.DOG, LocalDate.now(), companyId, null))
+        val pet2Id = dao.insertNewPet(PetRecord("Mittens",PetType.CAT, LocalDate.now(), companyId, 5L))
 
         // Get all pets for the company
         val pets = dao.getAllPets(companyId)

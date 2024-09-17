@@ -5,7 +5,6 @@ import org.jooq.RecordMapper
 import org.jooq.Record
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Repository
 
 @Component
 class OwnerDao @Autowired constructor(private val sql: DSLContext) {
@@ -48,7 +47,7 @@ class OwnerDao @Autowired constructor(private val sql: DSLContext) {
     }
 
     //Create a new function in the DAO file that create a new owner record (if it doesn’t exist already).
-    fun insertNewOwner(newOwner: Owner): Long{
+    fun insertNewOwner(newOwner: OwnerRecord): Long{
         return sql.insertInto(owner)
             .set(owner.ownerName, newOwner.ownerName)
             .set(owner.employeeId,newOwner.employeeId)
