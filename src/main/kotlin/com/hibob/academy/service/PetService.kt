@@ -34,6 +34,7 @@ class PetService @Autowired constructor(
         // Retrieve the pet by ID and companyId
         val pet = petDao.getPetById(petId, companyId)
             ?: throw NoSuchElementException("Pet not found for the given ID")
+
         // Ensure the pet doesn't already have an owner
         if (pet.ownerId != null) {
             throw IllegalArgumentException("Pet already has an owner")
