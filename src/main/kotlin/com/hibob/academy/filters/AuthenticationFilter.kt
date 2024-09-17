@@ -13,6 +13,7 @@ import jakarta.ws.rs.ext.Provider
 @Component
 @Provider
 class AuthenticationFilter : ContainerRequestFilter {
+
     companion object {
         private const val LOGIN_PATH = "jwt/users/login"
         const val COOKIE_NAME = "ron_cookie_name"  // Replace with actual cookie name
@@ -21,24 +22,23 @@ class AuthenticationFilter : ContainerRequestFilter {
     override fun filter(requestContext: ContainerRequestContext) {
         if (requestContext.uriInfo.path == LOGIN_PATH) return
 
-        // Verify the JWT token from the cookie
         val cookie = requestContext.cookies[COOKIE_NAME]?.value
 
-        try {
-            val jwtClaims = verify(cookie) ?: throw Exception("Invalid token")
-        } catch (e: Exception) {
-            // Catch any exceptions (including null or verification failure) and abort with UNAUTHORIZED status
+        if (!verify(cookie)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
         }
     }
-    private val jwtParser = Jwts.parser().setSigningKey(SECRET_KEY)
 
-    fun verify(cookie: String?): Jws<Claims>? =
-        cookie?.let {
+    private val jwtParser = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build()
+
+    fun verify(cookie: String?): Boolean {
+        return cookie?.let {
             try {
                 jwtParser.parseClaimsJws(it)
+                true
             } catch (ex: Exception) {
-                null
+                false
             }
-        }
+        } ?: false
+    }
 }
