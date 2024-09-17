@@ -125,7 +125,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext)  {
         dao.insertNewPet(Pet("Mittens",PetType.CAT, LocalDate.now(), companyId, -5L))
         dao.insertNewPet(Pet("Gery",PetType.CAT, LocalDate.now(), companyId, -5L))
 
-        val petsMap = dao.petTypesAmount()
+        val petsMap = dao.petTypesAmount(companyId)
         assertNotNull(petsMap, "Test failed: Pet types count return an empty map")
         assertEquals(3, petsMap[PetType.DOG])
         assertEquals(2, petsMap[PetType.CAT])
