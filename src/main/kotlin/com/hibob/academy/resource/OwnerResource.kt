@@ -1,5 +1,4 @@
 package com.hibob.academy.resource
-
 import com.hibob.academy.dao.Owner
 import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
