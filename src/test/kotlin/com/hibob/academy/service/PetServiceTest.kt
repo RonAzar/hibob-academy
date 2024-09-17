@@ -1,7 +1,6 @@
-package com.hibob.academy.unittests
+package com.hibob.academy.service
 
 import com.hibob.academy.dao.*
-import com.hibob.academy.service.PetService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
