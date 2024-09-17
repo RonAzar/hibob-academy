@@ -1,14 +1,11 @@
 package com.hibob.academy.service
 
-import com.hibob.academy.dao.Pet
-import com.hibob.academy.dao.PetDao
-import com.hibob.academy.dao.PetData
-import com.hibob.academy.dao.PetType
+import com.hibob.academy.dao.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PetService @Autowired constructor(private val petDao: PetDao) {
+class PetService @Autowired constructor(private val petDao: PetDao, private val ownerDao: OwnerDao) {
     fun getAllPets(companyId: Long): List<PetData> {
         return petDao.getAllPets(companyId)
     }
@@ -44,5 +41,26 @@ class PetService @Autowired constructor(private val petDao: PetDao) {
         }
 
         return "Pet owner ID updated successfully"
+    }
+
+    fun  getPetsByOwnerId(ownerId: Long?, companyId: Long?): List<PetData> {
+        if (ownerId == null || ownerId == -1L) {
+            throw IllegalArgumentException("Owner does not exist!")
+        }
+        else if (companyId == null) {
+            throw IllegalArgumentException("Company id is null!")
+        }
+        if (ownerDao.getAllOwners(companyId).none { it.ownerId == ownerId }) {
+            throw IllegalArgumentException("Owner does not exist!")
+        }
+        val pets = petDao.getPetsByOwnerId(ownerId, companyId)
+        if (pets.isEmpty()) {
+            throw NoSuchElementException("This owner does not has any pets.")
+        }
+        return pets
+    }
+
+    fun petTypesAmount():  Map<PetType, Long>{
+        val petsMap = petDao.petTypesAmount()
     }
 }
