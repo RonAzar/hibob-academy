@@ -38,9 +38,9 @@ class PetDao(private val sql: DSLContext) {
             .where(pet.companyId.eq(9L))
             .groupBy(pet.petType)
             .fetch()
-            .associate { record ->
-                PetType.valueOf(record[pet.petType] as String) to (record[count].toLong())
-            }
+            .intoMap(
+                { record -> PetType.valueOf(record[pet.petType].toString())},
+                { record -> record[count].toLong()})
     }
 
     //Create a function that retrieve all the pets by a given type (represented by enum) and return their name, dateOfArrival and company id
