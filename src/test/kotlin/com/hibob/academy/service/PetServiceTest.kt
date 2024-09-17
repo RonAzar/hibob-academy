@@ -25,7 +25,7 @@ class PetServiceTest {
     fun `Test getPetById -- Pet not found`() {
         whenever(petDao.getPetById(petId, companyId)).thenReturn(null)
 
-        val errorMessage = assertThrows<IllegalArgumentException> {
+        val errorMessage = assertThrows<NoSuchElementException> {
             petService.getPetById(petId, companyId)
         }
 
@@ -57,7 +57,7 @@ class PetServiceTest {
     fun `Test updatePetOwnerId -- Pet not found`() {
         whenever(petDao.getPetById(petId, companyId)).thenReturn(null)
 
-        val errorMessage = assertThrows<IllegalArgumentException> {
+        val errorMessage = assertThrows<NoSuchElementException> {
             petService.updatePetOwnerId(petId, ownerId, companyId)
         }
 

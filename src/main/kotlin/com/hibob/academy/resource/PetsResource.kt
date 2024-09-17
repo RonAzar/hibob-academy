@@ -22,44 +22,29 @@ class PetsResource (private val petService: PetService){
     @GET
     @Path("getAllPetsByType/{petType}/companyId/{companyId}")
     fun getAllPetsByType(@PathParam("petType") petType: PetType, @PathParam("companyId") companyId: Long): Response {
-        return try {
-            val pet = petService.getAllPetsByType(petType, companyId)
-            Response.ok(pet).build()
-        } catch (e: IllegalArgumentException) {
-            Response.status(Response.Status.NOT_FOUND).entity(e.message).build()
-        }
+        val pet = petService.getAllPetsByType(petType, companyId)
+        return Response.ok(pet).build()
     }
 
     @GET
     @Path("getAllPets/{companyId}")
     fun getAllPets(@PathParam("companyId") companyId: Long): Response {
         val petsList = petService.getAllPets(companyId)
-        return if (petsList.isEmpty())
-            Response.noContent().build()
-        else
-            Response.ok(petsList).build()
+        return Response.ok(petsList).build()
     }
 
     @GET
     @Path("getPetById/{petId}/companyId/{companyId}")
     fun getPetById(@PathParam("petId") petId: Long, @PathParam("companyId") companyId: Long): Response {
-        return try {
-            val pet = petService.getPetById(petId, companyId)
-            Response.ok(pet).build()
-        } catch (e: IllegalArgumentException) {
-            Response.status(Response.Status.NOT_FOUND).entity(e.message).build()
-        }
+        val pet = petService.getPetById(petId, companyId)
+        return Response.ok(pet).build()
     }
 
     @POST
     @Path("insertNewPet")
     fun insertNewPet(newPet: Pet): Response {
-        val insertPetSerialId = petService.insertNewPet(newPet)
-        return if (insertPetSerialId < 0L) {
-            Response.status(Response.Status.OK).entity("Pet already exists").build()
-        } else {
-            Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
-        }
+        petService.insertNewPet(newPet)
+        return Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
     }
 
     @PUT
@@ -69,11 +54,7 @@ class PetsResource (private val petService: PetService){
         @PathParam("newOwnerId") newOwnerId: Long,
         @PathParam("companyId") companyId: Long
     ): Response {
-        return try {
-            val resultMessage = petService.updatePetOwnerId(petId, newOwnerId, companyId)
-            Response.ok(resultMessage).build()
-        } catch (e: IllegalArgumentException) {
-            Response.status(Response.Status.BAD_REQUEST).entity(e.message).build()
-        }
+        val resultMessage = petService.updatePetOwnerId(petId, newOwnerId, companyId)
+        return Response.ok(resultMessage).build()
     }
 }
