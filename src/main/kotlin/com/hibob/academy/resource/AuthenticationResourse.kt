@@ -16,7 +16,7 @@ data class User(val email: String,val name: String, val isAdmin: Boolean)
 
 @Controller
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/jwt/users")
+@Path("/api/ron/azar")
 class AuthenticationResourse(private val service: SessionService) {
 
     @Path("/login")
