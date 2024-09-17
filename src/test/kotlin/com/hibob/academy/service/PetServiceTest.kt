@@ -15,7 +15,8 @@ class PetServiceTest {
     private val pet = PetData(petId, "Waffle", LocalDate.now(), companyId, PetType.DOG, null)
 
     private val petDao = mock<PetDao>()
-    private val petService = PetService(petDao)
+    private val ownerDao = mock<OwnerDao>()
+    private val petService = PetService(petDao, ownerDao)
 
     @Test
     fun `Test getPetById -- Pet not found`() {
@@ -124,4 +125,76 @@ class PetServiceTest {
         assertEquals(1, result.size)
         assertEquals(PetType.DOG, result[0].petType)
     }
+
+    //SQL2 Service tests
+    @Test
+    fun `Test getPetsByOwnerId -- Owner ID is invalid`() {
+        val invalidOwnerId = -1L
+
+        val errorMessage = assertThrows<IllegalArgumentException> {
+            petService.getPetsByOwnerId(invalidOwnerId, companyId)
+        }
+
+        assertEquals("Owner does not exist invalid owner id!", errorMessage.message)
+    }
+
+    @Test
+    fun `Test getPetsByOwnerId -- Owner does not exist`() {
+        whenever(ownerDao.getAllOwners(companyId)).thenReturn(emptyList())
+
+        val errorMessage = assertThrows<NoSuchElementException> {
+            petService.getPetsByOwnerId(ownerId, companyId)
+        }
+
+        assertEquals("Owner does not exist!", errorMessage.message)
+    }
+
+    @Test
+    fun `Test getPetsByOwnerId -- Owner has no pets`() {
+        whenever(ownerDao.getAllOwners(companyId)).thenReturn(listOf(OwnerData(ownerId, "John", "E123", companyId)))
+        whenever(petDao.getPetsByOwnerId(ownerId, companyId)).thenReturn(emptyList())
+
+        val errorMessage = assertThrows<NoSuchElementException> {
+            petService.getPetsByOwnerId(ownerId, companyId)
+        }
+
+        assertEquals("This owner does not has any pets.", errorMessage.message)
+    }
+
+    @Test
+    fun `Test getPetsByOwnerId -- Pets found`() {
+        whenever(ownerDao.getAllOwners(companyId)).thenReturn(listOf(OwnerData(ownerId, "John", "E123", companyId)))
+        whenever(petDao.getPetsByOwnerId(ownerId, companyId)).thenReturn(listOf(pet))
+
+        val result = petService.getPetsByOwnerId(ownerId, companyId)
+
+        assertNotNull(result)
+        assertEquals(1, result.size)
+        assertEquals("Waffle", result[0].petName)
+    }
+
+    // Tests for petTypesAmount
+    @Test
+    fun `Test petTypesAmount -- No pets found`() {
+        whenever(petDao.petTypesAmount(companyId)).thenReturn(emptyMap())
+
+        val errorMessage = assertThrows<NoSuchElementException> {
+            petService.petTypesAmount(companyId)
+        }
+
+        assertEquals("This company does not have any pets.", errorMessage.message)
+    }
+
+    @Test
+    fun `Test petTypesAmount -- Pets found`() {
+        val petTypesMap = mapOf(PetType.DOG to 3L, PetType.CAT to 2L)
+        whenever(petDao.petTypesAmount(companyId)).thenReturn(petTypesMap)
+
+        val result = petService.petTypesAmount(companyId)
+
+        assertNotNull(result)
+        assertEquals(3L, result[PetType.DOG])
+        assertEquals(2L, result[PetType.CAT])
+    }
+
 }
