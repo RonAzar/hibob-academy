@@ -62,7 +62,7 @@ fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): Int {
     }
 
     //Return new pet serial id or -1 if insertion failed!
-    fun insertNewPet(newPet: Pet): Long {
+    fun insertNewPet(newPet: PetRecord): Long {
         return sql.insertInto(pet)
             .set(pet.petName, newPet.petName)
             .set(pet.dateOfArrival, newPet.dateOfArrival)
