@@ -1,11 +1,9 @@
 package com.hibob.academy.dao
 
-import jakarta.ws.rs.NotFoundException
 import org.jooq.Record
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.jooq.impl.DSL
-import org.jooq.impl.DSL.count
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -31,11 +29,11 @@ class PetDao(private val sql: DSLContext) {
             .fetch(petDataMapper)
     }
 
-    fun petTypesAmount(): Map<PetType, Long> {
+    fun petTypesAmount(companyId: Long): Map<PetType, Long> {
         val count = DSL.count(pet.id)
         return sql.select(pet.petType, count)
             .from(pet)
-            .where(pet.companyId.eq(9L))
+            .where(pet.companyId.eq(companyId))
             .groupBy(pet.petType)
             .fetch()
             .intoMap(
