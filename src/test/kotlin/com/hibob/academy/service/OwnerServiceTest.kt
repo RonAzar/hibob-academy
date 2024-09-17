@@ -41,7 +41,7 @@ class OwnerServiceTest{
     fun `get Owner By Employee Id And Company Id -- Failure`(){
         whenever(ownerDao.getOwnerByEmployeeIdAndCompanyId(any(), any())).thenReturn(null)
 
-        val errorMessage = assertThrows<IllegalArgumentException> {
+        val errorMessage = assertThrows<NoSuchElementException> {
             ownerService.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId)
         }
         assertEquals(errorMessage.message, "No owner with id $employeeId found")
@@ -69,7 +69,7 @@ class OwnerServiceTest{
     fun `get Owner By Pet Id -- Failure`() {
         whenever(ownerDao.getOwnerByPetId(petId, companyId)).thenReturn(null)
 
-        val errorMessage = assertThrows<IllegalArgumentException> {
+        val errorMessage = assertThrows<NoSuchElementException> {
             ownerService.getOwnerByPetId(petId, companyId)
         }
 

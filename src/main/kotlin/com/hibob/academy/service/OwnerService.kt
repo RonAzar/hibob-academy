@@ -9,17 +9,22 @@ import org.springframework.stereotype.Component
 @Component
 class OwnerService @Autowired constructor(private val ownerDao: OwnerDao) {
     fun insertOwner(newOwner: Owner): Long {
-        return ownerDao.insertNewOwner(newOwner)
+        val newOwnerId = ownerDao.insertNewOwner(newOwner)
+        if (newOwnerId < 0L)
+        {
+            throw IllegalArgumentException("Owner insertion failed...")
+        }
+        return newOwnerId
     }
-    fun getOwnerByEmployeeIdAndCompanyId(employeeId: String, companyId: Long): OwnerData?{
-        val owner = ownerDao.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId) ?: throw IllegalArgumentException("No owner with id $employeeId found")
+    fun getOwnerByEmployeeIdAndCompanyId(employeeId: String, companyId: Long): OwnerData{
+        val owner = ownerDao.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId) ?: throw NoSuchElementException("No owner with id $employeeId found")
         return owner
     }
     fun getAllOwners(companyId: Long): List<OwnerData> {
         return ownerDao.getAllOwners(companyId)
     }
-    fun getOwnerByPetId(petId: Long, companyId: Long): OwnerData? {
-        val owner = ownerDao.getOwnerByPetId(petId, companyId) ?: throw IllegalArgumentException("Pet $petId has no owner with company id $companyId")
+    fun getOwnerByPetId(petId: Long, companyId: Long): OwnerData {
+        val owner = ownerDao.getOwnerByPetId(petId, companyId) ?: throw NoSuchElementException("Pet $petId has no owner with company id $companyId")
         return owner
     }
 }

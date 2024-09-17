@@ -16,31 +16,15 @@ class OwnerResource (private val ownerService: OwnerService){
     @GET
     @Path("getAllOwners/{companyId}")
     fun getAllOwners(@PathParam("companyId") companyId: Long): Response {
-        if (companyId <= 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid companyId provided").build()
-        }
         val owners = ownerService.getAllOwners(companyId)
-        if (owners.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("No owners found for the given company").build()
-        }
         return Response.ok(owners).build()
     }
-
 
     @POST
     @Path("insertNewOwner")
     fun insertNewOwner(newOwner: Owner): Response {
-        return try {
-            val insertOwnerSerialId = ownerService.insertOwner(newOwner)
-            if (insertOwnerSerialId > 0L) {
-                Response.status(Response.Status.CREATED).entity("Owner successfully inserted").build()
-            } else {
-                Response.status(Response.Status.OK).entity("Owner already exists").build()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error: ${e.message}").build()
-        }
+        ownerService.insertOwner(newOwner)
+        return Response.status(Response.Status.CREATED).entity("Owner successfully inserted").build()
     }
 
     @GET
@@ -51,12 +35,7 @@ class OwnerResource (private val ownerService: OwnerService){
         @PathParam("companyId") companyId: Long
     ): Response {
         val owner = ownerService.getOwnerByPetId(petId, companyId)
-
-        return if (owner != null) {
-            Response.ok(owner).build()
-        } else {
-            Response.status(Response.Status.NOT_FOUND).entity("Owner not found").build()
-        }
+        return Response.ok(owner).build()
     }
 
     @GET
@@ -65,11 +44,7 @@ class OwnerResource (private val ownerService: OwnerService){
         @PathParam("employeeId") employeeId: String,
         @PathParam("companyId") companyId: Long
     ): Response {
-        return try {
-            val owner = ownerService.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId)
-            Response.ok(owner).build()
-        } catch (e: IllegalArgumentException) {
-            Response.status(Response.Status.NOT_FOUND).entity(e.message).build()
-        }
+        val owner = ownerService.getOwnerByEmployeeIdAndCompanyId(employeeId, companyId)
+        return Response.ok(owner).build()
     }
 }
