@@ -1,6 +1,6 @@
 package com.hibob.academy.resource
 
-import com.hibob.academy.dao.Pet
+import com.hibob.academy.dao.PetRecord
 import com.hibob.academy.dao.PetType
 import com.hibob.academy.service.PetService
 import jakarta.ws.rs.Consumes
@@ -42,7 +42,7 @@ class PetsResource (private val petService: PetService){
 
     @POST
     @Path("insertNewPet")
-    fun insertNewPet(newPet: Pet): Response {
+    fun insertNewPet(newPet: PetRecord): Response {
         petService.insertNewPet(newPet)
         return Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
     }

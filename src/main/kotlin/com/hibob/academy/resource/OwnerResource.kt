@@ -1,5 +1,5 @@
 package com.hibob.academy.resource
-import com.hibob.academy.dao.Owner
+import com.hibob.academy.dao.OwnerRecord
 import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
@@ -21,7 +21,7 @@ class OwnerResource (private val ownerService: OwnerService){
 
     @POST
     @Path("insertNewOwner")
-    fun insertNewOwner(newOwner: Owner): Response {
+    fun insertNewOwner(newOwner: OwnerRecord): Response {
         ownerService.insertOwner(newOwner)
         return Response.status(Response.Status.CREATED).entity("Owner successfully inserted").build()
     }

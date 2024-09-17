@@ -1,6 +1,6 @@
 package com.hibob.academy.service
 
-import com.hibob.academy.dao.Owner
+import com.hibob.academy.dao.OwnerRecord
 import com.hibob.academy.dao.OwnerDao
 import com.hibob.academy.dao.OwnerData
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class OwnerService @Autowired constructor(private val ownerDao: OwnerDao) {
-    fun insertOwner(newOwner: Owner): Long {
+    fun insertOwner(newOwner: OwnerRecord): Long {
         val newOwnerId = ownerDao.insertNewOwner(newOwner)
         if (newOwnerId < 0L)
         {

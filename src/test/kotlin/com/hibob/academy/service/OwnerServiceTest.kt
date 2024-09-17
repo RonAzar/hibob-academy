@@ -13,7 +13,7 @@ class OwnerServiceTest{
     private val petId = 10L
     private val ownerId = 123L
     private val employeeId = "1234578"
-    private val newOwner=  Owner("Ron", employeeId, 9)
+    private val newOwner=  OwnerRecord("Ron", employeeId, 9)
     private val ownerData = OwnerData(ownerId,"Ron", employeeId, 9)
     private val companyId = 9L
 

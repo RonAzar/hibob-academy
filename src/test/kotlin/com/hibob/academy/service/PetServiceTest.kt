@@ -1,9 +1,6 @@
 package com.hibob.academy.unittests
 
-import com.hibob.academy.dao.Pet
-import com.hibob.academy.dao.PetDao
-import com.hibob.academy.dao.PetData
-import com.hibob.academy.dao.PetType
+import com.hibob.academy.dao.*
 import com.hibob.academy.service.PetService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -39,13 +36,13 @@ class PetServiceTest {
         val result = petService.getPetById(petId, companyId)
 
         assertNotNull(result)
-        assertEquals(petId, result?.petId)
-        assertEquals("Waffle", result?.petName)
+        assertEquals(petId, result.petId)
+        assertEquals("Waffle", result.petName)
     }
 
     @Test
     fun `Test insertNewPet -- Pet inserted successfully`() {
-        val newPet = Pet("Waffle", PetType.DOG, LocalDate.now(), companyId, null)
+        val newPet = PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, null)
         whenever(petDao.insertNewPet(newPet)).thenReturn(10L)
 
         val result = petService.insertNewPet(newPet)
