@@ -104,4 +104,35 @@ class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
         assertTrue(pets.any { it.petId == pet1Id }, "Test failed: Pet 1 not found")
         assertTrue(pets.any { it.petId == pet2Id }, "Test failed: Pet 2 not found")
     }
+
+
+    //SQL 2
+    @Test
+    fun `Test-Get Pets list by owner Id`(){
+        dao.insertNewPet(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, -5L))
+        dao.insertNewPet(PetRecord("Mittens", PetType.CAT, LocalDate.now(), companyId, -5L))
+
+        val pets = dao.getPetsByOwnerId(-5L, companyId)
+
+        assertNotNull(pets, "Test failed: This owner has no pets!")
+        assertEquals(2, pets.size, "Test failed: Pet count should be equal")
+        assertTrue(pets.map { it.petName }.containsAll(listOf("Waffle", "Mittens")), "Test failed: Expected pet names are missing!")
+    }
+
+    @Test
+    fun `Test-pet Types Amount`(){
+        dao.insertNewPet(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, -5L))
+        dao.insertNewPet(PetRecord("Rex", PetType.DOG, LocalDate.now(), companyId, -5L))
+        dao.insertNewPet(PetRecord("George", PetType.DOG, LocalDate.now(), companyId, -5L))
+        dao.insertNewPet(PetRecord("Mittens", PetType.CAT, LocalDate.now(), companyId, -5L))
+        dao.insertNewPet(PetRecord("Gery", PetType.CAT, LocalDate.now(), companyId, -5L))
+
+        val petsMap = dao.petTypesAmount(companyId)
+        assertNotNull(petsMap, "Test failed: Pet types count returned an empty map")
+        assertEquals(3, petsMap[PetType.DOG], "Test failed: Dog count should be 3")
+        assertEquals(2, petsMap[PetType.CAT], "Test failed: Cat count should be 2")
+
+        // Optional: Check that there are no unexpected pet types in the map
+        assertTrue(petsMap.keys.containsAll(listOf(PetType.DOG, PetType.CAT)), "Test failed: Map contains unexpected pet types!")
+    }
 }
