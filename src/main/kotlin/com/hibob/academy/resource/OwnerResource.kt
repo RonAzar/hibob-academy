@@ -27,8 +27,7 @@ class OwnerResource (private val ownerService: OwnerService){
     }
 
     @GET
-    @Path("getOwnerByPetId/{petId}/companyId/{companyId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/companies/{companyId}/pets/{petId}/owner")
     fun getOwnerByPetId(
         @PathParam("petId") petId: Long,
         @PathParam("companyId") companyId: Long
