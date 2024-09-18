@@ -152,16 +152,6 @@ class PetServiceTest {
     }
 
     // Tests for petTypesAmount
-    @Test
-    fun `Test petTypesAmount -- No pets found`() {
-        whenever(petDao.petTypesAmount(companyId)).thenReturn(emptyMap())
-
-        val errorMessage = assertThrows<NoSuchElementException> {
-            petService.getPetTypesAmount(companyId)
-        }
-
-        assertEquals("This company does not have any pets.", errorMessage.message)
-    }
 
     @Test
     fun `Test petTypesAmount -- Pets found`() {

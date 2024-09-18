@@ -58,10 +58,6 @@ class PetService @Autowired constructor(
 
     fun getPetTypesAmount(companyId: Long): Map<PetType, Long> {
         val petsMap = petDao.petTypesAmount(companyId)
-
-        if (petsMap.isEmpty()) {
-            throw NoSuchElementException("This company does not have any pets.")
-        }
         return petsMap
     }
 }
