@@ -48,7 +48,7 @@ class PetsResource (private val petService: PetService){
     }
 
     @PUT
-    @Path("updatePetOwnerId/{petId}/newOwnerId/{newOwnerId}/companyId/{companyId}")
+    @Path("/pets/{petId}/owner/{newOwnerId}/company/{companyId}")
     fun updatePetOwnerId(
         @PathParam("petId") petId: Long,
         @PathParam("newOwnerId") newOwnerId: Long,
