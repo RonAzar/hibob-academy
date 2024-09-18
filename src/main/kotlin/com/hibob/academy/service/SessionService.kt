@@ -4,7 +4,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
 import java.util.Date
 import com.hibob.academy.resource.User
-
 @Component
 class SessionService {
     companion object {
