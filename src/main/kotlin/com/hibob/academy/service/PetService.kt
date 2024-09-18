@@ -55,9 +55,7 @@ class PetService @Autowired constructor(
             throw NoSuchElementException("Owner does not exist!")
         }
         val pets = petDao.getPetsByOwnerId(ownerId, companyId)
-        if (pets.isEmpty()) {
-            throw NoSuchElementException("This owner does not has any pets.")
-        }
+
         return pets
     }
 

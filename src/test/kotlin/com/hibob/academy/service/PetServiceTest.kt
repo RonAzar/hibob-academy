@@ -149,17 +149,6 @@ class PetServiceTest {
         assertEquals("Owner does not exist!", errorMessage.message)
     }
 
-    @Test
-    fun `Test getPetsByOwnerId -- Owner has no pets`() {
-        whenever(ownerDao.getAllOwners(companyId)).thenReturn(listOf(OwnerData(ownerId, "John", "E123", companyId)))
-        whenever(petDao.getPetsByOwnerId(ownerId, companyId)).thenReturn(emptyList())
-
-        val errorMessage = assertThrows<NoSuchElementException> {
-            petService.getPetsByOwnerId(ownerId, companyId)
-        }
-
-        assertEquals("This owner does not has any pets.", errorMessage.message)
-    }
 
     @Test
     fun `Test getPetsByOwnerId -- Pets found`() {
