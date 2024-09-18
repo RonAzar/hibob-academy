@@ -56,7 +56,7 @@ class PetService @Autowired constructor(
         return pets
     }
 
-    fun petTypesAmount(companyId: Long): Map<PetType, Long> {
+    fun getPetTypesAmount(companyId: Long): Map<PetType, Long> {
         val petsMap = petDao.petTypesAmount(companyId)
 
         if (petsMap.isEmpty()) {

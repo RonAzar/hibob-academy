@@ -157,7 +157,7 @@ class PetServiceTest {
         whenever(petDao.petTypesAmount(companyId)).thenReturn(emptyMap())
 
         val errorMessage = assertThrows<NoSuchElementException> {
-            petService.petTypesAmount(companyId)
+            petService.getPetTypesAmount(companyId)
         }
 
         assertEquals("This company does not have any pets.", errorMessage.message)
@@ -168,7 +168,7 @@ class PetServiceTest {
         val petTypesMap = mapOf(PetType.DOG to 3L, PetType.CAT to 2L)
         whenever(petDao.petTypesAmount(companyId)).thenReturn(petTypesMap)
 
-        val result = petService.petTypesAmount(companyId)
+        val result = petService.getPetTypesAmount(companyId)
 
         assertNotNull(result)
         assertEquals(3L, result[PetType.DOG])
