@@ -20,7 +20,7 @@ import org.springframework.stereotype.Controller
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
 class PetsResource (private val petService: PetService){
     @GET
-    @Path("getAllPetsByType/{petType}/companyId/{companyId}")
+    @Path("companies/{companyId}/pets/type/{petType}")
     fun getAllPetsByType(@PathParam("petType") petType: PetType, @PathParam("companyId") companyId: Long): Response {
         val pet = petService.getAllPetsByType(petType, companyId)
         return Response.ok(pet).build()
@@ -34,7 +34,7 @@ class PetsResource (private val petService: PetService){
     }
 
     @GET
-    @Path("getPetById/{petId}/companyId/{companyId}")
+    @Path("companies/{companyId}/pets/{petId}")
     fun getPetById(@PathParam("petId") petId: Long, @PathParam("companyId") companyId: Long): Response {
         val pet = petService.getPetById(petId, companyId)
         return Response.ok(pet).build()
@@ -44,17 +44,17 @@ class PetsResource (private val petService: PetService){
     @Path("insertNewPet")
     fun insertNewPet(newPet: PetRecord): Response {
         petService.insertNewPet(newPet)
-        return Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
+        return Response.ok(newPet).build()
     }
 
     @PUT
-    @Path("updatePetOwnerId/{petId}/newOwnerId/{newOwnerId}/companyId/{companyId}")
+    @Path("pets/{petId}/owner/{newOwnerId}/company/{companyId}")
     fun updatePetOwnerId(
         @PathParam("petId") petId: Long,
         @PathParam("newOwnerId") newOwnerId: Long,
         @PathParam("companyId") companyId: Long
     ): Response {
-        val resultMessage = petService.updatePetOwnerId(petId, newOwnerId, companyId)
-        return Response.ok(resultMessage).build()
+        petService.updatePetOwnerId(petId, newOwnerId, companyId)
+        return Response.ok().build()
     }
 }

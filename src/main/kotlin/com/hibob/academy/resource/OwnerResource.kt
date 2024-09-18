@@ -27,8 +27,7 @@ class OwnerResource (private val ownerService: OwnerService){
     }
 
     @GET
-    @Path("getOwnerByPetId/{petId}/companyId/{companyId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Path("companies/{companyId}/pets/{petId}/owner")
     fun getOwnerByPetId(
         @PathParam("petId") petId: Long,
         @PathParam("companyId") companyId: Long
@@ -38,7 +37,7 @@ class OwnerResource (private val ownerService: OwnerService){
     }
 
     @GET
-    @Path("getOwnerByEmployeeId/{employeeId}/CompanyId/{companyId}")
+    @Path("companies/{companyId}/employees/{employeeId}/owner")
     fun getOwnerByEmployeeIdAndCompanyId(
         @PathParam("employeeId") employeeId: String,
         @PathParam("companyId") companyId: Long
