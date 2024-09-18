@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component
 @Component
 class PetService @Autowired constructor(
     private val petDao: PetDao,
-    private val ownerDao: OwnerDao,
 ) {
     fun getAllPets(companyId: Long): List<PetData> {
         return petDao.getAllPets(companyId)
@@ -48,9 +47,6 @@ class PetService @Autowired constructor(
     }
 
     fun  getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
-        if (ownerId < 0) {
-            throw IllegalArgumentException("Owner does not exist invalid owner id!")
-        }
         val pets = petDao.getPetsByOwnerId(ownerId, companyId)
 
         return pets

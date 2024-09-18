@@ -16,7 +16,7 @@ class PetServiceTest {
 
     private val petDao = mock<PetDao>()
     private val ownerDao = mock<OwnerDao>()
-    private val petService = PetService(petDao, ownerDao)
+    private val petService = PetService(petDao)
 
     @Test
     fun `Test getPetById -- Pet not found`() {
@@ -127,17 +127,6 @@ class PetServiceTest {
     }
 
     //SQL2 Service tests
-    @Test
-    fun `Test getPetsByOwnerId -- Owner ID is invalid`() {
-        val invalidOwnerId = -1L
-
-        val errorMessage = assertThrows<IllegalArgumentException> {
-            petService.getPetsByOwnerId(invalidOwnerId, companyId)
-        }
-
-        assertEquals("Owner does not exist invalid owner id!", errorMessage.message)
-    }
-
 
     @Test
     fun `Test getPetsByOwnerId -- Pets found`() {
