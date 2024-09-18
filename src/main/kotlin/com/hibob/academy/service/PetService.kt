@@ -13,7 +13,7 @@ class PetService @Autowired constructor(private val petDao: PetDao) {
     fun insertNewPet(newPet: PetRecord): Long {
         // Insert the new pet and return the generated ID or -1 if the operation failed
         val petId = petDao.insertNewPet(newPet)
-        if (petId < 0L) {
+        if(petId < 0L){
             throw IllegalArgumentException("Pet insertion failed...")
         }
         return petId

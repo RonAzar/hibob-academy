@@ -3,6 +3,7 @@ package com.hibob.academy.dao
 import org.jooq.Record
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -72,5 +73,28 @@ fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): Int {
             .returning(pet.id)  // Return the generated ID after insertion
             .fetchOne()!!  // Force unwrap, will throw NPE if null
             .get(pet.id)  // Extract the ID from the row
+    }
+
+
+
+    //SQL 2:
+    fun getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
+        return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
+            .from(pet)
+            .where(pet.ownerId.eq(ownerId))
+            .and(pet.companyId.eq(companyId))
+            .fetch(petDataMapper)
+    }
+
+    fun petTypesAmount(companyId: Long): Map<PetType, Long> {
+        val count = DSL.count(pet.id)
+        return sql.select(pet.petType, count)
+            .from(pet)
+            .where(pet.companyId.eq(companyId))
+            .groupBy(pet.petType)
+            .fetch()
+            .intoMap(
+                { record -> PetType.valueOf(record[pet.petType].toString())},
+                { record -> record[count].toLong()})
     }
 }
