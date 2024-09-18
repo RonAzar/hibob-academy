@@ -81,9 +81,13 @@ class PetServiceTest {
         whenever(petDao.getPetById(petId, companyId)).thenReturn(petWithoutOwner)
         whenever(petDao.updatePetOwnerId(petId, ownerId, companyId)).thenReturn(1)
 
-        val result = petService.updatePetOwnerId(petId, ownerId, companyId)
+        // Act & Assert: Ensure that no exceptions are thrown
+        assertDoesNotThrow {
+            petService.updatePetOwnerId(petId, ownerId, companyId)
+        }
 
-        assertEquals("Pet owner ID updated successfully", result)
+        // Verify that the updatePetOwnerId was called with correct parameters
+        verify(petDao).updatePetOwnerId(petId, ownerId, companyId)
     }
 
     @Test
