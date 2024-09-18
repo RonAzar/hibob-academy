@@ -51,9 +51,6 @@ class PetService @Autowired constructor(
         if (ownerId < 0) {
             throw IllegalArgumentException("Owner does not exist invalid owner id!")
         }
-        if (ownerDao.getAllOwners(companyId).none { it.ownerId == ownerId }) {
-            throw NoSuchElementException("Owner does not exist!")
-        }
         val pets = petDao.getPetsByOwnerId(ownerId, companyId)
 
         return pets
