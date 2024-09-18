@@ -28,11 +28,10 @@ class PetService @Autowired constructor(private val petDao: PetDao) {
         return petDao.getAllPetsByType(type, companyId)
     }
 
-    fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): String {
+    fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long) {
         // Retrieve the pet by ID and companyId
         val pet = petDao.getPetById(petId, companyId)
             ?: throw NoSuchElementException("Pet not found for the given ID")
-
         // Ensure the pet doesn't already have an owner
         if (pet.ownerId != null) {
             throw IllegalArgumentException("Pet already has an owner")
@@ -43,6 +42,5 @@ class PetService @Autowired constructor(private val petDao: PetDao) {
         if (rowsAffected == 0) {
             throw IllegalArgumentException("Failed to update pet's owner. The pet may already have an owner.")
         }
-        return "Pet owner ID updated successfully"
     }
 }

@@ -54,7 +54,7 @@ class PetsResource (private val petService: PetService){
         @PathParam("newOwnerId") newOwnerId: Long,
         @PathParam("companyId") companyId: Long
     ): Response {
-        val resultMessage = petService.updatePetOwnerId(petId, newOwnerId, companyId)
-        return Response.ok(resultMessage).build()
+        petService.updatePetOwnerId(petId, newOwnerId, companyId)
+        return Response.ok().build()
     }
 }
