@@ -44,7 +44,7 @@ class PetsResource (private val petService: PetService){
     @Path("insertNewPet")
     fun insertNewPet(newPet: PetRecord): Response {
         petService.insertNewPet(newPet)
-        return Response.status(Response.Status.CREATED).entity("Pet successfully inserted").build()
+        return Response.ok(newPet).build()
     }
 
     @PUT
