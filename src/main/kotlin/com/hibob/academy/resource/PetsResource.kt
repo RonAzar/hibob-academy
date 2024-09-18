@@ -59,7 +59,7 @@ class PetsResource (private val petService: PetService){
     }
 
     @GET
-    @Path("getPetsByOwnerId/{ownerId}/companyId/{companyId}")
+    @Path("owners/{ownerId}/company/{companyId}/pets")
     fun getPetsByOwnerId(
         @PathParam("ownerId") ownerId: Long,
         @PathParam("companyId") companyId: Long
