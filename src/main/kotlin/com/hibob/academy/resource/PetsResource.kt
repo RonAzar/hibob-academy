@@ -20,7 +20,7 @@ import org.springframework.stereotype.Controller
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
 class PetsResource (private val petService: PetService){
     @GET
-    @Path("getAllPetsByType/{petType}/companyId/{companyId}")
+    @Path("/companies/{companyId}/pets/type/{petType}")
     fun getAllPetsByType(@PathParam("petType") petType: PetType, @PathParam("companyId") companyId: Long): Response {
         val pet = petService.getAllPetsByType(petType, companyId)
         return Response.ok(pet).build()
