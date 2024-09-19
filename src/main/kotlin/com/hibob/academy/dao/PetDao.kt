@@ -103,15 +103,17 @@ class PetDao(private val sql: DSLContext) {
                 { record -> record[count].toLong() })
     }
 
-    fun adoptMultiplePets(petIds: List<Long>, companyId: Long): Int {
+    fun adoptMultiplePets(ownerId: Long, petIds: List<Long>, companyId: Long): Int {
         return sql.update(pet)
+            .set(pet.ownerId, ownerId)
             .set(pet.ownerId, pet.ownerId)
             .where(pet.companyId.eq(companyId))
+            .and(pet.ownerId.isNull)
             .and(pet.id.`in`(petIds))
             .execute()
     }
 
-    fun createMultiplePetsUsingBatch(ownerId: Long, petsList: List<PetRecord>, companyId: Long) {
+    fun createMultiplePetsUsingBatch(petsList: List<PetRecord>, companyId: Long) {
         val insert = sql.insertInto(pet)
             .columns(pet.petName, pet.petType, pet.dateOfArrival, pet.companyId, pet.ownerId)
             .values(
@@ -130,7 +132,7 @@ class PetDao(private val sql: DSLContext) {
                 petItem.petType,
                 petItem.dateOfArrival,
                 petItem.companyId,
-                ownerId
+                petItem.ownerId
             )
         }
 

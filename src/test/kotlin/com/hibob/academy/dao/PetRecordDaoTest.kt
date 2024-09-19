@@ -144,21 +144,21 @@ class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
 
         val petsIdsList = listOf(id1, id2, id3)
 
-        val petsAdopted = dao.adoptMultiplePets( petsIdsList, companyId)
+        val petsAdopted = dao.adoptMultiplePets(5, petsIdsList, companyId)
 
         assertEquals(2, petsAdopted)
     }
 
     @Test
     fun `Test adopt Multiple pets using batch`(){
-        val petsList = listOf(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, null),
-        PetRecord("Rex", PetType.DOG, LocalDate.now(), companyId, null),
+        val petsList = listOf(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, -6L),
+        PetRecord("Rex", PetType.DOG, LocalDate.now(), companyId, -6L),
         PetRecord("George", PetType.DOG, LocalDate.now(), companyId, -5L))
 
-        dao.createMultiplePetsUsingBatch(-6L, petsList, companyId)
+        dao.createMultiplePetsUsingBatch(petsList, companyId)
 
         val pets = dao.getPetsByOwnerId(-6L, companyId)
-        assertEquals(3, pets.size)
-        assertEquals("George",pets[2].petName)
+        assertEquals(2, pets.size)
+        assertEquals("Rex",pets[1].petName)
     }
 }
