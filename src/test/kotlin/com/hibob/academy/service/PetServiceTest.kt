@@ -158,14 +158,14 @@ class PetServiceTest {
     fun `Test adopt Multiple Pets- success`() {
         val petIds = listOf(1L, 2L, 3L)
 
-        whenever(petDao.adoptMultiplePets(ownerId, petIds, companyId)).thenReturn(3)
+        whenever(petDao.adoptMultiplePets(petIds, companyId)).thenReturn(3)
 
-        val result = petService.adoptMultiplePets(ownerId, petIds, companyId)
+        val result = petService.adoptMultiplePets(petIds, companyId)
 
         assertEquals(3, result, "Expected 3 pets to be adopted successfully")
 
         assertDoesNotThrow {
-            petService.adoptMultiplePets(ownerId, petIds, companyId)
+            petService.adoptMultiplePets(petIds, companyId)
         }
     }
 
