@@ -103,11 +103,10 @@ class PetDao(private val sql: DSLContext) {
                 { record -> record[count].toLong() })
     }
 
-    fun adoptMultiplePets(ownerId: Long, petIds: List<Long>, companyId: Long): Int {
+    fun adoptMultiplePets(petIds: List<Long>, companyId: Long): Int {
         return sql.update(pet)
-            .set(pet.ownerId, ownerId)
+            .set(pet.ownerId, pet.ownerId)
             .where(pet.companyId.eq(companyId))
-            .and(pet.ownerId.isNull)
             .and(pet.id.`in`(petIds))
             .execute()
     }

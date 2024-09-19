@@ -144,7 +144,7 @@ class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
 
         val petsIdsList = listOf(id1, id2, id3)
 
-        val petsAdopted = dao.adoptMultiplePets(5, petsIdsList, companyId)
+        val petsAdopted = dao.adoptMultiplePets( petsIdsList, companyId)
 
         assertEquals(2, petsAdopted)
     }
