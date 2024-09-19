@@ -77,13 +77,12 @@ class PetsResource(private val petService: PetService) {
     }
 
     @POST
-    @Path("/owner/{ownerId}/company/{companyId}/pets/adopt")
+    @Path("/company/{companyId}/pets/adopt")
     fun adoptPets(
-        @PathParam("ownerId") ownerId: Long,
         @PathParam("companyId") companyId: Long,
         petIds: List<Long>
     ): Response {
-        val petsAdoptedCount = petService.adoptMultiplePets(ownerId, petIds, companyId)
+        val petsAdoptedCount = petService.adoptMultiplePets(petIds, companyId)
         return Response.ok("$petsAdoptedCount pets were successfully adopted.").build()
     }
 
