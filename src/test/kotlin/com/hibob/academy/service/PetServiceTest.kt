@@ -154,4 +154,32 @@ class PetServiceTest {
         assertEquals(2L, result[PetType.CAT])
     }
 
+    @Test
+    fun `Test adopt Multiple Pets- success`() {
+        val petIds = listOf(1L, 2L, 3L)
+
+        whenever(petDao.adoptMultiplePets(ownerId, petIds, companyId)).thenReturn(3)
+
+        val result = petService.adoptMultiplePets(ownerId, petIds, companyId)
+
+        assertEquals(3, result, "Expected 3 pets to be adopted successfully")
+
+        assertDoesNotThrow {
+            petService.adoptMultiplePets(ownerId, petIds, companyId)
+        }
+    }
+
+    @Test
+    fun `create Multiple Pets Using Batch`() {
+        val petsList = listOf(
+            PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, null),
+            PetRecord("Mittens", PetType.CAT, LocalDate.now(), companyId, null)
+        )
+
+        whenever(petDao.createMultiplePetsUsingBatch(ownerId, petsList, companyId)).thenAnswer {  }
+
+        assertDoesNotThrow {
+            petService.createMultiplePetsUsingBatch(ownerId, petsList, companyId)
+        }
+    }
 }
