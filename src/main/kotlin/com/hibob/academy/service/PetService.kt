@@ -58,11 +58,11 @@ class PetService @Autowired constructor(
         return petsMap
     }
 
-    fun adoptMultiplePets(petIds: List<Long>, companyId: Long): Int {
-        return petDao.adoptMultiplePets(petIds, companyId)
+    fun adoptMultiplePets(ownerId: Long, petIds: List<Long>, companyId: Long): Int {
+        return petDao.adoptMultiplePets(ownerId, petIds, companyId)
     }
 
-    fun createMultiplePetsUsingBatch(ownerId: Long, petsList: List<PetRecord>, companyId: Long) {
-        return petDao.createMultiplePetsUsingBatch(ownerId, petsList, companyId)
+    fun createMultiplePetsUsingBatch(petsList: List<PetRecord>, companyId: Long) {
+        return petDao.createMultiplePetsUsingBatch(petsList, companyId)
     }
 }
