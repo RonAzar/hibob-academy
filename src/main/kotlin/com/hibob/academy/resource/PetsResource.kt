@@ -77,23 +77,23 @@ class PetsResource(private val petService: PetService) {
     }
 
     @POST
-    @Path("/company/{companyId}/pets/adopt")
+    @Path("/owner/{ownerId}/company/{companyId}/pets/adopt")
     fun adoptPets(
+        @PathParam("ownerId") ownerId: Long,
         @PathParam("companyId") companyId: Long,
         petIds: List<Long>
     ): Response {
-        val petsAdoptedCount = petService.adoptMultiplePets(petIds, companyId)
+        val petsAdoptedCount = petService.adoptMultiplePets(ownerId, petIds, companyId)
         return Response.ok("$petsAdoptedCount pets were successfully adopted.").build()
     }
 
     @POST
-    @Path("/owner/{ownerId}/company/{companyId}/pets/create")
+    @Path("/company/{companyId}/pets/create")
     fun createMultiplePets(
-        @PathParam("ownerId") ownerId: Long,
         @PathParam("companyId") companyId: Long,
         petRecords: List<PetRecord>
     ): Response {
-        petService.createMultiplePetsUsingBatch(ownerId, petRecords, companyId)
+        petService.createMultiplePetsUsingBatch(petRecords, companyId)
         return Response.ok("Pets have been successfully created!").build()
     }
 
