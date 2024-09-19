@@ -83,8 +83,7 @@ class PetsResource(private val petService: PetService) {
         @PathParam("companyId") companyId: Long,
         petIds: List<Long>
     ): Response {
-        val petsAdoptedCount = petService.adoptMultiplePets(ownerId, petIds, companyId)
-        return Response.ok("$petsAdoptedCount pets were successfully adopted.").build()
+        return Response.ok("${petService.adoptMultiplePets(ownerId, petIds, companyId)} pets were successfully adopted.").build()
     }
 
     @POST
