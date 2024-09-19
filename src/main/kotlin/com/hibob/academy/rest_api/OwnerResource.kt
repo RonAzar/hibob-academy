@@ -13,9 +13,22 @@ val owners = mutableListOf(
 
 
 @Controller
-@Path("/api/ron/owners")
+@Path("/api/owners")
 @Produces(MediaType.APPLICATION_JSON)
 class OwnerResource {
+
+    private fun validateOwner(owner: Owner) {
+        val hasName = !owner.name.isNullOrBlank()
+        val hasFirstNameAndLastName = !owner.firstName.isNullOrBlank() && !owner.lastName.isNullOrBlank()
+
+        if (hasName && (owner.firstName != null || owner.lastName != null)) {
+            throw BadRequestException("Owner cannot have both a name and first name/last name.")
+        }
+
+        if (!hasName && !hasFirstNameAndLastName) {
+            throw BadRequestException("Owner must have either a full name or both first name and last name.")
+        }
+    }
 
     //GET: Retrieve all owners
     @GET
@@ -41,9 +54,10 @@ class OwnerResource {
         }
     }
 
-    @Path("/AddOwner")
     @POST
-    fun addOwner(newOwner : Owner) : Response {
+    @Path("/AddOwner")
+    fun addOwner(newOwner: Owner): Response {
+        validateOwner(newOwner)  // בדיקת תקינות של Owner
         owners.add(newOwner)
         return Response.status(Response.Status.CREATED).entity(newOwner).build()
     }
@@ -53,12 +67,12 @@ class OwnerResource {
     @PUT
     @Path("/{ownerId}")
     fun updateOwner(@PathParam("ownerId") ownerId: Long, updatedOwner: Owner): Response {
+        validateOwner(updatedOwner)  // בדיקת תקינות של Owner
         val index = owners.indexOfFirst { it.ownerId == ownerId }
-        return if (index>=0){
+        return if (index >= 0) {
             owners[index] = updatedOwner.copy(ownerId = ownerId)
             Response.ok(updatedOwner).build()
-        }
-        else{
+        } else {
             throw NotFoundException("No owner with id $ownerId")
         }
     }

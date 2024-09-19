@@ -7,16 +7,29 @@ import org.springframework.stereotype.Controller
 import java.util.Date
 
 val pets = mutableListOf(
-    Pet(1L, "Buddy", "Dog", 101, Date()),
-    Pet(2L, "Whiskers", "Cat", 102, Date()),
-    Pet(3L, "Polly", "Parrot", 103, Date())
+    Pet(1L, "Buddy", type = "Dog", companyId = 101, firstName = null, lastName = null, dateOfArrival = Date()),
+    Pet(2L, "Whiskers", type = "Cat", companyId = 102,firstName = null, lastName = null, dateOfArrival = Date()),
+    Pet(3L, "Polly", type = "Parrot", companyId = 103,firstName = null, lastName = null, dateOfArrival =Date())
 )
 
 @Controller
-@Path("/api/ron/pets")
+@Path("/api/pets")
 @Produces(MediaType.APPLICATION_JSON)
 
 class PetResource {
+
+    private fun validatePet(pet: Pet) {
+        val hasName = !pet.name.isNullOrBlank()
+        val hasFirstNameAndLastName = !pet.firstName.isNullOrBlank() && !pet.lastName.isNullOrBlank()
+
+        if (hasName && (pet.firstName != null || pet.lastName != null)) {
+            throw BadRequestException("Pet cannot have both a name and first name/last name.")
+        }
+
+        if (!hasName && !hasFirstNameAndLastName) {
+            throw BadRequestException("Pet must have either a full name or both first name and last name.")
+        }
+    }
     // GET: Retrieve pet by ID
     //Example-> "http://localhost:8080/api/ron/pets/envelopes/1"
     @GET
@@ -54,6 +67,7 @@ class PetResource {
     //     }'
     @POST
     fun addPet(newPet: Pet): Response {
+        validatePet(newPet)
         pets.add(newPet)
         return Response.status(Response.Status.CREATED).entity(newPet).build()
     }
@@ -71,9 +85,10 @@ class PetResource {
     @PUT
     @Path("/{petId}")
     fun updatePet(@PathParam("petId") petId: Long, updatedPet: Pet): Response {
+        validatePet(updatedPet)
         val index = pets.indexOfFirst { it.petId == petId }
         return if (index >= 0) {
-            pets[index] = updatedPet.copy(petId = petId) // Keep the same pet ID
+            pets[index] = updatedPet.copy(petId = petId)
             Response.ok(updatedPet).build()
         } else {
             throw NotFoundException("Pet not found")
