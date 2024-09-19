@@ -60,6 +60,7 @@ class PetDao(private val sql: DSLContext) {
     }
 
 
+
     fun getPetById(petId: Long, companyId: Long): PetData? {
         return sql.select(pet.id, pet.petName, pet.dateOfArrival, pet.companyId, pet.petType, pet.ownerId)
             .from(pet)
@@ -80,6 +81,7 @@ class PetDao(private val sql: DSLContext) {
             .fetchOne()!!  // Force unwrap, will throw NPE if null
             .get(pet.id)  // Extract the ID from the row
     }
+
 
 
     //SQL 2:
