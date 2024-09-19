@@ -135,4 +135,30 @@ class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
         // Optional: Check that there are no unexpected pet types in the map
         assertTrue(petsMap.keys.containsAll(listOf(PetType.DOG, PetType.CAT)), "Test failed: Map contains unexpected pet types!")
     }
+
+    @Test
+    fun `Test adopt Multiple pets`() {
+        val id1 = dao.insertNewPet(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, null))
+        val id2 = dao.insertNewPet(PetRecord("Rex", PetType.DOG, LocalDate.now(), companyId, null))
+        val id3 = dao.insertNewPet(PetRecord("George", PetType.DOG, LocalDate.now(), companyId, -5L))
+
+        val petsIdsList = listOf(id1, id2, id3)
+
+        val petsAdopted = dao.adoptMultiplePets(5, petsIdsList, companyId)
+
+        assertEquals(2, petsAdopted)
+    }
+
+    @Test
+    fun `Test adopt Multiple pets using batch`(){
+        val petsList = listOf(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, null),
+        PetRecord("Rex", PetType.DOG, LocalDate.now(), companyId, null),
+        PetRecord("George", PetType.DOG, LocalDate.now(), companyId, -5L))
+
+        dao.createMultiplePetsUsingBatch(-6L, petsList, companyId)
+
+        val pets = dao.getPetsByOwnerId(-6L, companyId)
+        assertEquals(3, pets.size)
+        assertEquals("George",pets[2].petName)
+    }
 }
