@@ -87,7 +87,7 @@ class PetsResource(private val petService: PetService) {
     }
 
     @POST
-    @Path("/company/{companyId}/pets/create")
+    @Path("/company/{companyId}/pets")
     fun createMultiplePets(
         @PathParam("companyId") companyId: Long,
         petRecords: List<PetRecord>
