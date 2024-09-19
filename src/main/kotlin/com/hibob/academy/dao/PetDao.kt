@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 class PetDao(private val sql: DSLContext) {
     private val pet = PetTable.instance
 
-    private val petDataMapper = RecordMapper<Record, PetData> { record ->
+    private val petDataMapper = RecordMapper<Record, PetData>{ record ->
         PetData(
             record[pet.id],
             record[pet.petName],
@@ -30,14 +30,14 @@ class PetDao(private val sql: DSLContext) {
             pet.companyId,
             pet.petType,
             pet.ownerId
-        )  // Include petType and companyId
+        ) 
             .from(pet)
             .where(pet.petType.eq(type.name))
             .and(pet.companyId.eq(companyId))  // Add companyId condition
             .fetch(petDataMapper)
     }
 
-    //    Add an API that will receive a pet id and owner id
+//    Add an API that will receive a pet id and owner id
 //    Update the pet with the ownerID
 //    What should you do if the pet already have an owner id?
     fun updatePetOwnerId(petId: Long, petOwnerId: Long, companyId: Long): Int {
@@ -58,7 +58,6 @@ class PetDao(private val sql: DSLContext) {
             .where(pet.companyId.eq(companyId))
             .fetch(petDataMapper)
     }
-
 
 
     fun getPetById(petId: Long, companyId: Long): PetData? {
