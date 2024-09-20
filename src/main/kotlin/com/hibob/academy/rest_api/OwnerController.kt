@@ -15,7 +15,7 @@ val owners = mutableListOf(
 @Controller
 @Path("/api/ron/owners")
 @Produces(MediaType.APPLICATION_JSON)
-class OwnerResource {
+class OwnerController {
 
     //GET: Retrieve all owners
     @GET

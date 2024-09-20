@@ -16,7 +16,7 @@ val pets = mutableListOf(
 @Path("/api/ron/pets")
 @Produces(MediaType.APPLICATION_JSON)
 
-class PetResource {
+class PetController {
     // GET: Retrieve pet by ID
     //Example-> "http://localhost:8080/api/ron/pets/envelopes/1"
     @GET
