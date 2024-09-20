@@ -1,5 +1,6 @@
 package com.hibob.academy.rest_api
 
+import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Controller
 @Path("/api/owners")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class OwnerController(val ownerService: OwnerServices) {
+class OwnerController(val ownerService: OwnerServices, val originOwnerService: OwnerService) {
 
     @GET
     fun getAll(): Response {

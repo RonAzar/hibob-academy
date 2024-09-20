@@ -1,5 +1,6 @@
 package com.hibob.academy.rest_api
 
+import com.hibob.academy.service.PetService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
@@ -7,10 +8,10 @@ import org.springframework.stereotype.Controller
 
 
 @Controller
-@Path("/api/pets")
+@Path("/api/pet")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class PetController(private val petService: PetServices) {
+class PetController(private val petService: PetServices, private val originPetService: PetService) {
 
     @GET
     fun getAllPets(): Response {
