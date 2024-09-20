@@ -76,7 +76,7 @@ class PetsResource(private val petService: PetService) {
         return Response.ok(petTypeCountMap).build()
     }
 
-    @POST
+    @PUT
     @Path("/owner/{ownerId}/company/{companyId}/pets/adopt")
     fun adoptPets(
         @PathParam("ownerId") ownerId: Long,
