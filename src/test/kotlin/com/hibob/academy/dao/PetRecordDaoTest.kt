@@ -140,7 +140,7 @@ class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
     fun `Test adopt Multiple pets`() {
         val id1 = dao.insertNewPet(PetRecord("Waffle", PetType.DOG, LocalDate.now(), companyId, null))
         val id2 = dao.insertNewPet(PetRecord("Rex", PetType.DOG, LocalDate.now(), companyId, null))
-        val id3 = dao.insertNewPet(PetRecord("George", PetType.DOG, LocalDate.now(), companyId, -5L))
+        val id3 = dao.insertNewPet(PetRecord("George", PetType.DOG, LocalDate.now(), companyId, null))
 
         val petsIdsList = listOf(id1, id2, id3)
 
