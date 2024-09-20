@@ -13,7 +13,7 @@ val pets = mutableListOf(
 )
 
 @Controller
-@Path("/api/ron/pets")
+@Path("/api/pets")
 @Produces(MediaType.APPLICATION_JSON)
 
 class PetController {
