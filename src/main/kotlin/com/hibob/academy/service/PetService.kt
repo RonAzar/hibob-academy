@@ -15,7 +15,7 @@ class PetService @Autowired constructor(
     fun insertNewPet(newPet: PetRecord): Long {
         // Insert the new pet and return the generated ID or -1 if the operation failed
         val petId = petDao.insertNewPet(newPet)
-        if(petId < 0L){
+        if (petId < 0L) {
             throw IllegalArgumentException("Pet insertion failed...")
         }
         return petId
@@ -34,6 +34,7 @@ class PetService @Autowired constructor(
         // Retrieve the pet by ID and companyId
         val pet = petDao.getPetById(petId, companyId)
             ?: throw NoSuchElementException("Pet not found for the given ID")
+
         // Ensure the pet doesn't already have an owner
         if (pet.ownerId != null) {
             throw IllegalArgumentException("Pet already has an owner")
@@ -46,7 +47,8 @@ class PetService @Autowired constructor(
         }
     }
 
-    fun  getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
+    fun getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
+
         val pets = petDao.getPetsByOwnerId(ownerId, companyId)
 
         return pets
@@ -55,5 +57,13 @@ class PetService @Autowired constructor(
     fun getPetTypesAmount(companyId: Long): Map<PetType, Long> {
         val petsMap = petDao.petTypesAmount(companyId)
         return petsMap
+    }
+
+    fun adoptMultiplePets(ownerId: Long, petIds: List<Long>, companyId: Long): Int {
+        return petDao.adoptMultiplePets(ownerId, petIds, companyId)
+    }
+
+    fun createMultiplePetsUsingBatch(petsList: List<PetRecord>, companyId: Long) {
+        return petDao.createMultiplePetsUsingBatch(petsList, companyId)
     }
 }

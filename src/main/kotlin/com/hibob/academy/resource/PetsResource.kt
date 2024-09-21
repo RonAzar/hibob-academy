@@ -57,4 +57,22 @@ class PetsResource (private val petService: PetService){
         petService.updatePetOwnerId(petId, newOwnerId, companyId)
         return Response.ok().build()
     }
+
+    @GET
+    @Path("owners/{ownerId}/company/{companyId}/pets")
+    fun getPetsByOwnerId(
+        @PathParam("ownerId") ownerId: Long,
+        @PathParam("companyId") companyId: Long
+    ): Response {
+        val pets = petService.getPetsByOwnerId(ownerId, companyId)
+        return Response.ok(pets).build()
+    }
+
+    // New method for petTypesAmount
+    @GET
+    @Path("types/company/{companyId}")
+    fun petTypesAmount(@PathParam("companyId") companyId: Long): Response {
+        val petTypeCountMap = petService.getPetTypesAmount(companyId)
+        return Response.ok(petTypeCountMap).build()
+    }
 }
