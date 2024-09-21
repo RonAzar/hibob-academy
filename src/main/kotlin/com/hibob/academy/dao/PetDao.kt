@@ -30,7 +30,7 @@ class PetDao(private val sql: DSLContext) {
             pet.companyId,
             pet.petType,
             pet.ownerId
-        )  // Include petType and companyId
+        ) 
             .from(pet)
             .where(pet.petType.eq(type.name))
             .and(pet.companyId.eq(companyId))  // Add companyId condition
@@ -58,7 +58,6 @@ class PetDao(private val sql: DSLContext) {
             .where(pet.companyId.eq(companyId))
             .fetch(petDataMapper)
     }
-
 
 
     fun getPetById(petId: Long, companyId: Long): PetData? {

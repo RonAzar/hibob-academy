@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller
 @Path("/api/pets/")  // Defines the base URL path that this controller will handle
 @Produces(MediaType.APPLICATION_JSON)  // Specifies that the responses produced by this controller will be in JSON format
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
-class PetsResource (private val petService: PetService){
+class PetsResource(private val petService: PetService) {
     @GET
     @Path("companies/{companyId}/pets/type/{petType}")
     fun getAllPetsByType(@PathParam("petType") petType: PetType, @PathParam("companyId") companyId: Long): Response {
@@ -74,5 +74,26 @@ class PetsResource (private val petService: PetService){
     fun petTypesAmount(@PathParam("companyId") companyId: Long): Response {
         val petTypeCountMap = petService.getPetTypesAmount(companyId)
         return Response.ok(petTypeCountMap).build()
+    }
+
+    @PUT
+    @Path("/owner/{ownerId}/company/{companyId}/pets/adopt")
+    fun adoptPets(
+        @PathParam("ownerId") ownerId: Long,
+        @PathParam("companyId") companyId: Long,
+        petIds: List<Long>
+    ): Response {
+        val petsAdoptedCount = petService.adoptMultiplePets(ownerId, petIds, companyId)
+        return Response.ok("$petsAdoptedCount pets were successfully adopted.").build()
+    }
+
+    @POST
+    @Path("/company/{companyId}/pets")
+    fun createMultiplePets(
+        @PathParam("companyId") companyId: Long,
+        petRecords: List<PetRecord>
+    ): Response {
+        petService.createMultiplePetsUsingBatch(petRecords, companyId)
+        return Response.ok("Pets have been successfully created!").build()
     }
 }
