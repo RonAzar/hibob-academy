@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Controller
 
 @Controller  // Marks the class as a controller, meaning it's responsible for handling incoming HTTP requests
-@Path("/api/ron/azar/pets/")  // Defines the base URL path that this controller will handle
+@Path("/api/pets/")  // Defines the base URL path that this controller will handle
 @Produces(MediaType.APPLICATION_JSON)  // Specifies that the responses produced by this controller will be in JSON format
 @Consumes(MediaType.APPLICATION_JSON)  // Specifies that this endpoint accepts JSON input
 class PetsResource (private val petService: PetService){
