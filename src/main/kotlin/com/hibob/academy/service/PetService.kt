@@ -48,6 +48,7 @@ class PetService @Autowired constructor(
     }
 
     fun getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
+
         val pets = petDao.getPetsByOwnerId(ownerId, companyId)
 
         return pets

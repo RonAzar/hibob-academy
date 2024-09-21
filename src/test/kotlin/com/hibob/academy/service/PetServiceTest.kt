@@ -15,6 +15,7 @@ class PetServiceTest {
     private val pet = PetData(petId, "Waffle", LocalDate.now(), companyId, PetType.DOG, null)
 
     private val petDao = mock<PetDao>()
+    private val ownerDao = mock<OwnerDao>()
     private val petService = PetService(petDao)
     private val ownerDao = mock<OwnerDao>()
 
