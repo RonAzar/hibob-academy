@@ -96,5 +96,4 @@ class PetsResource(private val petService: PetService) {
         petService.createMultiplePetsUsingBatch(petRecords, companyId)
         return Response.ok("Pets have been successfully created!").build()
     }
-
 }
