@@ -72,7 +72,7 @@ class PetsResource (private val petService: PetService){
     @GET
     @Path("types/company/{companyId}")
     fun petTypesAmount(@PathParam("companyId") companyId: Long): Response {
-        val petTypeCountMap = petService.petTypesAmount(companyId)
+        val petTypeCountMap = petService.getPetTypesAmount(companyId)
         return Response.ok(petTypeCountMap).build()
     }
 }
