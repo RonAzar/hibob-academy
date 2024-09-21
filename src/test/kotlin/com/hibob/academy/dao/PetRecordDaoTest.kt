@@ -146,7 +146,7 @@ class PetRecordDaoTest @Autowired constructor(private val sql: DSLContext)  {
 
         val petsAdopted = dao.adoptMultiplePets(5, petsIdsList, companyId)
 
-        assertEquals(2, petsAdopted)
+        assertEquals(3, petsAdopted)
     }
 
     @Test
