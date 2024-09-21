@@ -15,6 +15,7 @@ class PetServiceTest {
     private val pet = PetData(petId, "Waffle", LocalDate.now(), companyId, PetType.DOG, null)
 
     private val petDao = mock<PetDao>()
+    private val ownerDao = mock<OwnerDao>()
     private val petService = PetService(petDao)
 
     @Test
@@ -124,4 +125,33 @@ class PetServiceTest {
         assertEquals(1, result.size)
         assertEquals(PetType.DOG, result[0].petType)
     }
+
+    //SQL2 Service tests
+
+    @Test
+    fun `Test getPetsByOwnerId -- Pets found`() {
+        whenever(ownerDao.getAllOwners(companyId)).thenReturn(listOf(OwnerData(ownerId, "John", "E123", companyId)))
+        whenever(petDao.getPetsByOwnerId(ownerId, companyId)).thenReturn(listOf(pet))
+
+        val result = petService.getPetsByOwnerId(ownerId, companyId)
+
+        assertNotNull(result)
+        assertEquals(1, result.size)
+        assertEquals("Waffle", result[0].petName)
+    }
+
+    // Tests for petTypesAmount
+
+    @Test
+    fun `Test petTypesAmount -- Pets found`() {
+        val petTypesMap = mapOf(PetType.DOG to 3L, PetType.CAT to 2L)
+        whenever(petDao.petTypesAmount(companyId)).thenReturn(petTypesMap)
+
+        val result = petService.getPetTypesAmount(companyId)
+
+        assertNotNull(result)
+        assertEquals(3L, result[PetType.DOG])
+        assertEquals(2L, result[PetType.CAT])
+    }
+
 }

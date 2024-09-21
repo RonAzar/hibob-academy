@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PetService @Autowired constructor(private val petDao: PetDao) {
+class PetService @Autowired constructor(
+    private val petDao: PetDao,
+) {
     fun getAllPets(companyId: Long): List<PetData> {
         return petDao.getAllPets(companyId)
     }
@@ -42,5 +44,16 @@ class PetService @Autowired constructor(private val petDao: PetDao) {
         if (rowsAffected == 0) {
             throw IllegalArgumentException("Failed to update pet's owner. The pet may already have an owner.")
         }
+    }
+
+    fun  getPetsByOwnerId(ownerId: Long, companyId: Long): List<PetData> {
+        val pets = petDao.getPetsByOwnerId(ownerId, companyId)
+
+        return pets
+    }
+
+    fun getPetTypesAmount(companyId: Long): Map<PetType, Long> {
+        val petsMap = petDao.petTypesAmount(companyId)
+        return petsMap
     }
 }
