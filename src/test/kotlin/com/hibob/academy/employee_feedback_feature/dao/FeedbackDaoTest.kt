@@ -37,6 +37,12 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         val anonymousFeedback = testFeedback.copy(isAnonymous = true)
         val submittedFeedbackId = dao.submitFeedback(anonymousFeedback)
         assertNotNull(submittedFeedbackId)
+
+        val feedbackInDB = dao.getFeedbackByFeedbackId(companyId,submittedFeedbackId)
+
+        assertNotNull(feedbackInDB)
+        assertNull(feedbackInDB?.employeeId, "Expected employeeId to be null for anonymous feedback")
+        assertEquals(true, feedbackInDB?.isAnonymous, "Expected feedback to be marked as anonymous")
     }
 
     @Test
