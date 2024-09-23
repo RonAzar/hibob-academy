@@ -16,3 +16,15 @@ class FeedbackTable(tableName: String= "feedback"): JooqTable(tableName){
         val instance = FeedbackTable()
     }
 }
+
+class EmployeesTable(tableName: String= "employees"): JooqTable(tableName){
+    val id = createIntField("id")
+    val firstName = createVarcharField("first_name")
+    val lastName = createVarcharField("last_name")
+    val role = createVarcharField("role")
+    val companyId = createIntField("company_id")
+
+    companion object{
+        val instance = EmployeesTable()
+    }
+}
