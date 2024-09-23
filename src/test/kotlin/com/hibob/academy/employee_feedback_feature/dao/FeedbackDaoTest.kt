@@ -19,7 +19,6 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val dao = FeedbackDao(sql)
     val feedback = FeedbackTable.instance
 
-    @BeforeEach
     @AfterEach
     fun cleanup() {
         sql.deleteFrom(feedback).where(feedback.companyId.eq(companyId)).execute()
