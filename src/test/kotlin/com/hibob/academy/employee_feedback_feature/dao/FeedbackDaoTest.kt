@@ -4,7 +4,6 @@ import com.hibob.academy.utils.BobDbTest
 import org.jooq.DSLContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.junit.jupiter.api.Test
 
