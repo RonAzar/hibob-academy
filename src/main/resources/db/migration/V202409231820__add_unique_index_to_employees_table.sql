@@ -1,0 +1,2 @@
+-- Create a unique index on first_name, last_name, and company_id to ensure only one employee
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_employee_name_company ON employees (first_name, last_name, company_id);
