@@ -37,33 +37,36 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
             .get(feedback.id)
     }
 
-    fun getFeedbackByFeedbackId(companyId: Long, feedbackId: Long): FeedbackData? {
-        return selectFeedbacksByCompanyId(companyId)
-            .and(feedback.id.eq(feedbackId))
-            .fetchOne(feedbackDataMapper)
-    }
-
     fun getFeedbackHistory(companyId: Long, employeeId: Long): List<FeedbackData> {
-        return selectFeedbacksByCompanyId(companyId)
+        return sql.select(
+            feedback.id,
+            feedback.companyId,
+            feedback.employeeId,
+            feedback.feedbackText,
+            feedback.isAnonymous,
+            feedback.department,
+            feedback.createdAt,
+            feedback.status
+        )
+            .from(feedback)
+            .where(feedback.companyId.eq(companyId))
             .and(feedback.employeeId.eq(employeeId))
             .fetch(feedbackDataMapper)
     }
 
     fun getAllFeedbacks(companyId: Long): List<FeedbackData> {
-        return selectFeedbacksByCompanyId(companyId)
+        return sql.select(
+            feedback.id,
+            feedback.companyId,
+            feedback.employeeId,
+            feedback.feedbackText,
+            feedback.isAnonymous,
+            feedback.department,
+            feedback.createdAt,
+            feedback.status
+        )
+            .from(feedback)
+            .where(feedback.companyId.eq(companyId))
             .fetch(feedbackDataMapper)
     }
-
-    private fun selectFeedbacksByCompanyId(companyId: Long) = sql.select(
-        feedback.id,
-        feedback.companyId,
-        feedback.employeeId,
-        feedback.feedbackText,
-        feedback.isAnonymous,
-        feedback.department,
-        feedback.createdAt,
-        feedback.status
-    )
-        .from(feedback)
-        .where(feedback.companyId.eq(companyId))
 }

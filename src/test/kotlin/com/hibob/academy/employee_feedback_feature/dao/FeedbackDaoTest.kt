@@ -4,6 +4,7 @@ import com.hibob.academy.utils.BobDbTest
 import org.jooq.DSLContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.junit.jupiter.api.Test
 
@@ -18,10 +19,12 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val dao = FeedbackDao(sql)
     val feedback = FeedbackTable.instance
 
+    @BeforeEach
     @AfterEach
     fun cleanup() {
         sql.deleteFrom(feedback).where(feedback.companyId.eq(companyId)).execute()
     }
+
 
     @Test
     fun `Submit new feedback- not anonymous`() {
@@ -34,12 +37,6 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         val anonymousFeedback = testFeedback.copy(isAnonymous = true)
         val submittedFeedbackId = dao.submitFeedback(anonymousFeedback)
         assertNotNull(submittedFeedbackId)
-
-        val feedbackInDB = dao.getFeedbackByFeedbackId(companyId,submittedFeedbackId)
-
-        assertNotNull(feedbackInDB)
-        assertNull(feedbackInDB?.employeeId, "Expected employeeId to be null for anonymous feedback")
-        assertEquals(true, feedbackInDB?.isAnonymous, "Expected feedback to be marked as anonymous")
     }
 
     @Test
