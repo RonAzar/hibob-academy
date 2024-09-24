@@ -1,9 +1,6 @@
 package com.hibob.academy.employee_feedback_feature.service
 
-import com.hibob.academy.employee_feedback_feature.dao.EmployeeRole
-import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
-import com.hibob.academy.employee_feedback_feature.dao.FeedbackData
-import com.hibob.academy.employee_feedback_feature.dao.FeedbackSubmission
+import com.hibob.academy.employee_feedback_feature.dao.*
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.core.Response
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,7 +16,6 @@ class FeedbackServiceTest {
     private val feedbackText = "What a feedback!"
     private val isAnonymous = false
     private val department = "Sales"
-    private val testFeedback = FeedbackSubmission(employeeId, companyId, feedbackText, isAnonymous, department)
     private val feedbackDao = mock<FeedbackDao>()
     private val feedbackService = FeedbackService(feedbackDao)
     private val requestContext = mock<ContainerRequestContext>()
@@ -27,11 +23,16 @@ class FeedbackServiceTest {
     @Test
     fun `submitFeedback should submit feedback and return its ID`() {
         val feedbackId = 1L
-        whenever(feedbackDao.submitFeedback(testFeedback)).thenReturn(feedbackId)
+        val feedbackRequest = FeedbackRequest(feedbackText, isAnonymous, department)
 
-        val result = feedbackService.submitFeedback(testFeedback)
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
+        whenever(feedbackDao.submitFeedback(FeedbackSubmission(employeeId, companyId, feedbackRequest.feedbackText, feedbackRequest.isAnonymous, feedbackRequest.department)))
+            .thenReturn(feedbackId)
 
-        assertEquals(feedbackId, result)
+        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
+
+        assertEquals(Response.Status.OK.statusCode, response.status)
     }
 
     @Test

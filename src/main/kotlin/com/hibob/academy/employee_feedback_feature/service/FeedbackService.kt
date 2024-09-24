@@ -2,6 +2,7 @@ package com.hibob.academy.employee_feedback_feature.service
 
 import com.hibob.academy.employee_feedback_feature.dao.EmployeeRole
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
+import com.hibob.academy.employee_feedback_feature.dao.FeedbackRequest
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackSubmission
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.core.Context
@@ -12,8 +13,19 @@ import org.springframework.stereotype.Component
 
 @Component
 class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDao) {
-    fun submitFeedback(newFeedback: FeedbackSubmission): Long {
-        return feedbackDao.submitFeedback(newFeedback)
+    fun submitFeedback(@Context requestContext: ContainerRequestContext, newFeedback: FeedbackRequest): Response {
+        val companyId = requestContext.getProperty("companyId") as? Long
+            ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing companyId").build()
+//        if (newFeedback.isAnonymous) {
+            val employeeId = requestContext.getProperty("employeeId") as? Long
+                ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing employeeId").build()
+//        }
+//        val employeeId = null
+        val feedbackSubmission = FeedbackSubmission(employeeId, companyId, newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
+
+        val feedbackId = feedbackDao.submitFeedback(feedbackSubmission)
+
+        return Response.ok(feedbackId).build()
     }
 
     fun getFeedbackHistory(@Context requestContext: ContainerRequestContext): Response {
