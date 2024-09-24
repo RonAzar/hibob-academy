@@ -15,6 +15,7 @@ import java.util.*
 class EmployeeAuthenticationService @Autowired constructor(private val employeeDao: EmployeeDao) {
     fun createJwtTokenForEmployee(employeeLogin: EmployeeLogin): String {
         val authenticatedEmployee = employeeDao.authenticateEmployee(employeeLogin)
+
         return Jwts.builder()
             .setHeaderParam("typ", "JWT")
             .claim("employeeId", authenticatedEmployee.employeeId)
