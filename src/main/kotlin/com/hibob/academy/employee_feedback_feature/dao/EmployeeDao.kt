@@ -19,11 +19,28 @@ class EmployeeDao @Autowired constructor(private val sql: DSLContext) {
     }
 
     fun authenticateEmployee(loginEmployee: EmployeeLogin): EmployeeData {
-        return sql.select(employee.id, employee.firstName, employee.lastName, employee.role, employee.companyId)
+        return sql.select(employee.id, employee.role, employee.companyId)
             .from(employee)
             .where(employee.companyId.eq(loginEmployee.companyId))
             .and(employee.firstName.eq(loginEmployee.firstName))
             .and(employee.lastName.eq(loginEmployee.lastName))
             .fetchOne(employeeDataMapper) ?: throw IllegalArgumentException("User not found: Incorrect details provided")
+    }
+
+    fun addEmployee(employeeData: EmployeeFullData): Int {
+        return sql.insertInto(employee)
+            .set(employee.firstName, employeeData.firstName)
+            .set(employee.lastName, employeeData.lastName)
+            .set(employee.role, employeeData.role.name.lowercase())
+            .set(employee.companyId, employeeData.companyId)
+            .returning(employee.id)
+            .fetchOne()!!
+            .get(employee.id)
+    }
+
+    fun deleteEmployee(employeeId: Int) {
+        sql.deleteFrom(employee)
+            .where(employee.id.eq(employeeId))
+            .execute()
     }
 }

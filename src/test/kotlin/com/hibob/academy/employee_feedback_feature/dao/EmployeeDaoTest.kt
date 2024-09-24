@@ -2,7 +2,9 @@ package com.hibob.academy.employee_feedback_feature.dao
 
 import com.hibob.academy.utils.BobDbTest
 import org.jooq.DSLContext
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,9 +14,28 @@ class EmployeeDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val employeeDao = EmployeeDao(sql)
 
     private val companyId = 1
-    private val employeeFirstName = "Rachel"
-    private val employeeLastName = "Green"
+    private val employeeFirstName = "Ron"
+    private val employeeLastName = "Azar"
     private val employeeRole = EmployeeRole.ADMIN
+    private var employeeId: Int = 0
+
+    @BeforeEach
+    fun setUp() {
+        // Add the employee before each test
+        val employeeData = EmployeeFullData(
+            id = 0,
+            firstName = employeeFirstName,
+            lastName = employeeLastName,
+            role = employeeRole,
+            companyId = companyId
+        )
+        employeeId = employeeDao.addEmployee(employeeData)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        employeeDao.deleteEmployee(employeeId)
+    }
 
     @Test
     fun `login should return employee data when correct details are provided`() {
