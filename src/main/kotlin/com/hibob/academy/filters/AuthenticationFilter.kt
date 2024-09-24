@@ -31,7 +31,6 @@ class AuthenticationFilter : ContainerRequestFilter {
             return
         }
 
-        // Add claims to the request context properties for later use
         requestContext.setProperty("companyId", claims["companyId"])
         requestContext.setProperty("employeeId", claims["employeeId"])
         requestContext.setProperty("role", claims["role"])
