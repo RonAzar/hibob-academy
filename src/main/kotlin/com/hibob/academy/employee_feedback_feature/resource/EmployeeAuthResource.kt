@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Controller
 
 @Controller
+@Produces
 @Path("/api/auth/employee")
 class EmployeeAuthResource(private val employeeService: EmployeeAuthenticationService) {
     @Path("/login")
