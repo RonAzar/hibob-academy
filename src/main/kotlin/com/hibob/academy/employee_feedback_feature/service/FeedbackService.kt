@@ -1,7 +1,7 @@
 package com.hibob.academy.employee_feedback_feature.service
 
+import com.hibob.academy.employee_feedback_feature.dao.EmployeeRole
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
-import com.hibob.academy.employee_feedback_feature.dao.FeedbackData
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackSubmission
 import com.hibob.academy.filters.AuthenticationFilter.Companion.COOKIE_NAME
 import com.hibob.academy.filters.AuthenticationFilter.Companion.SECRET_KEY
@@ -22,46 +22,57 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
     }
 
     fun getFeedbackHistory(@Context headers: HttpHeaders): Response {
-        // Extract the session cookie
-        val cookie: Cookie? = headers.cookies[COOKIE_NAME]
-
-        val jwtToken = cookie!!.value
-
-        // Decode JWT to extract companyId and employeeId
-        val claims: Claims
-        try {
-            claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)  // Replace with your actual secret key
-                .build()
-                .parseClaimsJws(jwtToken)
-                .body
-        } catch (e: Exception) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized: Invalid token").build()
+        val claimsResult = extractClaimsFromCookie(headers)
+        if (claimsResult.status != Response.Status.OK.statusCode) {
+            return claimsResult
         }
+        val claims = claimsResult.entity as Claims
 
-        // Extracting companyId and employeeId from the JWT claims
-        val companyId = claims["companyId"] as? Long ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing companyId").build()
-        val employeeId = claims["employeeId"] as? Long ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing employeeId").build()
+        val companyId = claims["companyId"] as? Long ?: return Response.status(Response.Status.BAD_REQUEST)
+            .entity("Bad Request: Missing companyId").build()
+        val employeeId = claims["employeeId"] as? Long ?: return Response.status(Response.Status.BAD_REQUEST)
+            .entity("Bad Request: Missing employeeId").build()
 
-//        // Check if the employee exists in the database - if not, return 404 Not Found
-//        val employeeExists = employeeDao.checkEmployeeExists(companyId, employeeId)
-//        if (!employeeExists) {
-//            return Response.status(Response.Status.NOT_FOUND).entity("Not Found: Employee does not exist").build()
-//        }
-//
-//        // Check if the employee is authenticated as admin/hr/current employee - if not, return 401 Unauthorized
-//        val isAuthenticated = employeeDao.checkAuthentication(companyId, employeeId)
-//        if (!isAuthenticated) {
-//            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized: Access denied").build()
-//        }
-
-        // Fetch feedback history
         val feedbackHistory = feedbackDao.getFeedbackHistory(companyId, employeeId)
         return Response.ok(feedbackHistory).build()
     }
 
-    fun getAllFeedbacks(companyId: Long): List<FeedbackData> {
-        //Need to check if employee authenticate admin/hr - if not--> 401 Unauthorized
-        return feedbackDao.getAllFeedbacks(companyId)
+    fun getAllFeedbacks(@Context headers: HttpHeaders): Response {
+        val claimsResult = extractClaimsFromCookie(headers)
+        if (claimsResult.status != Response.Status.OK.statusCode) {
+            return claimsResult
+        }
+        val claims = claimsResult.entity as Claims
+
+        val companyId = claims["companyId"] as? Long ?: return Response.status(Response.Status.BAD_REQUEST)
+            .entity("Bad Request: Missing companyId").build()
+        val employeeRole = try {
+            EmployeeRole.valueOf(claims["role"].toString().uppercase())
+        } catch (e: IllegalArgumentException) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: role not found!").build()
+        }
+
+        if (employeeRole == EmployeeRole.ADMIN || employeeRole == EmployeeRole.HR) {
+            return Response.ok(feedbackDao.getAllFeedbacks(companyId)).build()
+        }
+        return Response.status(Response.Status.FORBIDDEN).entity("Forbidden: You do not have access to view feedbacks").build()
+    }
+
+    // Private method to handle JWT extraction and validation
+    private fun extractClaimsFromCookie(headers: HttpHeaders): Response {
+        val cookie: Cookie = headers.cookies[COOKIE_NAME]
+            ?: return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized: No session cookie found").build()
+
+        val jwtToken = cookie.value
+        return try {
+            val claims = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(jwtToken)
+                .body
+            Response.ok(claims).build()
+        } catch (e: Exception) {
+            Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized: Invalid token").build()
+        }
     }
 }
