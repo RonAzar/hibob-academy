@@ -25,10 +25,8 @@ class AuthenticationFilter : ContainerRequestFilter {
 
         val claims = verifyAndExtractClaims(cookie)
 
-        if (claims == null) {
-            requestContext.abortWith(
-                Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build()
-            )
+        claims ?: let {
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
 
             return
         }
