@@ -29,6 +29,7 @@ class AuthenticationFilter : ContainerRequestFilter {
             requestContext.abortWith(
                 Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build()
             )
+
             return
         }
 
