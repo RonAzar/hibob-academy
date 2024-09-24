@@ -1,8 +1,7 @@
 package com.hibob.academy.employee_feedback_feature.service
 
 import com.hibob.academy.employee_feedback_feature.dao.*
-import jakarta.ws.rs.container.ContainerRequestContext
-import jakarta.ws.rs.core.Response
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -18,59 +17,17 @@ class FeedbackServiceTest {
     private val department = "Sales"
     private val feedbackDao = mock<FeedbackDao>()
     private val feedbackService = FeedbackService(feedbackDao)
-    private val requestContext = mock<ContainerRequestContext>()
 
     @Test
     fun `submitFeedback should submit feedback and return its ID`() {
         val feedbackId = 1L
-        val feedbackRequest = FeedbackRequest(feedbackText, isAnonymous, department)
+        val feedbackSubmission = FeedbackSubmission(employeeId, companyId, feedbackText, isAnonymous, department)
 
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
-        whenever(feedbackDao.submitFeedback(FeedbackSubmission(employeeId, companyId, feedbackRequest.feedbackText, feedbackRequest.isAnonymous, feedbackRequest.department))).thenReturn(feedbackId)
+        whenever(feedbackDao.submitFeedback(feedbackSubmission)).thenReturn(feedbackId)
 
-        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
+        val result = feedbackService.submitFeedback(feedbackSubmission)
 
-        assertEquals(Response.Status.OK.statusCode, response.status)
-    }
-
-    @Test
-    fun `submitFeedback should return Bad Request when companyId is missing`() {
-        val feedbackRequest = FeedbackRequest(feedbackText, isAnonymous, department)
-
-        whenever(requestContext.getProperty("companyId")).thenReturn(null)
-
-        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
-
-        assertEquals(Response.Status.BAD_REQUEST.statusCode, response.status)
-        assertEquals("Bad Request: Missing companyId", response.entity)
-    }
-
-    @Test
-    fun `submitFeedback should return Bad Request when employeeId is missing and feedback is not anonymous`() {
-        val feedbackRequest = FeedbackRequest(feedbackText, isAnonymous, department)
-
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("employeeId")).thenReturn(null)
-
-        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
-
-        assertEquals(Response.Status.BAD_REQUEST.statusCode, response.status)
-        assertEquals("Bad Request: Missing employeeId", response.entity)
-    }
-
-    @Test
-    fun `submitFeedback should submit anonymous feedback without employeeId`() {
-        val feedbackId = 2L
-        val feedbackRequest = FeedbackRequest(feedbackText, true, department) // anonymous feedback
-
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(feedbackDao.submitFeedback(FeedbackSubmission(null, companyId, feedbackRequest.feedbackText, feedbackRequest.isAnonymous, feedbackRequest.department))).thenReturn(feedbackId)
-
-        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
-
-        assertEquals(Response.Status.OK.statusCode, response.status)
-        assertEquals(feedbackId, response.entity)
+        assertEquals(feedbackId, result)
     }
 
     @Test
@@ -79,84 +36,23 @@ class FeedbackServiceTest {
             FeedbackData(1L, employeeId, companyId, feedbackText, isAnonymous, department, LocalDateTime.now(), true)
         )
 
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
         whenever(feedbackDao.getFeedbackHistory(companyId, employeeId)).thenReturn(feedbackDataList)
 
-        val result = feedbackService.getFeedbackHistory(requestContext)
+        val result = feedbackService.getFeedbackHistory(companyId, employeeId)
 
-        assertEquals(Response.Status.OK.statusCode, result.status)
-        assertEquals(feedbackDataList, result.entity)
+        assertEquals(feedbackDataList, result)
     }
 
     @Test
-    fun `getFeedbackHistory should return 400 when companyId is missing`() {
-        whenever(requestContext.getProperty("companyId")).thenReturn(null)
-        whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
-
-        val result = feedbackService.getFeedbackHistory(requestContext)
-
-        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
-        assertEquals("Bad Request: Missing companyId", result.entity)
-    }
-
-    @Test
-    fun `getFeedbackHistory should return 400 when employeeId is missing`() {
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("employeeId")).thenReturn(null)
-
-        val result = feedbackService.getFeedbackHistory(requestContext)
-
-        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
-        assertEquals("Bad Request: Missing employeeId", result.entity)
-    }
-
-    @Test
-    fun `getAllFeedbacks should return all feedbacks when authorized`() {
+    fun `getAllFeedbacks should return all feedbacks when valid`() {
         val feedbackDataList = listOf(
             FeedbackData(1L, employeeId, companyId, feedbackText, isAnonymous, department, LocalDateTime.now(), true)
         )
 
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("role")).thenReturn(EmployeeRole.ADMIN.name)
         whenever(feedbackDao.getAllFeedbacks(companyId)).thenReturn(feedbackDataList)
 
-        val result = feedbackService.getAllFeedbacks(requestContext)
+        val result = feedbackService.getAllFeedbacks(companyId)
 
-        assertEquals(Response.Status.OK.statusCode, result.status)
-        assertEquals(feedbackDataList, result.entity)
-    }
-
-    @Test
-    fun `getAllFeedbacks should return 400 when role is missing`() {
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("role")).thenReturn(null)
-
-        val result = feedbackService.getAllFeedbacks(requestContext)
-
-        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
-        assertEquals("Bad Request: Missing role", result.entity)
-    }
-
-    @Test
-    fun `getAllFeedbacks should return 400 when role is invalid`() {
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("role")).thenReturn("INVALID_ROLE")
-
-        val result = feedbackService.getAllFeedbacks(requestContext)
-
-        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
-        assertEquals("Bad Request: Role not found!", result.entity)
-    }
-
-    @Test
-    fun `getAllFeedbacks should return 403 when employee is not authorized`() {
-        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
-        whenever(requestContext.getProperty("role")).thenReturn(EmployeeRole.EMPLOYEE.name)
-
-        val result = feedbackService.getAllFeedbacks(requestContext)
-
-        assertEquals(Response.Status.FORBIDDEN.statusCode, result.status)
-        assertEquals("Forbidden: You do not have access to view feedbacks", result.entity)
+        assertEquals(feedbackDataList, result)
     }
 }
