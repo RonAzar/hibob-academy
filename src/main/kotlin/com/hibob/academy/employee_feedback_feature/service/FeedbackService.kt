@@ -16,11 +16,12 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
     fun submitFeedback(@Context requestContext: ContainerRequestContext, newFeedback: FeedbackRequest): Response {
         val companyId = requestContext.getProperty("companyId") as? Long
             ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing companyId").build()
-//        if (newFeedback.isAnonymous) {
-            val employeeId = requestContext.getProperty("employeeId") as? Long
+
+        val employeeId = if (!newFeedback.isAnonymous) {
+            requestContext.getProperty("employeeId") as? Long
                 ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing employeeId").build()
-//        }
-//        val employeeId = null
+        } else null
+
         val feedbackSubmission = FeedbackSubmission(employeeId, companyId, newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
 
         val feedbackId = feedbackDao.submitFeedback(feedbackSubmission)

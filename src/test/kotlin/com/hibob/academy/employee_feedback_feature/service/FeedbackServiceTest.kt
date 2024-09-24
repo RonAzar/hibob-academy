@@ -27,12 +27,50 @@ class FeedbackServiceTest {
 
         whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
         whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
-        whenever(feedbackDao.submitFeedback(FeedbackSubmission(employeeId, companyId, feedbackRequest.feedbackText, feedbackRequest.isAnonymous, feedbackRequest.department)))
-            .thenReturn(feedbackId)
+        whenever(feedbackDao.submitFeedback(FeedbackSubmission(employeeId, companyId, feedbackRequest.feedbackText, feedbackRequest.isAnonymous, feedbackRequest.department))).thenReturn(feedbackId)
 
         val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
 
         assertEquals(Response.Status.OK.statusCode, response.status)
+    }
+
+    @Test
+    fun `submitFeedback should return Bad Request when companyId is missing`() {
+        val feedbackRequest = FeedbackRequest(feedbackText, isAnonymous, department)
+
+        whenever(requestContext.getProperty("companyId")).thenReturn(null)
+
+        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
+
+        assertEquals(Response.Status.BAD_REQUEST.statusCode, response.status)
+        assertEquals("Bad Request: Missing companyId", response.entity)
+    }
+
+    @Test
+    fun `submitFeedback should return Bad Request when employeeId is missing and feedback is not anonymous`() {
+        val feedbackRequest = FeedbackRequest(feedbackText, isAnonymous, department)
+
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("employeeId")).thenReturn(null)
+
+        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
+
+        assertEquals(Response.Status.BAD_REQUEST.statusCode, response.status)
+        assertEquals("Bad Request: Missing employeeId", response.entity)
+    }
+
+    @Test
+    fun `submitFeedback should submit anonymous feedback without employeeId`() {
+        val feedbackId = 2L
+        val feedbackRequest = FeedbackRequest(feedbackText, true, department) // anonymous feedback
+
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(feedbackDao.submitFeedback(FeedbackSubmission(null, companyId, feedbackRequest.feedbackText, feedbackRequest.isAnonymous, feedbackRequest.department))).thenReturn(feedbackId)
+
+        val response = feedbackService.submitFeedback(requestContext, feedbackRequest)
+
+        assertEquals(Response.Status.OK.statusCode, response.status)
+        assertEquals(feedbackId, response.entity)
     }
 
     @Test
