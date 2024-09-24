@@ -28,7 +28,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
 
         val feedbackSubmission = FeedbackSubmission(employeeId?.toLong(), companyId.toLong(), newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
 
-        return Response.ok(feedbackService.submitFeedback(requestContext, newFeedback)).build()
+        return Response.ok(feedbackService.submitFeedback(feedbackSubmission)).build()
     }
 
     @Path("/history")
@@ -41,7 +41,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         val employeeId = requestContext.getProperty("employeeId") as? Number
             ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing employeeId").build()
 
-        return Response.ok(feedbackService.getFeedbackHistory(requestContext)).build()
+        return Response.ok(feedbackService.getFeedbackHistory(companyId.toLong(), employeeId.toLong())).build()
     }
 
     @Path("/view/all")
@@ -61,7 +61,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         }
 
         if (employeeRole == EmployeeRole.ADMIN || employeeRole == EmployeeRole.HR) {
-            return Response.ok(feedbackService.getAllFeedbacks(requestContext)).build()
+            return Response.ok(feedbackService.getAllFeedbacks(companyId.toLong())).build()
         }
 
         return Response.status(Response.Status.FORBIDDEN).entity("Forbidden: You do not have access to view feedbacks").build()
