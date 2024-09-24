@@ -13,10 +13,4 @@ enum class EmployeeRole(val role: String) {
     MANAGER("manager"),
     EMPLOYEE("employee"),
     HR("hr");
-
-    companion object {
-        fun fromString(role: String): EmployeeRole? {
-            return entries.find { it.role.equals(role, ignoreCase = true) }
-        }
-    }
 }
