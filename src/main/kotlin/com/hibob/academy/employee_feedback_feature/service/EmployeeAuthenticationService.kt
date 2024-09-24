@@ -13,8 +13,6 @@ import java.util.*
 
 @Component
 class EmployeeAuthenticationService @Autowired constructor(private val employeeDao: EmployeeDao) {
-    companion object{
-    }
 
     fun createJwtTokenForEmployee(employeeLogin: EmployeeLogin): String {
         val authenticatedEmployee = employeeDao.authenticateEmployee(employeeLogin)
