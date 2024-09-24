@@ -1,11 +1,9 @@
 package com.hibob.academy.filters
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
 import org.springframework.stereotype.Component
-import com.hibob.academy.service.SessionService.Companion.SECRET_KEY
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.Provider
 
@@ -15,8 +13,9 @@ import jakarta.ws.rs.ext.Provider
 class AuthenticationFilter : ContainerRequestFilter {
 
     companion object {
-        private const val LOGIN_PATH = "api/users/login"
-        const val COOKIE_NAME = "ron_cookie_name"  // Replace with actual cookie name
+        private const val LOGIN_PATH = "api/auth/employee/login"
+        const val COOKIE_NAME = "session_employee_cookie"
+        const val SECRET_KEY = "L5t6JwZqHasdfghjkxcvbnfghjk1nGv3xTu9Rp8EyK7fcQ2zV1lPm7BxW5hQ2dNG2w8mK6E3jRQ1sVgYnU5cZ4t"
     }
 
     override fun filter(requestContext: ContainerRequestContext) {
@@ -24,21 +23,29 @@ class AuthenticationFilter : ContainerRequestFilter {
 
         val cookie = requestContext.cookies[COOKIE_NAME]?.value
 
-        if (!verify(cookie)) {
+        val claims = verifyAndExtractClaims(cookie)
+
+        claims ?: let {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
+
+            return
         }
+
+        // Add claims to the request context properties for later use
+        requestContext.setProperty("companyId", claims["companyId"])
+        requestContext.setProperty("employeeId", claims["employeeId"])
+        requestContext.setProperty("role", claims["role"])
     }
 
     private val jwtParser = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build()
 
-    fun verify(cookie: String?): Boolean {
+    private fun verifyAndExtractClaims(cookie: String?): Claims? {
         return cookie?.let {
             try {
-                jwtParser.parseClaimsJws(it)
-                true
+                jwtParser.parseClaimsJws(it).body
             } catch (ex: Exception) {
-                false
+                null
             }
-        } ?: false
+        }
     }
 }

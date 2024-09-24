@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class EmployeeDao @Autowired constructor(private val sql: DSLContext) {
+
     private val employee = EmployeesTable.instance
     private val company = CompanyTable.instance
 
