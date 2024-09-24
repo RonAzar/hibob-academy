@@ -1,5 +1,4 @@
 package com.hibob.academy.filters
-import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
@@ -23,29 +22,21 @@ class AuthenticationFilter : ContainerRequestFilter {
 
         val cookie = requestContext.cookies[COOKIE_NAME]?.value
 
-        val claims = verifyAndExtractClaims(cookie)
-
-        claims ?: let {
+        if (!verify(cookie)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or expired token").build())
-
-            return
         }
-
-        // Add claims to the request context properties for later use
-        requestContext.setProperty("companyId", claims["companyId"])
-        requestContext.setProperty("employeeId", claims["employeeId"])
-        requestContext.setProperty("role", claims["role"])
     }
 
     private val jwtParser = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build()
 
-    private fun verifyAndExtractClaims(cookie: String?): Claims? {
+    fun verify(cookie: String?): Boolean {
         return cookie?.let {
             try {
-                jwtParser.parseClaimsJws(it).body
+                jwtParser.parseClaimsJws(it)
+                true
             } catch (ex: Exception) {
-                null
+                false
             }
-        }
+        } ?: false
     }
 }
