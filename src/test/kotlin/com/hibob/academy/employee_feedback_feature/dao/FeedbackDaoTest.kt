@@ -23,7 +23,6 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         sql.deleteFrom(feedback).where(feedback.companyId.eq(companyId)).execute()
     }
 
-
     @Test
     fun `Submit new feedback- not anonymous`() {
         val submittedFeedbackId = dao.submitFeedback(testFeedback)
