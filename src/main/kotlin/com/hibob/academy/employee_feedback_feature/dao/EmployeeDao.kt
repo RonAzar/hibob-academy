@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class EmployeeDao @Autowired constructor(private val sql: DSLContext) {
     private val employee = EmployeesTable.instance
+    private val company = CompanyTable.instance
 
     private val employeeDataMapper = RecordMapper<Record, EmployeeData> { record ->
         EmployeeData(
@@ -41,6 +42,20 @@ class EmployeeDao @Autowired constructor(private val sql: DSLContext) {
     fun deleteEmployee(employeeId: Int) {
         sql.deleteFrom(employee)
             .where(employee.id.eq(employeeId))
+            .execute()
+    }
+
+    fun addCompany(name: String): Int {
+        return sql.insertInto(company)
+            .set(company.name, name)
+            .returning(company.id)
+            .fetchOne()!!
+            .get(company.id)
+    }
+
+    fun deleteCompany(companyId: Int) {
+        sql.deleteFrom(company)
+            .where(company.id.eq(companyId))
             .execute()
     }
 }

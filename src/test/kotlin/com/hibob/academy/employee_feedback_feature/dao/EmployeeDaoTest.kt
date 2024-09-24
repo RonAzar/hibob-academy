@@ -13,14 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired
 class EmployeeDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val employeeDao = EmployeeDao(sql)
 
-    private val companyId = 1
+    private val companyName = "Test Company"
     private val employeeFirstName = "Ron"
     private val employeeLastName = "Azar"
     private val employeeRole = EmployeeRole.ADMIN
+    private var companyId: Int = 0
     private var employeeId: Int = 0
 
     @BeforeEach
     fun setUp() {
+        // Add the company before each test
+        companyId = employeeDao.addCompany(companyName)
+
         // Add the employee before each test
         val employeeData = EmployeeFullData(
             id = 0,
@@ -34,7 +38,9 @@ class EmployeeDaoTest @Autowired constructor(private val sql: DSLContext) {
 
     @AfterEach
     fun tearDown() {
+        // Delete the employee and company after each test
         employeeDao.deleteEmployee(employeeId)
+        employeeDao.deleteCompany(companyId)
     }
 
     @Test
