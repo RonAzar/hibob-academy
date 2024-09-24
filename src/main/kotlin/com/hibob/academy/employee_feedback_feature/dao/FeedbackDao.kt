@@ -1,6 +1,5 @@
 package com.hibob.academy.employee_feedback_feature.dao
 
-
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.jooq.Record
