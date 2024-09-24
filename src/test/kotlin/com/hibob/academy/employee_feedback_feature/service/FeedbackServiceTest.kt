@@ -1,15 +1,19 @@
 package com.hibob.academy.employee_feedback_feature.service
 
+import com.hibob.academy.employee_feedback_feature.dao.EmployeeRole
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackData
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackSubmission
-import org.junit.jupiter.api.Assertions.*
+import jakarta.ws.rs.container.ContainerRequestContext
+import jakarta.ws.rs.core.Response
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.time.LocalDateTime
 
-class FeedbackServiceTest{
+class FeedbackServiceTest {
+
     private val companyId = 3L
     private val employeeId = 1L
     private val feedbackText = "What a feedback!"
@@ -18,6 +22,7 @@ class FeedbackServiceTest{
     private val testFeedback = FeedbackSubmission(employeeId, companyId, feedbackText, isAnonymous, department)
     private val feedbackDao = mock<FeedbackDao>()
     private val feedbackService = FeedbackService(feedbackDao)
+    private val requestContext = mock<ContainerRequestContext>()
 
     @Test
     fun `submitFeedback should submit feedback and return its ID`() {
@@ -35,22 +40,36 @@ class FeedbackServiceTest{
             FeedbackData(1L, employeeId, companyId, feedbackText, isAnonymous, department, LocalDateTime.now(), true)
         )
 
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
         whenever(feedbackDao.getFeedbackHistory(companyId, employeeId)).thenReturn(feedbackDataList)
 
-        val result = feedbackService.getFeedbackHistory(companyId, employeeId)
+        val result = feedbackService.getFeedbackHistory(requestContext)
 
-        assertEquals(feedbackDataList, result)
+        assertEquals(Response.Status.OK.statusCode, result.status)
+        assertEquals(feedbackDataList, result.entity)
     }
 
     @Test
-    fun `getFeedbackHistory should throw 404 Not Found when employee does not exist`() {
-        // To be implemented: Check if employee exists in the database; mock this behavior and assert NotFound exception.
+    fun `getFeedbackHistory should return 400 when companyId is missing`() {
+        whenever(requestContext.getProperty("companyId")).thenReturn(null)
+        whenever(requestContext.getProperty("employeeId")).thenReturn(employeeId)
+
+        val result = feedbackService.getFeedbackHistory(requestContext)
+
+        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
+        assertEquals("Bad Request: Missing companyId", result.entity)
     }
 
     @Test
-    fun `getFeedbackHistory should throw 401 Unauthorized if employee is not authorized`() {
-        // To be implemented: Check authentication of employee/admin/hr; mock this behavior and assert Unauthorized exception.
-        // Waiting for login method...
+    fun `getFeedbackHistory should return 400 when employeeId is missing`() {
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("employeeId")).thenReturn(null)
+
+        val result = feedbackService.getFeedbackHistory(requestContext)
+
+        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
+        assertEquals("Bad Request: Missing employeeId", result.entity)
     }
 
     @Test
@@ -59,16 +78,46 @@ class FeedbackServiceTest{
             FeedbackData(1L, employeeId, companyId, feedbackText, isAnonymous, department, LocalDateTime.now(), true)
         )
 
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("role")).thenReturn(EmployeeRole.ADMIN.name)
         whenever(feedbackDao.getAllFeedbacks(companyId)).thenReturn(feedbackDataList)
 
-        val result = feedbackService.getAllFeedbacks(companyId)
+        val result = feedbackService.getAllFeedbacks(requestContext)
 
-        assertEquals(feedbackDataList, result)
+        assertEquals(Response.Status.OK.statusCode, result.status)
+        assertEquals(feedbackDataList, result.entity)
     }
 
     @Test
-    fun `getAllFeedbacks should throw 401 Unauthorized if employee is not authorized`() {
-        // To be implemented: Mock unauthorized access for admin/hr checks and assert Unauthorized exception.
-        // Waiting for login method...
+    fun `getAllFeedbacks should return 400 when role is missing`() {
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("role")).thenReturn(null)
+
+        val result = feedbackService.getAllFeedbacks(requestContext)
+
+        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
+        assertEquals("Bad Request: Missing role", result.entity)
+    }
+
+    @Test
+    fun `getAllFeedbacks should return 400 when role is invalid`() {
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("role")).thenReturn("INVALID_ROLE")
+
+        val result = feedbackService.getAllFeedbacks(requestContext)
+
+        assertEquals(Response.Status.BAD_REQUEST.statusCode, result.status)
+        assertEquals("Bad Request: Role not found!", result.entity)
+    }
+
+    @Test
+    fun `getAllFeedbacks should return 403 when employee is not authorized`() {
+        whenever(requestContext.getProperty("companyId")).thenReturn(companyId)
+        whenever(requestContext.getProperty("role")).thenReturn(EmployeeRole.EMPLOYEE.name)
+
+        val result = feedbackService.getAllFeedbacks(requestContext)
+
+        assertEquals(Response.Status.FORBIDDEN.statusCode, result.status)
+        assertEquals("Forbidden: You do not have access to view feedbacks", result.entity)
     }
 }
