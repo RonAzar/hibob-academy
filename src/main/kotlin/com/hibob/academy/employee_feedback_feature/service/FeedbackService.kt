@@ -14,15 +14,15 @@ import org.springframework.stereotype.Component
 @Component
 class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDao) {
     fun submitFeedback(@Context requestContext: ContainerRequestContext, newFeedback: FeedbackRequest): Response {
-        val companyId = requestContext.getProperty("companyId") as? Long
+        val companyId = requestContext.getProperty("companyId") as? Number
             ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing companyId").build()
 
         val employeeId = if (!newFeedback.isAnonymous) {
-            requestContext.getProperty("employeeId") as? Long
+            requestContext.getProperty("employeeId") as? Number
                 ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing employeeId").build()
         } else null
 
-        val feedbackSubmission = FeedbackSubmission(employeeId, companyId, newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
+        val feedbackSubmission = FeedbackSubmission(employeeId?.toLong(), companyId.toLong(), newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
 
         val feedbackId = feedbackDao.submitFeedback(feedbackSubmission)
 
@@ -30,18 +30,18 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
     }
 
     fun getFeedbackHistory(@Context requestContext: ContainerRequestContext): Response {
-        val companyId = requestContext.getProperty("companyId") as? Long
+        val companyId = requestContext.getProperty("companyId") as? Number
             ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing companyId").build()
 
-        val employeeId = requestContext.getProperty("employeeId") as? Long
+        val employeeId = requestContext.getProperty("employeeId") as? Number
             ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing employeeId").build()
 
-        val feedbackHistory = feedbackDao.getFeedbackHistory(companyId, employeeId)
+        val feedbackHistory = feedbackDao.getFeedbackHistory(companyId.toLong(), employeeId.toLong())
         return Response.ok(feedbackHistory).build()
     }
 
     fun getAllFeedbacks(@Context requestContext: ContainerRequestContext): Response {
-        val companyId = requestContext.getProperty("companyId") as? Long
+        val companyId = requestContext.getProperty("companyId") as? Number
             ?: return Response.status(Response.Status.BAD_REQUEST).entity("Bad Request: Missing companyId").build()
 
         val roleString = requestContext.getProperty("role") as? String
@@ -54,7 +54,7 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
         }
 
         if (employeeRole == EmployeeRole.ADMIN || employeeRole == EmployeeRole.HR) {
-            return Response.ok(feedbackDao.getAllFeedbacks(companyId)).build()
+            return Response.ok(feedbackDao.getAllFeedbacks(companyId.toLong())).build()
         }
         return Response.status(Response.Status.FORBIDDEN).entity("Forbidden: You do not have access to view feedbacks").build()
     }
