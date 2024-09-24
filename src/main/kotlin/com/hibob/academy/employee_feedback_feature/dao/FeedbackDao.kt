@@ -38,9 +38,8 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
     }
 
     fun getFeedbackByFeedbackId(companyId: Long, feedbackId: Long): FeedbackData? {
-        return selectFeedback()
-            .where(feedback.id.eq(feedbackId))
-            .and(feedback.companyId.eq(companyId))
+        return selectFeedbacksByCompanyId(companyId)
+            .and(feedback.id.eq(feedbackId))
             .fetchOne(feedbackDataMapper)
     }
 
@@ -67,16 +66,4 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
     )
         .from(feedback)
         .where(feedback.companyId.eq(companyId))
-
-    private fun selectFeedback() = sql.select(
-        feedback.id,
-        feedback.companyId,
-        feedback.employeeId,
-        feedback.feedbackText,
-        feedback.isAnonymous,
-        feedback.department,
-        feedback.createdAt,
-        feedback.status
-        )
-        .from(feedback)
 }
