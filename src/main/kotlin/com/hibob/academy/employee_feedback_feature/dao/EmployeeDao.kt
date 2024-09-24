@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class EmployeeDao @Autowired constructor(private val sql: DSLContext) {
-
     private val employee = EmployeesTable.instance
 
     private val employeeDataMapper = RecordMapper<Record, EmployeeData> { record ->
@@ -19,14 +18,8 @@ class EmployeeDao @Autowired constructor(private val sql: DSLContext) {
         )
     }
 
-    fun login(loginEmployee: EmployeeLogin): EmployeeData {
-        return sql.select(
-            employee.id,
-            employee.firstName,
-            employee.lastName,
-            employee.role,
-            employee.companyId
-        )
+    fun authenticateEmployee(loginEmployee: EmployeeLogin): EmployeeData {
+        return sql.select(employee.id, employee.firstName, employee.lastName, employee.role, employee.companyId)
             .from(employee)
             .where(employee.companyId.eq(loginEmployee.companyId))
             .and(employee.firstName.eq(loginEmployee.firstName))

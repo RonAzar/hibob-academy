@@ -20,7 +20,7 @@ class EmployeeDaoTest @Autowired constructor(private val sql: DSLContext) {
     fun `login should return employee data when correct details are provided`() {
         val loginEmployee = EmployeeLogin(employeeFirstName, employeeLastName, companyId)
 
-        val result = employeeDao.login(loginEmployee)
+        val result = employeeDao.authenticateEmployee(loginEmployee)
 
         assertNotNull(result)
         assertEquals(companyId, result.companyId)
@@ -32,7 +32,7 @@ class EmployeeDaoTest @Autowired constructor(private val sql: DSLContext) {
         val loginEmployee = EmployeeLogin("WrongName", "WrongLastName", companyId)
 
         val exception = assertThrows<IllegalArgumentException> {
-            employeeDao.login(loginEmployee)
+            employeeDao.authenticateEmployee(loginEmployee)
         }
 
         assertEquals("User not found: Incorrect details provided", exception.message)
