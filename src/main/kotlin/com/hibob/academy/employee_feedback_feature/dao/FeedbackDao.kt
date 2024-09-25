@@ -42,13 +42,14 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
         return allFeedbacksByCompanyId.fetch(feedbackDataMapper)
     }
 
-    fun getFeedbackStatus(searchedFeedback: SearchedFeedback): FeedbackData{
+    fun getFeedbackStatus(searchedFeedback: SearchedFeedback): FeedbackData {
         return selectFeedbacksByCompanyId(searchedFeedback.companyId)
             .and(feedback.id.eq(searchedFeedback.feedbackId))
-            .fetchOne(feedbackDataMapper)?: throw IllegalArgumentException("Feedback not found: Incorrect feedbackId provided")
+            .fetchOne(feedbackDataMapper)
+            ?: throw IllegalArgumentException("Feedback not found: Incorrect feedbackId provided")
     }
 
-    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus): Int{
+    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus): Int {
         val rowsAffected = sql.update(feedback)
             .set(feedback.status, updateFeedback.status)
             .where(feedback.id.eq(updateFeedback.feedbackId))

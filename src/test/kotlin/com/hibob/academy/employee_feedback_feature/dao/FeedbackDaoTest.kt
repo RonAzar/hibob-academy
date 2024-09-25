@@ -34,7 +34,7 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         dao.submitFeedback(testFeedbackSales)
         dao.submitFeedback(testFeedbackHR)
 
-        val filter = FeedbackFilter(companyId = companyId, isAnonymous = true, createdAt= null, department = null)
+        val filter = FeedbackFilter(companyId = companyId, isAnonymous = true, createdAt = null, department = null)
         val feedbacks = dao.getFeedbacksUsingFilter(filter)
 
         assertNotNull(feedbacks)
@@ -47,7 +47,7 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         dao.submitFeedback(testFeedbackSales)
         dao.submitFeedback(testFeedbackHR)
 
-        val filter = FeedbackFilter(companyId,isAnonymous = null, createdAt= null, department = departmentSales)
+        val filter = FeedbackFilter(companyId, isAnonymous = null, createdAt = null, department = departmentSales)
         val feedbacks = dao.getFeedbacksUsingFilter(filter)
 
         assertNotNull(feedbacks)
@@ -60,7 +60,8 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         dao.submitFeedback(testFeedbackSales)
         dao.submitFeedback(testFeedbackHR)
 
-        val filter = FeedbackFilter(companyId, createdAt = createdAt.minusDays(1), department = null, isAnonymous = null)
+        val filter =
+            FeedbackFilter(companyId, createdAt = createdAt.minusDays(1), department = null, isAnonymous = null)
         val feedbacks = dao.getFeedbacksUsingFilter(filter)
 
         assertNotNull(feedbacks)
@@ -122,7 +123,7 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         val submittedFeedbackId = dao.submitFeedback(anonymousFeedback)
         assertNotNull(submittedFeedbackId)
 
-        val feedbackInDB = dao.getFeedbackByFeedbackId(companyId,submittedFeedbackId)
+        val feedbackInDB = dao.getFeedbackByFeedbackId(companyId, submittedFeedbackId)
 
         assertNotNull(feedbackInDB)
         assertNull(feedbackInDB?.employeeId, "Expected employeeId to be null for anonymous feedback")
