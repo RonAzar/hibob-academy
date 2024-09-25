@@ -1,6 +1,7 @@
 package com.hibob.academy.employee_feedback_feature.dao
 
 import com.hibob.academy.utils.JooqTable
+import com.sun.java.swing.ui.CommonUI.createTextField
 
 class FeedbackTable(tableName: String = "feedback") : JooqTable(tableName) {
     val id = createBigIntField("id")
@@ -14,6 +15,18 @@ class FeedbackTable(tableName: String = "feedback") : JooqTable(tableName) {
 
     companion object {
         val instance = FeedbackTable()
+    }
+}
+
+class FeedbackResponseTable(tableName: String = "feedback_response") : JooqTable(tableName){
+    val id = createBigIntField("id")
+    val responseText = createVarcharField("response_text")
+    val responderId = createBigIntField("responder_id")
+    val feedbackId = createBigIntField("feedback_id")
+    val createdAt = createLocalDateTimeField("created_at")
+
+    companion object{
+        val instance = FeedbackResponseTable()
     }
 }
 
