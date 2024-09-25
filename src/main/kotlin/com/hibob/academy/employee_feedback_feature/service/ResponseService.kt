@@ -16,6 +16,7 @@ class ResponseService @Autowired constructor(
         feedbackExists?.let {
             return responseDao.submitResponse(newFeedbackResponse)
         }
+
         throw IllegalArgumentException("Feedback with ID ${newFeedbackResponse.feedbackId} does not exist.")
     }
 }
