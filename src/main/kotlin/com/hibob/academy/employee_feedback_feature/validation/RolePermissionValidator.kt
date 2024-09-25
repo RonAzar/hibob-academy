@@ -28,13 +28,19 @@ class RolePermissionValidator {
                 null
             }
         }
-
-        fun hrOrAdminValidation(role: EmployeeRole): Boolean {
-            return role == EmployeeRole.ADMIN || role == EmployeeRole.HR
+        enum class Permissions {
+            VIEW_ALL_FEEDBACKS,
+            CHANGE_FEEDBACK_STATUS,
         }
 
-        fun changeFeedbackStatusPermission(role: EmployeeRole): Boolean {
-            return role == EmployeeRole.HR
+
+        private val rolePermissions = mapOf(
+            EmployeeRole.HR to setOf(Permissions.VIEW_ALL_FEEDBACKS, Permissions.CHANGE_FEEDBACK_STATUS),
+            EmployeeRole.ADMIN to setOf(Permissions.VIEW_ALL_FEEDBACKS),
+        )
+
+        fun hasPermission(role: EmployeeRole, permission: Permissions): Boolean {
+            return rolePermissions[role]?.contains(permission) ?: false
         }
     }
 }

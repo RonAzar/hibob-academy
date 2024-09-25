@@ -11,7 +11,8 @@ import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Controller
 import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.extractClaimAsLong
 import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.extractRole
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.hrOrAdminValidation
+import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.hasPermission
+import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.Permissions
 
 @Controller
 @Path("/api/feedback")
@@ -49,7 +50,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         val companyId = extractClaimAsLong(requestContext, "companyId")!!
         val employeeRole = extractRole(requestContext)!!
 
-        return if (hrOrAdminValidation(employeeRole)) {
+        return if (hasPermission(employeeRole, Permissions.VIEW_ALL_FEEDBACKS)) {
             Response.ok(feedbackService.getAllFeedbacks(companyId)).build()
         } else {
             Response.status(Response.Status.FORBIDDEN).entity("UNAUTHORIZED: You do not have access to view feedbacks").build()
