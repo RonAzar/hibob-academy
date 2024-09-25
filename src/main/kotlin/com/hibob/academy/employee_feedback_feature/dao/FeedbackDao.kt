@@ -5,6 +5,7 @@ import org.jooq.RecordMapper
 import org.jooq.Record
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
@@ -21,6 +22,41 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
             record[feedback.createdAt],
             record[feedback.status]
         )
+    }
+
+    fun getFeedbacksUsingFilter(filter: FeedbackFilter): List<FeedbackData> {
+        var allFeedbacksByCompanyId = selectFeedbacksByCompanyId(filter.companyId)
+
+        filter.isAnonymous?.let {
+            allFeedbacksByCompanyId = allFeedbacksByCompanyId.and(feedback.isAnonymous.eq(it))
+        }
+
+        filter.department?.let {
+            allFeedbacksByCompanyId = allFeedbacksByCompanyId.and(feedback.department.eq(it))
+        }
+
+        filter.createdAt?.let {
+            allFeedbacksByCompanyId = allFeedbacksByCompanyId.and(feedback.createdAt.between(it, LocalDateTime.now()))
+        }
+
+        return allFeedbacksByCompanyId.fetch(feedbackDataMapper)
+    }
+
+    fun getFeedbackStatus(searchedFeedback: SearchedFeedback): FeedbackData {
+        return selectFeedbacksByCompanyId(searchedFeedback.companyId)
+            .and(feedback.id.eq(searchedFeedback.feedbackId))
+            .fetchOne(feedbackDataMapper)
+            ?: throw IllegalArgumentException("Feedback not found: Incorrect feedbackId provided")
+    }
+
+    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus): Int {
+        val rowsAffected = sql.update(feedback)
+            .set(feedback.status, updateFeedback.status)
+            .where(feedback.id.eq(updateFeedback.feedbackId))
+            .and(feedback.companyId.eq(updateFeedback.companyId))
+            .execute()
+
+        return rowsAffected
     }
 
     fun submitFeedback(newFeedback: FeedbackSubmission): Long {
