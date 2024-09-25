@@ -17,7 +17,7 @@ class FeedbackResponseDao @Autowired constructor(private val sql: DSLContext) {
             record[response.responderId],
             record[response.feedbackId],
             record[response.createdAt]
-            )
+        )
     }
 
     fun submitResponse(newFeedbackResponse: ResponseSubmission): Long {
@@ -31,7 +31,13 @@ class FeedbackResponseDao @Autowired constructor(private val sql: DSLContext) {
     }
 
     fun getResponseById(id: Long): FeedbackResponseData? {
-        return sql.select(response.id, response.responseText, response.responderId, response.feedbackId, response.createdAt)
+        return sql.select(
+            response.id,
+            response.responseText,
+            response.responderId,
+            response.feedbackId,
+            response.createdAt
+        )
             .from(response)
             .where(response.id.eq(id))
             .fetchOne(feedbackResponseDataMapper)
