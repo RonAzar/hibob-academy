@@ -29,10 +29,12 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
 
     fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus): String {
         val rowsAffected = feedbackDao.updateFeedbackStatus(updateFeedback)
-        return if (rowsAffected > 0) {
+        val result = if (rowsAffected > 0) {
             "Feedback status updated!"
         } else {
             "Feedback status not updated!"
         }
+
+        return result
     }
 }
