@@ -10,6 +10,9 @@ data class EmployeeFullData(val id: Int, val firstName: String, val lastName: St
 data class EmployeeData(val employeeId: Int, val role: EmployeeRole, val companyId: Int)
 data class EmployeeLogin(val firstName: String, val lastName: String, val companyId: Int)
 
+data class FeedbackResponseData(val responseId: Long, val responseText: String, val responderId: Long, val feedbackId: Long, val createdAt: LocalDateTime)
+data class ResponseSubmission(val responseText: String, val responderId: Long, val feedbackId: Long)
+
 enum class EmployeeRole{
     ADMIN,
     MANAGER,
