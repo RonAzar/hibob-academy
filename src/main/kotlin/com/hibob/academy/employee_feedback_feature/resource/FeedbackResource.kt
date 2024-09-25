@@ -20,13 +20,13 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @Path("/submit")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    fun submitFeedback(@Context requestContext: ContainerRequestContext, newFeedback: FeedbackRequest): Response{
+    fun submitFeedback(@Context requestContext: ContainerRequestContext, newFeedback: FeedbackRequest): Response {
         val companyId = extractClaimAsLong(requestContext, "companyId")!!
-        val employeeId = if(!newFeedback.isAnonymous){
+        val employeeId = if (!newFeedback.isAnonymous) {
             extractClaimAsLong(requestContext, "employeeId")!!
-        }
-        else
+        } else {
             null
+        }
 
         val feedbackSubmission = FeedbackSubmission(employeeId, companyId, newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
 
