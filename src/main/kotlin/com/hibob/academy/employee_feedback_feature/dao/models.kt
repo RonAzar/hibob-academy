@@ -2,6 +2,9 @@ package com.hibob.academy.employee_feedback_feature.dao
 
 import java.time.LocalDateTime
 
+data class UpdateFeedbackStatus(val companyId: Long, val feedbackId: Long, val status: Boolean)
+data class SearchedFeedback(val companyId: Long, val feedbackId: Long)
+data class FeedbackFilter(val companyId: Long, val createdAt: LocalDateTime?, val department: String?, val isAnonymous: Boolean?)
 data class FeedbackRequest(val feedbackText: String, val isAnonymous: Boolean, val department: String)
 data class FeedbackSubmission(val employeeId: Long?, val companyId: Long, val feedbackText: String, val isAnonymous: Boolean, val department: String)
 data class FeedbackData(val feedbackId: Long, val employeeId: Long?, val companyId: Long, val feedbackText: String, val isAnonymous: Boolean, val department: String, val createdAt: LocalDateTime, val status: Boolean)
