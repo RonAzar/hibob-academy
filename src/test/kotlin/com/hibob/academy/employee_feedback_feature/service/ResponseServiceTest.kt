@@ -4,6 +4,7 @@ import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackData
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackResponseDao
 import com.hibob.academy.employee_feedback_feature.dao.ResponseSubmission
+import jakarta.ws.rs.NotFoundException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -51,7 +52,7 @@ class ResponseServiceTest {
 
         val responseSubmission = ResponseSubmission(responseText, feedbackId)
 
-        val exception = assertThrows<IllegalArgumentException> {
+        val exception = assertThrows<NotFoundException> {
             responseService.submitResponse(responseSubmission, responseId, companyId)
         }
 
