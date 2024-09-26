@@ -90,12 +90,13 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         val companyId = extractClaimAsLong(requestContext, "companyId")!!
         val searchedFeedback = SearchedFeedback(companyId, feedbackId)
 
-        return if (hasPermission(role, Permissions.VIEW_ALL_FEEDBACKS)) {
-            Response.ok("feedback status: ${feedbackService.getFeedbackStatus(searchedFeedback)}").build()
-        } else {
-            Response.status(Response.Status.UNAUTHORIZED)
+        if (!hasPermission(role, Permissions.VIEW_ALL_FEEDBACKS)) {
+
+            return Response.status(Response.Status.UNAUTHORIZED)
                 .entity("UNAUTHORIZED: You do not have access to view feedback status!").build()
         }
+
+        return Response.ok("feedback status: ${feedbackService.getFeedbackStatus(searchedFeedback)}").build()
     }
 
     @Path("update/status")
@@ -105,11 +106,12 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         val companyId = extractClaimAsLong(requestContext, "companyId")!!
         val role = extractRole(requestContext)!!
 
-        return if (hasPermission(role, Permissions.CHANGE_FEEDBACK_STATUS)) {
-            Response.ok(feedbackService.updateFeedbackStatus(updateFeedback, companyId)).build()
-        } else {
-            Response.status(Response.Status.UNAUTHORIZED)
+        if (!hasPermission(role, Permissions.CHANGE_FEEDBACK_STATUS)) {
+
+            return Response.status(Response.Status.UNAUTHORIZED)
                 .entity("UNAUTHORIZED: You do not have access to change feedback status!").build()
         }
+
+        return Response.ok(feedbackService.updateFeedbackStatus(updateFeedback, companyId)).build()
     }
 }
