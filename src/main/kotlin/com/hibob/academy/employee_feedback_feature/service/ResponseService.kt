@@ -14,7 +14,7 @@ class ResponseService @Autowired constructor(
     private val feedbackDao: FeedbackDao
 ) {
     fun submitResponse(newFeedbackResponse: ResponseSubmission, employeeId: Long, companyId: Long): Long {
-        validateTextSubmission(newFeedbackResponse.responseText,300)
+        validateTextSubmission(newFeedbackResponse.responseText, 300)
         val feedbackExists = feedbackDao.getFeedbackByFeedbackId(companyId, newFeedbackResponse.feedbackId)
         feedbackExists?.let {
             if (!feedbackExists.isAnonymous) {
