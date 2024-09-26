@@ -12,7 +12,7 @@ class FeedbackResponseDaoTest @Autowired constructor(private val sql: DSLContext
     private val responseText = "What a Response!"
     private val responderId = -1L
     private val feedbackId = -2L
-    private val testResponse = ResponseSubmission(responseText, responderId, feedbackId)
+    private val testResponse = ResponseSubmission(responseText, feedbackId)
     private val dao = FeedbackResponseDao(sql)
     val response = FeedbackResponseTable.instance
 
@@ -23,7 +23,7 @@ class FeedbackResponseDaoTest @Autowired constructor(private val sql: DSLContext
 
     @Test
     fun `Submit new response`() {
-        val submittedResponseId = dao.submitResponse(testResponse)
+        val submittedResponseId = dao.submitResponse(testResponse, responderId)
         assertNotNull(submittedResponseId)
         assertNotNull(dao.getResponseById(submittedResponseId))
     }

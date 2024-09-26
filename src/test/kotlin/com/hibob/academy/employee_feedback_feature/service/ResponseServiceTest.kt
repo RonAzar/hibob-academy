@@ -4,6 +4,7 @@ import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackData
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackResponseDao
 import com.hibob.academy.employee_feedback_feature.dao.ResponseSubmission
+import jakarta.ws.rs.NotFoundException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -37,10 +38,10 @@ class ResponseServiceTest {
         )
 
         whenever(feedbackDao.getFeedbackByFeedbackId(companyId, feedbackId)).thenReturn(testFeedbackData)
-        whenever(responseDao.submitResponse(any())).thenReturn(responseId)
+        whenever(responseDao.submitResponse(any(), any())).thenReturn(responseId)
 
-        val responseSubmission = ResponseSubmission(responseText, responderId, feedbackId)
-        val result = responseService.submitResponse(responseSubmission, companyId)
+        val responseSubmission = ResponseSubmission(responseText, feedbackId)
+        val result = responseService.submitResponse(responseSubmission, responseId, companyId)
 
         assertEquals(responseId, result)
     }
@@ -49,10 +50,10 @@ class ResponseServiceTest {
     fun `submitResponse should throw an exception if feedback does not exist`() {
         whenever(feedbackDao.getFeedbackByFeedbackId(companyId, feedbackId)).thenReturn(null)
 
-        val responseSubmission = ResponseSubmission(responseText, responderId, feedbackId)
+        val responseSubmission = ResponseSubmission(responseText, feedbackId)
 
-        val exception = assertThrows<IllegalArgumentException> {
-            responseService.submitResponse(responseSubmission, companyId)
+        val exception = assertThrows<NotFoundException> {
+            responseService.submitResponse(responseSubmission, responseId, companyId)
         }
 
         assertEquals("Feedback with ID $feedbackId does not exist.", exception.message)

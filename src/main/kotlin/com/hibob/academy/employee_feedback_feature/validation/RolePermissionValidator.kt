@@ -31,11 +31,12 @@ class RolePermissionValidator {
         enum class Permissions {
             VIEW_ALL_FEEDBACKS,
             CHANGE_FEEDBACK_STATUS,
+            RESPONSE_TO_FEEDBACK
         }
 
 
         private val rolePermissions = mapOf(
-            EmployeeRole.HR to setOf(Permissions.VIEW_ALL_FEEDBACKS, Permissions.CHANGE_FEEDBACK_STATUS),
+            EmployeeRole.HR to setOf(Permissions.VIEW_ALL_FEEDBACKS, Permissions.CHANGE_FEEDBACK_STATUS, Permissions.RESPONSE_TO_FEEDBACK),
             EmployeeRole.ADMIN to setOf(Permissions.VIEW_ALL_FEEDBACKS),
         )
 
