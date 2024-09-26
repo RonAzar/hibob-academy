@@ -1,6 +1,7 @@
 package com.hibob.academy.employee_feedback_feature.service
 
 import com.hibob.academy.employee_feedback_feature.dao.*
+import com.hibob.academy.employee_feedback_feature.validation.ValidateSubmission.Companion.validateTextSubmission
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.springframework.stereotype.Component
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Component
 @Component
 class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDao) {
     fun submitFeedback(feedbackSubmission: FeedbackSubmission): Long {
+        validateTextSubmission(feedbackSubmission.feedbackText, 300)
+        validateTextSubmission(feedbackSubmission.department, 100)
+
         return feedbackDao.submitFeedback(feedbackSubmission)
     }
 
