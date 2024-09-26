@@ -3,6 +3,7 @@ package com.hibob.academy.employee_feedback_feature.service
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackResponseDao
 import com.hibob.academy.employee_feedback_feature.dao.ResponseSubmission
+import com.hibob.academy.employee_feedback_feature.validation.ValidateSubmission.Companion.validateTextSubmission
 import jakarta.ws.rs.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -13,6 +14,7 @@ class ResponseService @Autowired constructor(
     private val feedbackDao: FeedbackDao
 ) {
     fun submitResponse(newFeedbackResponse: ResponseSubmission, employeeId: Long, companyId: Long): Long {
+        validateTextSubmission(newFeedbackResponse.responseText,300)
         val feedbackExists = feedbackDao.getFeedbackByFeedbackId(companyId, newFeedbackResponse.feedbackId)
         feedbackExists?.let {
             if (!feedbackExists.isAnonymous) {
