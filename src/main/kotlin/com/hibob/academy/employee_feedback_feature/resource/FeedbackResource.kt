@@ -1,7 +1,6 @@
 package com.hibob.academy.employee_feedback_feature.resource
 
-import com.hibob.academy.employee_feedback_feature.dao.FeedbackRequest
-import com.hibob.academy.employee_feedback_feature.dao.FeedbackSubmission
+import com.hibob.academy.employee_feedback_feature.dao.*
 import com.hibob.academy.employee_feedback_feature.service.FeedbackService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.container.ContainerRequestContext
@@ -28,7 +27,13 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
             null
         }
 
-        val feedbackSubmission = FeedbackSubmission(employeeId, companyId, newFeedback.feedbackText, newFeedback.isAnonymous, newFeedback.department)
+        val feedbackSubmission = FeedbackSubmission(
+            employeeId,
+            companyId,
+            newFeedback.feedbackText,
+            newFeedback.isAnonymous,
+            newFeedback.department
+        )
 
         return Response.ok(feedbackService.submitFeedback(feedbackSubmission)).build()
     }
@@ -53,7 +58,58 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         return if (hasPermission(employeeRole, Permissions.VIEW_ALL_FEEDBACKS)) {
             Response.ok(feedbackService.getAllFeedbacks(companyId)).build()
         } else {
-            Response.status(Response.Status.FORBIDDEN).entity("UNAUTHORIZED: You do not have access to view feedbacks").build()
+            Response.status(Response.Status.UNAUTHORIZED)
+                .entity("UNAUTHORIZED: You do not have access to view feedbacks")
+                .build()
+        }
+    }
+
+    @Path("view/filter")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    fun getFilteredFeedbacks(@Context requestContext: ContainerRequestContext, filter: FeedbackFilter): Response {
+        val companyId = extractClaimAsLong(requestContext, "companyId")!!
+        val employeeRole = extractRole(requestContext)!!
+
+        return if (hasPermission(employeeRole, Permissions.VIEW_ALL_FEEDBACKS)) {
+            Response.ok(feedbackService.getFeedbacksUsingFilter(filter, companyId)).build()
+        } else {
+            Response.status(Response.Status.UNAUTHORIZED)
+                .entity("UNAUTHORIZED: You do not have access to view feedbacks").build()
+        }
+    }
+
+    @Path("view/status/{feedbackId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    fun getStatus(
+        @Context requestContext: ContainerRequestContext,
+        @PathParam("feedbackId") feedbackId: Long
+    ): Response {
+        val role = extractRole(requestContext)!!
+        val companyId = extractClaimAsLong(requestContext, "companyId")!!
+        val searchedFeedback = SearchedFeedback(companyId, feedbackId)
+
+        return if (hasPermission(role, Permissions.VIEW_ALL_FEEDBACKS)) {
+            Response.ok("feedback status: ${feedbackService.getFeedbackStatus(searchedFeedback)}").build()
+        } else {
+            Response.status(Response.Status.UNAUTHORIZED)
+                .entity("UNAUTHORIZED: You do not have access to view feedback status!").build()
+        }
+    }
+
+    @Path("update/status")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    fun updateStatus(@Context requestContext: ContainerRequestContext, updateFeedback: UpdateFeedbackStatus): Response {
+        val companyId = extractClaimAsLong(requestContext, "companyId")!!
+        val role = extractRole(requestContext)!!
+
+        return if (hasPermission(role, Permissions.CHANGE_FEEDBACK_STATUS)) {
+            Response.ok(feedbackService.updateFeedbackStatus(updateFeedback, companyId)).build()
+        } else {
+            Response.status(Response.Status.UNAUTHORIZED)
+                .entity("UNAUTHORIZED: You do not have access to change feedback status!").build()
         }
     }
 }
