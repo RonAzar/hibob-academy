@@ -34,8 +34,8 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         dao.submitFeedback(testFeedbackSales)
         dao.submitFeedback(testFeedbackHR)
 
-        val filter = FeedbackFilter(companyId = companyId, isAnonymous = true, createdAt = null, department = null)
-        val feedbacks = dao.getFeedbacksUsingFilter(filter)
+        val filter = FeedbackFilter(isAnonymous = true, createdAt = null, department = null)
+        val feedbacks = dao.getFeedbacksUsingFilter(filter, companyId)
 
         assertNotNull(feedbacks)
         assertEquals(1, feedbacks.size)
@@ -47,8 +47,8 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         dao.submitFeedback(testFeedbackSales)
         dao.submitFeedback(testFeedbackHR)
 
-        val filter = FeedbackFilter(companyId, isAnonymous = null, createdAt = null, department = departmentSales)
-        val feedbacks = dao.getFeedbacksUsingFilter(filter)
+        val filter = FeedbackFilter(isAnonymous = null, createdAt = null, department = departmentSales)
+        val feedbacks = dao.getFeedbacksUsingFilter(filter, companyId)
 
         assertNotNull(feedbacks)
         assertEquals(1, feedbacks.size)
@@ -61,8 +61,8 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         dao.submitFeedback(testFeedbackHR)
 
         val filter =
-            FeedbackFilter(companyId, createdAt = createdAt.minusDays(1), department = null, isAnonymous = null)
-        val feedbacks = dao.getFeedbacksUsingFilter(filter)
+            FeedbackFilter(createdAt = createdAt.minusDays(1), department = null, isAnonymous = null)
+        val feedbacks = dao.getFeedbacksUsingFilter(filter, companyId)
 
         assertNotNull(feedbacks)
         assertEquals(2, feedbacks.size)
@@ -94,8 +94,8 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     fun `Update feedback status - success`() {
         val submittedFeedbackId = dao.submitFeedback(testFeedback)
 
-        val updateFeedback = UpdateFeedbackStatus(companyId, submittedFeedbackId, status = false)
-        val rowsAffected = dao.updateFeedbackStatus(updateFeedback)
+        val updateFeedback = UpdateFeedbackStatus(submittedFeedbackId, status = false)
+        val rowsAffected = dao.updateFeedbackStatus(updateFeedback, companyId)
 
         assertEquals(1, rowsAffected)
 
@@ -105,8 +105,8 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
 
     @Test
     fun `Update feedback status - feedback does not exist`() {
-        val updateFeedback = UpdateFeedbackStatus(companyId, -1L, status = true)
-        val rowsAffected = dao.updateFeedbackStatus(updateFeedback)
+        val updateFeedback = UpdateFeedbackStatus(-1L, status = true)
+        val rowsAffected = dao.updateFeedbackStatus(updateFeedback, companyId)
 
         assertEquals(0, rowsAffected)
     }

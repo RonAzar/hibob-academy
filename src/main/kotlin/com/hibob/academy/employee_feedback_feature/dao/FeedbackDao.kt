@@ -24,8 +24,8 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
         )
     }
 
-    fun getFeedbacksUsingFilter(filter: FeedbackFilter): List<FeedbackData> {
-        var allFeedbacksByCompanyId = selectFeedbacksByCompanyId(filter.companyId)
+    fun getFeedbacksUsingFilter(filter: FeedbackFilter, companyId: Long): List<FeedbackData> {
+        var allFeedbacksByCompanyId = selectFeedbacksByCompanyId(companyId)
 
         filter.isAnonymous?.let {
             allFeedbacksByCompanyId = allFeedbacksByCompanyId.and(feedback.isAnonymous.eq(it))
@@ -49,11 +49,11 @@ class FeedbackDao @Autowired constructor(private val sql: DSLContext) {
             ?: throw IllegalArgumentException("Feedback not found: Incorrect feedbackId provided")
     }
 
-    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus): Int {
+    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus, companyId: Long): Int {
         val rowsAffected = sql.update(feedback)
             .set(feedback.status, updateFeedback.status)
             .where(feedback.id.eq(updateFeedback.feedbackId))
-            .and(feedback.companyId.eq(updateFeedback.companyId))
+            .and(feedback.companyId.eq(companyId))
             .execute()
 
         return rowsAffected

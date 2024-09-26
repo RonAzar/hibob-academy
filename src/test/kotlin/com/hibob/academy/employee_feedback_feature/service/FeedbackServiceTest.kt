@@ -23,7 +23,6 @@ class FeedbackServiceTest {
     @Test
     fun `getFeedbacksUsingFilter should return feedbacks when filters are applied`() {
         val feedbackFilter = FeedbackFilter(
-            companyId = companyId,
             isAnonymous = true,
             department = "Sales",
             createdAt = LocalDateTime.now().minusDays(1)
@@ -32,9 +31,9 @@ class FeedbackServiceTest {
             FeedbackData(1L, employeeId, companyId, feedbackText, true, department, LocalDateTime.now(), true)
         )
 
-        whenever(feedbackDao.getFeedbacksUsingFilter(feedbackFilter)).thenReturn(expectedFeedbacks)
+        whenever(feedbackDao.getFeedbacksUsingFilter(feedbackFilter, companyId)).thenReturn(expectedFeedbacks)
 
-        val result = feedbackService.getFeedbacksUsingFilter(feedbackFilter)
+        val result = feedbackService.getFeedbacksUsingFilter(feedbackFilter, companyId)
 
         assertEquals(expectedFeedbacks, result)
     }
@@ -66,22 +65,22 @@ class FeedbackServiceTest {
 
     @Test
     fun `updateFeedbackStatus should return success message when status is updated`() {
-        val updateFeedbackStatus = UpdateFeedbackStatus(companyId = companyId, feedbackId = 1L, status = true)
+        val updateFeedbackStatus = UpdateFeedbackStatus(feedbackId = 1L, status = true)
 
-        whenever(feedbackDao.updateFeedbackStatus(updateFeedbackStatus)).thenReturn(1)
+        whenever(feedbackDao.updateFeedbackStatus(updateFeedbackStatus, companyId)).thenReturn(1)
 
-        val result = feedbackService.updateFeedbackStatus(updateFeedbackStatus)
+        val result = feedbackService.updateFeedbackStatus(updateFeedbackStatus, companyId)
 
         assertEquals("Feedback status updated!", result)
     }
 
     @Test
     fun `updateFeedbackStatus should return failure message when status is not updated`() {
-        val updateFeedbackStatus = UpdateFeedbackStatus(companyId = companyId, feedbackId = 1L, status = true)
+        val updateFeedbackStatus = UpdateFeedbackStatus(feedbackId = 1L, status = true)
 
-        whenever(feedbackDao.updateFeedbackStatus(updateFeedbackStatus)).thenReturn(0)
+        whenever(feedbackDao.updateFeedbackStatus(updateFeedbackStatus, companyId)).thenReturn(0)
 
-        val result = feedbackService.updateFeedbackStatus(updateFeedbackStatus)
+        val result = feedbackService.updateFeedbackStatus(updateFeedbackStatus, companyId)
 
         assertEquals("Feedback status not updated!", result)
     }
