@@ -19,16 +19,16 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
         return feedbackDao.getAllFeedbacks(companyId)
     }
 
-    fun getFeedbacksUsingFilter(filter: FeedbackFilter): List<FeedbackData> {
-        return feedbackDao.getFeedbacksUsingFilter(filter)
+    fun getFeedbacksUsingFilter(filter: FeedbackFilter, companyId: Long): List<FeedbackData> {
+        return feedbackDao.getFeedbacksUsingFilter(filter, companyId)
     }
 
     fun getFeedbackStatus(searchedFeedback: SearchedFeedback): Boolean {
         return feedbackDao.getFeedbackStatus(searchedFeedback).status
     }
 
-    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus): String {
-        val rowsAffected = feedbackDao.updateFeedbackStatus(updateFeedback)
+    fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus, companyId: Long): String {
+        val rowsAffected = feedbackDao.updateFeedbackStatus(updateFeedback, companyId)
         val result = if (rowsAffected > 0) {
             "Feedback status updated!"
         } else {
