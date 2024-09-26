@@ -1,11 +1,10 @@
 package com.hibob.academy.employee_feedback_feature.resource
 
+import com.hibob.academy.employee_feedback_feature.dao.EmployeeRole
 import com.hibob.academy.employee_feedback_feature.dao.ResponseSubmission
 import com.hibob.academy.employee_feedback_feature.service.ResponseService
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.Permissions
 import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.extractClaimAsLong
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.extractRole
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.hasPermission
+import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.validatePermissions
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
@@ -21,19 +20,12 @@ class ResponseResource(private val responseService: ResponseService) {
     @Path("/submit")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    fun submitResponse(
-        @Context requestContext: ContainerRequestContext,
-        newFeedbackResponse: ResponseSubmission
-    ): Response {
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
-        val role = extractRole(requestContext)!!
-        val employeeId = extractClaimAsLong(requestContext, "employeeId")!!
-
-        if (!hasPermission(role, Permissions.RESPONSE_TO_FEEDBACK)) {
-
-            return Response.status(Response.Status.UNAUTHORIZED)
-                .entity("UNAUTHORIZED: You do not have permission to respond to feedbacks").build()
-        }
+    fun submitResponse(@Context requestContext: ContainerRequestContext, newFeedbackResponse: ResponseSubmission): Response {
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.HR),
+            "UNAUTHORIZED: You do not have permission to respond to feedbacks"
+        )
+        val employeeId = extractClaimAsLong(requestContext, "employeeId")
 
         val responseId = responseService.submitResponse(newFeedbackResponse, employeeId, companyId)
 
