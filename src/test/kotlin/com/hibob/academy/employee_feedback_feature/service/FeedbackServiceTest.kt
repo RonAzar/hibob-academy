@@ -1,6 +1,7 @@
 package com.hibob.academy.employee_feedback_feature.service
 
 import com.hibob.academy.employee_feedback_feature.dao.*
+import jakarta.ws.rs.NotFoundException
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -41,7 +42,8 @@ class FeedbackServiceTest {
     @Test
     fun `getFeedbackStatus should return feedback status when feedback exists`() {
         val searchedFeedback = SearchedFeedback(companyId = companyId, feedbackId = 1L)
-        val feedbackData = FeedbackData(1L, employeeId, companyId, feedbackText, isAnonymous, department, LocalDateTime.now(), true)
+        val feedbackData =
+            FeedbackData(1L, employeeId, companyId, feedbackText, isAnonymous, department, LocalDateTime.now(), true)
 
         whenever(feedbackDao.getFeedbackStatus(searchedFeedback)).thenReturn(feedbackData)
 
@@ -80,9 +82,9 @@ class FeedbackServiceTest {
 
         whenever(feedbackDao.updateFeedbackStatus(updateFeedbackStatus, companyId)).thenReturn(0)
 
-        val result = feedbackService.updateFeedbackStatus(updateFeedbackStatus, companyId)
-
-        assertEquals("Feedback status not updated!", result)
+        assertThrows<NotFoundException> {
+            feedbackService.updateFeedbackStatus(updateFeedbackStatus, companyId)
+        }
     }
 
     @Test
