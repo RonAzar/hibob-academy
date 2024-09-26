@@ -9,9 +9,7 @@ import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Controller
 import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.extractClaimAsLong
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.extractRole
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.hasPermission
-import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.Permissions
+import com.hibob.academy.employee_feedback_feature.validation.RolePermissionValidator.Companion.validatePermissions
 
 @Controller
 @Path("/api/feedback")
@@ -20,9 +18,13 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     fun submitFeedback(@Context requestContext: ContainerRequestContext, newFeedback: FeedbackRequest): Response {
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.EMPLOYEE, EmployeeRole.ADMIN, EmployeeRole.HR, EmployeeRole.MANAGER),
+            "UNAUTHORIZED: You do not have access to submit feedbacks"
+        )
+
         val employeeId = if (!newFeedback.isAnonymous) {
-            extractClaimAsLong(requestContext, "employeeId")!!
+            extractClaimAsLong(requestContext, "employeeId")
         } else {
             null
         }
@@ -42,8 +44,11 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     fun getFeedbackHistory(@Context requestContext: ContainerRequestContext): Response {
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
-        val employeeId = extractClaimAsLong(requestContext, "employeeId")!!
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.EMPLOYEE, EmployeeRole.ADMIN, EmployeeRole.HR, EmployeeRole.MANAGER),
+            "UNAUTHORIZED: You do not have access to get history"
+        )
+        val employeeId = extractClaimAsLong(requestContext, "employeeId")
 
         return Response.ok(feedbackService.getFeedbackHistory(companyId, employeeId)).build()
     }
@@ -52,31 +57,24 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     fun getAllFeedbacks(@Context requestContext: ContainerRequestContext): Response {
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
-        val employeeRole = extractRole(requestContext)!!
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.HR, EmployeeRole.ADMIN),
+            "UNAUTHORIZED: You do not have access to view feedbacks"
+        )
 
-        return if (hasPermission(employeeRole, Permissions.VIEW_ALL_FEEDBACKS)) {
-            Response.ok(feedbackService.getAllFeedbacks(companyId)).build()
-        } else {
-            Response.status(Response.Status.UNAUTHORIZED)
-                .entity("UNAUTHORIZED: You do not have access to view feedbacks")
-                .build()
-        }
+        return Response.ok(feedbackService.getAllFeedbacks(companyId)).build()
     }
 
     @Path("view/filter")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     fun getFilteredFeedbacks(@Context requestContext: ContainerRequestContext, filter: FeedbackFilter): Response {
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
-        val employeeRole = extractRole(requestContext)!!
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.HR, EmployeeRole.ADMIN),
+            "UNAUTHORIZED: You do not have access to view feedbacks"
+        )
 
-        return if (hasPermission(employeeRole, Permissions.VIEW_ALL_FEEDBACKS)) {
-            Response.ok(feedbackService.getFeedbacksUsingFilter(filter, companyId)).build()
-        } else {
-            Response.status(Response.Status.UNAUTHORIZED)
-                .entity("UNAUTHORIZED: You do not have access to view feedbacks").build()
-        }
+        return Response.ok(feedbackService.getFeedbacksUsingFilter(filter, companyId)).build()
     }
 
     @Path("view/status/{feedbackId}")
@@ -86,15 +84,11 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         @Context requestContext: ContainerRequestContext,
         @PathParam("feedbackId") feedbackId: Long
     ): Response {
-        val role = extractRole(requestContext)!!
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.HR, EmployeeRole.ADMIN),
+            "UNAUTHORIZED: You do not have access to view feedback status!"
+        )
         val searchedFeedback = SearchedFeedback(companyId, feedbackId)
-
-        if (!hasPermission(role, Permissions.VIEW_ALL_FEEDBACKS)) {
-
-            return Response.status(Response.Status.UNAUTHORIZED)
-                .entity("UNAUTHORIZED: You do not have access to view feedback status!").build()
-        }
 
         return Response.ok("feedback status: ${feedbackService.getFeedbackStatus(searchedFeedback)}").build()
     }
@@ -103,14 +97,10 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     fun updateStatus(@Context requestContext: ContainerRequestContext, updateFeedback: UpdateFeedbackStatus): Response {
-        val companyId = extractClaimAsLong(requestContext, "companyId")!!
-        val role = extractRole(requestContext)!!
-
-        if (!hasPermission(role, Permissions.CHANGE_FEEDBACK_STATUS)) {
-
-            return Response.status(Response.Status.UNAUTHORIZED)
-                .entity("UNAUTHORIZED: You do not have access to change feedback status!").build()
-        }
+        val companyId = validatePermissions(
+            requestContext, setOf(EmployeeRole.HR),
+            "UNAUTHORIZED: You do not have access to change feedback status!"
+        )
 
         return Response.ok(feedbackService.updateFeedbackStatus(updateFeedback, companyId)).build()
     }
