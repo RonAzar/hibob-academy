@@ -27,11 +27,18 @@ class ResponseResource(private val responseService: ResponseService) {
     ): Response {
         val companyId = extractClaimAsLong(requestContext, "companyId")!!
         val role = extractRole(requestContext)!!
+        val employeeId = extractClaimAsLong(requestContext, "employeeId")!!
 
         return if (hasPermission(role, Permissions.RESPONSE_TO_FEEDBACK)) {
-            Response.ok("Response submitted successfully response id: ${responseService.submitResponse(newFeedbackResponse, companyId)}").build()
+            try {
+                val responseId = responseService.submitResponse(newFeedbackResponse, employeeId, companyId)
+                Response.ok("Response submitted successfully, response id: $responseId").build()
+            } catch (e: IllegalArgumentException) {
+                Response.status(Response.Status.BAD_REQUEST).entity(e.message).build()
+            }
         } else {
-            Response.status(Response.Status.UNAUTHORIZED).entity("UNAUTHORIZED: You do not have permission to response feedbacks").build()
+            Response.status(Response.Status.UNAUTHORIZED)
+                .entity("UNAUTHORIZED: You do not have permission to respond to feedbacks").build()
         }
     }
 }
