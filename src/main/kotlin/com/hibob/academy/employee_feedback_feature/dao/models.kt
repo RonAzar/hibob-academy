@@ -14,7 +14,7 @@ data class EmployeeData(val employeeId: Int, val role: EmployeeRole, val company
 data class EmployeeLogin(val firstName: String, val lastName: String, val companyId: Int)
 
 data class FeedbackResponseData(val responseId: Long, val responseText: String, val responderId: Long, val feedbackId: Long, val createdAt: LocalDateTime)
-data class ResponseSubmission(val responseText: String, val responderId: Long, val feedbackId: Long)
+data class ResponseSubmission(val responseText: String, val feedbackId: Long)
 
 enum class EmployeeRole{
     ADMIN,

@@ -20,10 +20,10 @@ class FeedbackResponseDao @Autowired constructor(private val sql: DSLContext) {
         )
     }
 
-    fun submitResponse(newFeedbackResponse: ResponseSubmission): Long {
+    fun submitResponse(newFeedbackResponse: ResponseSubmission, responderId: Long): Long {
         return sql.insertInto(response)
             .set(response.responseText, newFeedbackResponse.responseText)
-            .set(response.responderId, newFeedbackResponse.responderId)
+            .set(response.responderId, responderId)
             .set(response.feedbackId, newFeedbackResponse.feedbackId)
             .returning(response.id)
             .fetchOne()!!
