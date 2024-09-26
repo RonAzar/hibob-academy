@@ -3,6 +3,7 @@ package com.hibob.academy.employee_feedback_feature.service
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackDao
 import com.hibob.academy.employee_feedback_feature.dao.FeedbackResponseDao
 import com.hibob.academy.employee_feedback_feature.dao.ResponseSubmission
+import jakarta.ws.rs.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -21,6 +22,6 @@ class ResponseService @Autowired constructor(
             throw IllegalArgumentException("Sorry, this feedback is anonymous. You cannot respond to it!")
         }
 
-        throw IllegalArgumentException("Feedback with ID ${newFeedbackResponse.feedbackId} does not exist.")
+        throw NotFoundException("Feedback with ID ${newFeedbackResponse.feedbackId} does not exist.")
     }
 }
