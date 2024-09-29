@@ -2,6 +2,7 @@ package com.hibob.academy.employee_feedback_feature.service
 
 import com.hibob.academy.employee_feedback_feature.dao.*
 import com.hibob.academy.employee_feedback_feature.validation.ValidateSubmission.Companion.validateTextSubmission
+import jakarta.ws.rs.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.springframework.stereotype.Component
@@ -33,12 +34,10 @@ class FeedbackService @Autowired constructor(private val feedbackDao: FeedbackDa
 
     fun updateFeedbackStatus(updateFeedback: UpdateFeedbackStatus, companyId: Long): String {
         val rowsAffected = feedbackDao.updateFeedbackStatus(updateFeedback, companyId)
-        val result = if (rowsAffected > 0) {
-            "Feedback status updated!"
-        } else {
-            "Feedback status not updated!"
+        if (rowsAffected > 0) {
+            return "Feedback status updated!"
         }
 
-        return result
+        throw NotFoundException("Error: Feedback status not updated! Make sure the feedback exists at your company")
     }
 }
