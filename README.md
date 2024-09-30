@@ -38,7 +38,7 @@ Here’s a breakdown of the main files and their purposes:
 
 🚀 How to Run the Project
 	1.	Clone the Repository:
-  `git clone https://github.com/your-repo/employee-feedback-system.git`
+  `git clone https://github.com/git@github.com:RonAzar/hibob-academy.git/employee-feedback-system.git`
   `cd employee-feedback-system`
 
 2.	Database Setup
